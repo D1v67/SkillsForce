@@ -1,4 +1,5 @@
 ﻿using Common.SkillsForce.Entity;
+using Common.SkillsForce.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,12 @@ namespace BusinessLayer.SkillsForce.Interface
 {
     public interface IEnrollmentService
     {
-        IEnumerable<EnrollmentModel> GetAll();
-        EnrollmentModel GetByID(int id);
-        void Add(EnrollmentModel enrollment);
+        IEnumerable<EnrollmentViewModel> GetAll();
+        EnrollmentViewModel GetByID(int id);
+        void Add(EnrollmentViewModel enrollment);
         void Delete(int id);
-        void Update(EnrollmentModel enrollment);
+        void Update(EnrollmentViewModel enrollment);
+        IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails();
+        IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId);
     }
 }

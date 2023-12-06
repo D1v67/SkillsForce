@@ -7,16 +7,12 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.SkillsForce.ViewModel;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
     public class EnrollmentDAL : IEnrollmentDAL
     {
-        public const string INSERT_ENROLLMENT_QUERY = @" INSERT INTO [dbo].[Enrollment] ([UserID],[TrainingID])
-                                                          VALUES( @UserID, @TrainingID) ";
-
-        public const string GET_ALL_ENROLLMENT_QUERY = @"SELECT * FROM [dbo].[Enrollment]";
-
         private readonly IDBCommand _dbCommand;
 
         public EnrollmentDAL(IDBCommand dbCommand)
@@ -24,14 +20,14 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand = dbCommand;
         }
 
-        public void Add(EnrollmentModel enrollment)
+        public void Add(EnrollmentViewModel enrollment)
         {
-            List<SqlParameter> parameters = new List<SqlParameter>();
+            const string INSERT_ENROLLMENT_QUERY = @" INSERT INTO [dbo].[Enrollment] ([UserID],[TrainingID]) VALUES( @UserID, @TrainingID) ";
 
+            List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@UserID", enrollment.UserID));
             parameters.Add(new SqlParameter("@TrainingID", enrollment.TrainingID));
-            // parameters.Add(new SqlParameter("@EnrollmentDate", enrollment.EnrollmentDate));
-            //parameters.Add(new SqlParameter("@EnrollmentStatus", enrollment.EnrollmentStatus));
+
             _dbCommand.InsertUpdateData(INSERT_ENROLLMENT_QUERY, parameters);
         }
 
@@ -40,15 +36,16 @@ namespace DataAccessLayer.SkillsForce.DAL
             throw new NotImplementedException();
         }
 
-        public IEnumerable<EnrollmentModel> GetAll()
+        public IEnumerable<EnrollmentViewModel> GetAll()
         {
-            List<EnrollmentModel> enrollments = new List<EnrollmentModel>();
+            const string GET_ALL_ENROLLMENT_QUERY = @"SELECT * FROM [dbo].[Enrollment]";
+            List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
 
-            EnrollmentModel enrollment;
+            EnrollmentViewModel enrollment;
             var dt = _dbCommand.GetData(GET_ALL_ENROLLMENT_QUERY);
             foreach (DataRow row in dt.Rows)
             {
-                enrollment = new EnrollmentModel();
+                enrollment = new EnrollmentViewModel();
                 enrollment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
                 enrollment.UserID = int.Parse(row["UserID"].ToString());
                 enrollment.TrainingID = int.Parse(row["TrainingID"].ToString());
@@ -58,13 +55,73 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
             return enrollments;
         }
+        public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails()
+        {
+            const string GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY =
+             @"SELECT E.EnrollmentID, U.UserID, U.FirstName,U.LastName,T.TrainingID, TrainingName, D.DepartmentName,E.EnrollmentDate, E.EnrollmentStatus
+               FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID";
 
-        public EnrollmentModel GetByID(int id)
+            List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
+
+            EnrollmentViewModel enrollment;
+            var dt = _dbCommand.GetData(GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY);
+            foreach (DataRow row in dt.Rows)
+            {
+                enrollment = new EnrollmentViewModel();
+                enrollment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
+                enrollment.UserID = int.Parse(row["UserID"].ToString());
+                enrollment.FirstName = row["FirstName"].ToString();
+                enrollment.LastName = row["LastName"].ToString();
+                enrollment.TrainingID = int.Parse(row["TrainingID"].ToString());
+                enrollment.TrainingName = row["TrainingName"].ToString();
+                enrollment.DepartmentName = row["DepartmentName"].ToString();
+                enrollment.EnrollmentDate = (DateTime)row["EnrollmentDate"];
+                enrollment.EnrollmentStatus = row["EnrollmentStatus"].ToString();
+                enrollments.Add(enrollment);
+            }
+            return enrollments;
+        }
+        public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId)
+        {
+            const string GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY =
+            @"SELECT E.EnrollmentID, U.UserID,U.FirstName, U.LastName,T.TrainingName, D.DepartmentName, E.EnrollmentDate,E.EnrollmentStatus
+              FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
+              WHERE U.ManagerID = @ManagerID";
+
+            var parameters = new List<SqlParameter> { new SqlParameter("@ManagerID", managerId) };
+            var dt = _dbCommand.GetDataWithConditions(GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY, parameters);
+
+            List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
+
+            EnrollmentViewModel enrollment;
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    enrollment = new EnrollmentViewModel();
+                    enrollment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
+                    enrollment.UserID = int.Parse(row["UserID"].ToString());
+                    enrollment.FirstName = row["FirstName"].ToString();
+                    enrollment.LastName = row["LastName"].ToString();
+                    enrollment.TrainingID = int.Parse(row["TrainingID"].ToString());
+                    enrollment.TrainingName = row["TrainingName"].ToString();
+                    enrollment.DepartmentName = row["DepartmentName"].ToString();
+                    enrollment.EnrollmentDate = (DateTime)row["EnrollmentDate"];
+                    enrollment.EnrollmentStatus = row["EnrollmentStatus"].ToString();
+                    enrollments.Add(enrollment);
+                }
+                return enrollments;
+            }
+            return null;
+        }
+
+
+        public EnrollmentViewModel GetByID(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(EnrollmentModel enrollment)
+        public void Update(EnrollmentViewModel enrollment)
         {
             throw new NotImplementedException();
         }
@@ -76,5 +133,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             var temp = 0;
             return "";
         }
+
+
     }
 }

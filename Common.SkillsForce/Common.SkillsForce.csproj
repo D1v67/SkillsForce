@@ -50,6 +50,7 @@
     <Compile Include="Entity\UserModel.cs" />
     <Compile Include="Enums\RolesEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\EnrollmentViewModel.cs" />
     <Compile Include="ViewModel\RegisterViewModel.cs" />
     <Compile Include="ViewModel\TrainingViewModel.cs" />
   </ItemGroup>

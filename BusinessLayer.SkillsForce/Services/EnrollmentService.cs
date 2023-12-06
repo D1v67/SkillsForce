@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace BusinessLayer.SkillsForce.Services
         {
             _enrollmentDAL = enrollmentDAL;
         }
-        public void Add(EnrollmentModel enrollment)
+        public void Add(EnrollmentViewModel enrollment)
         {
             _enrollmentDAL.Add(enrollment);
         }
@@ -28,17 +29,27 @@ namespace BusinessLayer.SkillsForce.Services
             throw new NotImplementedException();
         }
 
-        public IEnumerable<EnrollmentModel> GetAll()
+        public IEnumerable<EnrollmentViewModel> GetAll()
         {
             return _enrollmentDAL.GetAll();
         }
 
-        public EnrollmentModel GetByID(int id)
+        public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails()
+        {
+            return _enrollmentDAL.GetAllEnrollmentsWithDetails();
+        }
+
+        public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(EnrollmentModel enrollment)
+        public EnrollmentViewModel GetByID(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(EnrollmentViewModel enrollment)
         {
             throw new NotImplementedException();
         }

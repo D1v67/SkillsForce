@@ -1,6 +1,8 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
+using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.Enums;
+using Common.SkillsForce.ViewModel;
 using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
@@ -27,30 +29,16 @@ namespace MVC.SkillsForce.Controllers
         [CustomAuthorization(RolesEnum.Admin)]
         public ActionResult Index()
         {
-            //string enum = RolesEnum.Admin.ToString();
-
-            //string roleString = RolesEnum.Admin.ToString();
-
-            IEnumerable<EnrollmentModel> enrollments = new List<EnrollmentModel>();
+            IEnumerable<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
             try
             {
-                enrollments = _enrollmentService.GetAll();
+                enrollments = _enrollmentService.GetAllEnrollmentsWithDetails();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
             return View(enrollments);
-        }
-
-        public ActionResult TrainingTest()
-        {
-            IEnumerable<TrainingModel> trainings = new List<TrainingModel>();
-
-            trainings = _trainingService.GetAll();
-
-
-            return View(trainings);
         }
 
         public ActionResult ViewTraining()
@@ -83,9 +71,9 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveEnrollment(EnrollmentModel model)
+        public ActionResult SaveEnrollment(EnrollmentViewModel model)
         {
-            //EnrollmentModel enrollment = model;
+            //EnrollmentViewModel enrollment = model;
             try
             {
                 _enrollmentService.Add(model);
@@ -113,24 +101,6 @@ namespace MVC.SkillsForce.Controllers
             return Json(prerequisites, JsonRequestBehavior.AllowGet);
 
         }
-
-        public ActionResult GetPrerequisiteByTrainingIDTest(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            IEnumerable<PrerequisiteModel> prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)id);
-            if (id == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.list = prerequisites;
-            // return View(prerequisites);
-            // return Json(prerequisites, JsonRequestBehavior.AllowGet);
-            return View(prerequisites);
-        }
-
 
         public ActionResult ModalView()
         {
@@ -212,3 +182,33 @@ namespace MVC.SkillsForce.Controllers
         }
     }
 }
+
+//public ActionResult TrainingTest()
+//{
+//    IEnumerable<TrainingModel> trainings = new List<TrainingModel>();
+
+//    trainings = _trainingService.GetAll();
+
+
+//    return View(trainings);
+
+
+//}
+
+
+//public ActionResult GetPrerequisiteByTrainingIDTest(int? id)
+//{
+//    if (id == null)
+//    {
+//        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+//    }
+//    IEnumerable<PrerequisiteModel> prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)id);
+//    if (id == null)
+//    {
+//        return HttpNotFound();
+//    }
+//    ViewBag.list = prerequisites;
+//    // return View(prerequisites);
+//    // return Json(prerequisites, JsonRequestBehavior.AllowGet);
+//    return View(prerequisites);
+//}
