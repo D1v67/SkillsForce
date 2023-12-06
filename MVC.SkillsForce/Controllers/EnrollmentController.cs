@@ -1,11 +1,14 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+
 
 namespace MVC.SkillsForce.Controllers
 {
@@ -20,8 +23,14 @@ namespace MVC.SkillsForce.Controllers
             _trainingService = trainingService;
             _prerequisiteService = prerequisiteService;
         }
+
+        [CustomAuthorization(RolesEnum.Admin)]
         public ActionResult Index()
         {
+            //string enum = RolesEnum.Admin.ToString();
+
+            //string roleString = RolesEnum.Admin.ToString();
+
             IEnumerable<EnrollmentModel> enrollments = new List<EnrollmentModel>();
             try
             {
@@ -122,6 +131,13 @@ namespace MVC.SkillsForce.Controllers
             return View(prerequisites);
         }
 
+
+        public ActionResult ModalView()
+        {
+ 
+            return View();
+
+        }
         //TODO
         // GET: Enrollment/Details/5
         public ActionResult Details(int id)

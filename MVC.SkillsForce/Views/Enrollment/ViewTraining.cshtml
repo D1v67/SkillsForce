@@ -5,6 +5,15 @@
     ViewBag.Title = "Index";
 }
 
+
+@*<link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous" />*@
+
+
+
+
 <h2>Index</h2>
 <h2>@Session["UserID"]</h2>
 <h2>@Session["Email"]</h2>
@@ -28,9 +37,43 @@
     <tbody></tbody>
 </table>
 
-
 <div class="modal" id="enrollModal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title ">Enroll in Training</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <form id="enrollmentForm">
+                <!-- Add the form tag here -->
+                <div class="modal-body">
+                    <p id="trainingInfo"></p>
+                    <p>Your User ID: <span id="userIdInfo"></span></p>
+
+                    <label>You must meet all the following prerequisites:</label>
+                    <div id="coursesCheckboxList">
+                        <!-- Your checkbox list goes here -->
+                    </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" onclick="saveEnrollment()">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form> <!-- Close the form tag -->
+        </div>
+    </div>
+</div>
+
+
+<div id="trainingCardContainer" class="card-deck"></div>
+
+<!--<div class="modal" id="enrollModal">
+    <div class="modal-dialog modal-lg ">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -40,23 +83,23 @@
 
             <div class="modal-body">
                 <p id="trainingInfo"></p>
-                <p>Your User ID: <span id="userIdInfo"></span></p>
-                @*<label for="departmentDropdown">Select Department:</label>
+                <p>Your User ID: <span id="userIdInfo"></span></p>-->
+@*<label for="departmentDropdown">Select Department:</label>
 
-                    <select id="departmentDropdown" class="form-control">
+    <select id="departmentDropdown" class="form-control">
 
-                    </select>*@
+    </select>*@
 
-                <label>You must meet all the following prerequisites:</label>
-                <div id="coursesCheckboxList">
-                    @*@foreach (var prerequisite in ViewBag.ListOfPrerequisiteByTrainingID)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="@prerequisite.PrerequisiteID" id="prerequisiteCheckbox@prerequisite.PrerequisiteID">
-                                <label class="form-check-label" for="prerequisiteCheckbox@prerequisite.PrerequisiteID">@prerequisite.PrerequisiteName</label>
-                            </div>
-                        }*@
-                </div>
+<!--<label>You must meet all the following prerequisites:</label>
+<div id="coursesCheckboxList">-->
+@*@foreach (var prerequisite in ViewBag.ListOfPrerequisiteByTrainingID)
+    {
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="@prerequisite.PrerequisiteID" id="prerequisiteCheckbox@prerequisite.PrerequisiteID">
+            <label class="form-check-label" for="prerequisiteCheckbox@prerequisite.PrerequisiteID">@prerequisite.PrerequisiteName</label>
+        </div>
+    }*@
+<!--</div>
             </div>
 
             <div class="modal-footer">
@@ -66,8 +109,7 @@
 
         </div>
     </div>
-</div>
-
+</div>-->
 
 
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
@@ -94,55 +136,82 @@
                 .then(data => updateTable(data))
                 .catch(error => console.error('Error:', error));
         }
-
-        //  update the table with data
         function updateTable(data) {
-            console.log('here')
-            var tableBody = document.querySelector('#trainingTable tbody');
-            tableBody.innerHTML = '';
+            console.log('here');
+            var cardContainer = document.querySelector('#trainingCardContainer');
+            cardContainer.innerHTML = '';
 
             data.forEach(function (item) {
-
-
                 let currentDate = new Date().toJSON().slice(0, 10);
-                console.log(currentDate); // "2022-06-17
-                //console.log()
-
                 var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
+                var isEnrollmentOpen = registrationDeadlineDate >= new Date();
 
-                console.log(formatDate(registrationDeadlineDate));
+                var card = document.createElement('div');
+                card.className = 'card mb-3';
 
-                var isEnrollmentOpen = registrationDeadlineDate >= new Date(); // Compare with current date
+                card.innerHTML = `
+            <div class="card-body">
+                <h5 class="card-title">${item.TrainingName}</h5>
+                <p class="card-text">${item.TrainingDescription}</p>
+                <p class="card-text"><strong>Registration Deadline:</strong> ${formatDate(registrationDeadlineDate)}</p>
+                <p class="card-text"><strong>Capacity:</strong> ${item.Capacity}</p>
+                <p class="card-text"><strong>Department ID:</strong> ${item.DepartmentID}</p>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#enrollModal" onclick="enroll(${item.TrainingID})" ${isEnrollmentOpen ? '' : 'disabled'}>Enroll</button>
+            </div>
+        `;
 
-                console.log(isEnrollmentOpen)
-
-                var row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.TrainingID}</td>
-                    <td>${item.TrainingName}</td>
-                    <td>${item.TrainingDescription}</td>
-                    <td>${formatDate(registrationDeadlineDate)}</td>
-                    <td>${item.Capacity}</td>
-                    <td>${item.DepartmentID}</td>
-                     <td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" onclick="enroll(${item.TrainingID})">Enroll</button>` : 'Enrollment Closed'}</td>`
-
-                tableBody.appendChild(row);
-
-                //                row.innerHTML = `
-                //<td>${item.TrainingID}</td>
-                //<td>${item.TrainingName}</td>
-                //<td>${item.TrainingDescription}</td>
-                //<td>${formatDate(registrationDeadlineDate)}</td>
-                //<td>${item.Capacity}</td>
-                //<td>${item.DepartmentID}</td>
-                //<td></td>
-
-                //<td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" onclick="enroll(${item.TrainingID})">Enroll</button>` : 'Enrollment Closed'}</td>
-
-
-                //tableBody.appendChild(row);
+                cardContainer.appendChild(card);
             });
         }
+
+        ////  update the table with data
+        //function updateTable(data) {
+        //    console.log('here')
+        //    var tableBody = document.querySelector('#trainingTable tbody');
+        //    tableBody.innerHTML = '';
+
+        //    data.forEach(function (item) {
+
+
+        //        let currentDate = new Date().toJSON().slice(0, 10);
+        //        console.log(currentDate); // "2022-06-17
+        //        //console.log()
+
+        //        var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
+
+        //        console.log(formatDate(registrationDeadlineDate));
+
+        //        var isEnrollmentOpen = registrationDeadlineDate >= new Date(); // Compare with current date
+
+        //        console.log(isEnrollmentOpen)
+
+        //        var row = document.createElement('tr');
+        //        row.innerHTML = `
+        //            <td>${item.TrainingID}</td>
+        //            <td>${item.TrainingName}</td>
+        //            <td>${item.TrainingDescription}</td>
+        //            <td>${formatDate(registrationDeadlineDate)}</td>
+        //            <td>${item.Capacity}</td>
+        //            <td>${item.DepartmentID}</td>
+        //             <td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#enrollModal" onclick="enroll(${item.TrainingID})">Enroll</button>` : 'Enrollment Closed'}</td>`
+
+        //        tableBody.appendChild(row);
+
+        //        //                row.innerHTML = `
+        //        //<td>${item.TrainingID}</td>
+        //        //<td>${item.TrainingName}</td>
+        //        //<td>${item.TrainingDescription}</td>
+        //        //<td>${formatDate(registrationDeadlineDate)}</td>
+        //        //<td>${item.Capacity}</td>
+        //        //<td>${item.DepartmentID}</td>
+        //        //<td></td>
+
+        //        //<td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" onclick="enroll(${item.TrainingID})">Enroll</button>` : 'Enrollment Closed'}</td>
+
+
+        //        //tableBody.appendChild(row);
+        //    });
+        //}
         // format date in 'YYYY-MM-DD'
         function formatDate(date) {
             var year = date.getFullYear();
@@ -190,7 +259,7 @@
                 populateCoursesCheckboxList(prerequisites);
 
                 // Now that prerequisites are fetched, show the modal
-                $("#enrollModal").modal("show");
+                //$("#enrollModal").modal("show");
 
                 // Optionally, you can also trigger the save enrollment function here if needed
                 // saveEnrollment();
@@ -284,10 +353,10 @@
 
             var row = $('<div class="row mb-2">' +
                 '<div class="col-2"><span class="badge bg-primary">' + prerequisite.PrerequisiteID + '</span></div>' +
-                '<div class="col-6"><span class="prerequisite-name">' + prerequisite.PrerequisiteName + '</span></div>' +
+                '<div class="col-6">' + prerequisite.PrerequisiteName + '</div>' +
                 '<div class="col-4">' +
                 '<div class="input-group">' +
-                '<input type="file" class="form-control" id="fileInput' + prerequisite.PrerequisiteID + '">' +
+                '<input type="file" class="form-control" id="fileInput' + prerequisite.PrerequisiteID + '"required >' +
                 '<button type="button" class="btn btn-primary upload-button" data-prerequisite-id="' + prerequisite.PrerequisiteID + '" onclick="uploadDocument(' + prerequisite.PrerequisiteID + ')">Upload</button>' +
                 '</div>' +
                 '</div>' +
@@ -338,7 +407,7 @@
                 //courses: selectedCourses
             },
             success: function (result) {
-                alert("Enrollment successful!");
+                //alert("Enrollment successful!");
                 $("#enrollModal").modal("hide");
             },
             error: function () {

@@ -13,7 +13,7 @@ namespace DataAccessLayer.SkillsForce.DAL
 {
     public class UserDAL : IUserDAL
     {
-        public const string GET_ALL_USER_QUERY = @"SELECT  * FROM [dbo].[User]";
+        public const string GET_ALL_USER_QUERY = @"SELECT * FROM [dbo].[User]";
 
         public const string GET_USER_BY_ID_QUERY = @"SELECT u.* FROM [User] u WHERE u.UserID = @UserID";
 

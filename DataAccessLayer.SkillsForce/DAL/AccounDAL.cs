@@ -57,6 +57,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                 user.RoleName = row["RoleType"].ToString();
                 user.Email = row["Email"].ToString().Trim();
                 user.RoleId = int.Parse(row["RoleId"].ToString());
+                user.FirstName = row["FirstName"].ToString();
             }
             return user;
         }

@@ -42,6 +42,7 @@ namespace MVC.SkillsForce.Controllers
                 this.Session["UserID"] = userDetailsWithRoles.UserID;
                 this.Session["CurrentRole"] = userDetailsWithRoles.RoleName;
                 this.Session["Email"] = userDetailsWithRoles.Email;
+                this.Session["FirstName"] = userDetailsWithRoles.FirstName;
             }
             return Json(new { result = IsUserValid, url = Url.Action("ViewTraining", "Enrollment") });
         }

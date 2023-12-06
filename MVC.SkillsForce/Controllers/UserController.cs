@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
+    [UserSession]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
