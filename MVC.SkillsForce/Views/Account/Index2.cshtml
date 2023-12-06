@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "Index2";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login Page</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: auto;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container login-container">
+        <h2 class="text-center mb-4">Login</h2>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" required>
+                <div class="invalid-feedback">Please enter your email.</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+                <div class="invalid-feedback">Please enter your password.</div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="handleLogin()">Login</button>
+        </form>
+        <div class="text-center mt-3">
+            <p>Don't have an account? <a href="#" id="registerLink">Register here</a></p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional, but required for some features) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script>
+    document.getElementById('registerLink').addEventListener('click', function (event) {
+        event.preventDefault();
+        alert('Redirect to registration page or show registration form');
+    });
+
+    function handleLogin() {
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+
+        if (!email || !password) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+
+        // Send data to server for login
+        // Example using fetch API:
+        fetch('/your-login-endpoint', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email, password: password }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response from the server (e.g., redirect, show message, etc.)
+            console.log(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+    </script>
+
+</body>
+</html>

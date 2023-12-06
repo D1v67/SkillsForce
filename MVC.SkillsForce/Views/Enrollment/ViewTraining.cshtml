@@ -1,0 +1,420 @@
+﻿
+@model IEnumerable<Common.SkillsForce.Entity.TrainingModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<h2>@Session["UserID"]</h2>
+<h2>@Session["Email"]</h2>
+
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>*@
+
+<table id="trainingTable" class="table">
+    <thead>
+        <tr>
+            <th>Training ID</th>
+            <th>Training Name</th>
+            <th>Training Description</th>
+            <th>Registration Deadline</th>
+            <th>Capacity</th>
+            <th>Department ID</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+<div class="modal" id="enrollModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title ">Enroll in Training</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <p id="trainingInfo"></p>
+                <p>Your User ID: <span id="userIdInfo"></span></p>
+                @*<label for="departmentDropdown">Select Department:</label>
+
+                    <select id="departmentDropdown" class="form-control">
+
+                    </select>*@
+
+                <label>You must meet all the following prerequisites:</label>
+                <div id="coursesCheckboxList">
+                    @*@foreach (var prerequisite in ViewBag.ListOfPrerequisiteByTrainingID)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="@prerequisite.PrerequisiteID" id="prerequisiteCheckbox@prerequisite.PrerequisiteID">
+                                <label class="form-check-label" for="prerequisiteCheckbox@prerequisite.PrerequisiteID">@prerequisite.PrerequisiteName</label>
+                            </div>
+                        }*@
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="saveEnrollment()">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        function loadData() {
+            fetch('/Enrollment/ViewTrainingData', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json()
+                    }
+                    else {
+                        console.log(response.status)
+                    }
+                })
+                .then(data => updateTable(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        //  update the table with data
+        function updateTable(data) {
+            console.log('here')
+            var tableBody = document.querySelector('#trainingTable tbody');
+            tableBody.innerHTML = '';
+
+            data.forEach(function (item) {
+
+
+                let currentDate = new Date().toJSON().slice(0, 10);
+                console.log(currentDate); // "2022-06-17
+                //console.log()
+
+                var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
+
+                console.log(formatDate(registrationDeadlineDate));
+
+                var isEnrollmentOpen = registrationDeadlineDate >= new Date(); // Compare with current date
+
+                console.log(isEnrollmentOpen)
+
+                var row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.TrainingID}</td>
+                    <td>${item.TrainingName}</td>
+                    <td>${item.TrainingDescription}</td>
+                    <td>${formatDate(registrationDeadlineDate)}</td>
+                    <td>${item.Capacity}</td>
+                    <td>${item.DepartmentID}</td>
+                     <td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" onclick="enroll(${item.TrainingID})">Enroll</button>` : 'Enrollment Closed'}</td>`
+
+                tableBody.appendChild(row);
+
+                //                row.innerHTML = `
+                //<td>${item.TrainingID}</td>
+                //<td>${item.TrainingName}</td>
+                //<td>${item.TrainingDescription}</td>
+                //<td>${formatDate(registrationDeadlineDate)}</td>
+                //<td>${item.Capacity}</td>
+                //<td>${item.DepartmentID}</td>
+                //<td></td>
+
+                //<td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" onclick="enroll(${item.TrainingID})">Enroll</button>` : 'Enrollment Closed'}</td>
+
+
+                //tableBody.appendChild(row);
+            });
+        }
+        // format date in 'YYYY-MM-DD'
+        function formatDate(date) {
+            var year = date.getFullYear();
+            var month = ('0' + (date.getMonth() + 1)).slice(-2);
+            var day = ('0' + date.getDate()).slice(-2);
+            return year + '-' + month + '-' + day;
+        }
+
+        loadData();
+    });
+</script>
+
+
+
+<script>
+    function enroll(trainingId) {
+        // Set the training information in the modal
+        /*$("#trainingInfo").text("Enroll in Training: " + trainingId);*/
+
+        // Retrieve user information from the session
+        //var userId = 1;
+        var userId = "@HttpContext.Current.Session["UserID"]";
+
+        console.log(userId)
+        $("#trainingInfo").text("Enroll in Training: " + trainingId);
+
+        // Store the training ID in a data attribute of the modal
+        $("#enrollModal").data("trainingId", trainingId);
+
+
+        var enrollmentData = {
+            UserID: userId,
+            TrainingID: trainingId,
+
+        };
+
+        console.log(enrollmentData)
+        // Call the controller action to get prerequisites
+        $.ajax({
+            url: '/Enrollment/GetPrerequisiteByTrainingID',
+            type: 'GET',
+            data: { TrainigID: trainingId },
+            success: function (prerequisites) {
+                console.log(prerequisites);
+                populateCoursesCheckboxList(prerequisites);
+
+                // Now that prerequisites are fetched, show the modal
+                $("#enrollModal").modal("show");
+
+                // Optionally, you can also trigger the save enrollment function here if needed
+                // saveEnrollment();
+            },
+            error: function () {
+                alert("Failed to fetch prerequisites!");
+            }
+        });
+    }
+    //function populateCoursesCheckboxList(prerequisites) {
+    //    var checkboxList = $("#coursesCheckboxList");
+    //    checkboxList.empty();
+
+    //    for (var i = 0; i < prerequisites.length; i++) {
+    //        var checkboxId = "prerequisiteCheckbox" + i;
+    //        var uploadButtonId = "uploadButton" + i;
+    //        var fileInputId = "fileInput" + i;
+
+    //        var checkbox = $('<div class="form-check">' +
+    //            '<input class="form-check-input" type="checkbox" value="' + prerequisites[i].PrerequisiteID + '" id="' + checkboxId + '">' +
+    //            '<label class="form-check-label" for="' + checkboxId + '">' + prerequisites[i].PrerequisiteName + '</label>' +
+    //            '<input type="file" id="' + fileInputId + '" style="display:none;">' + // Hidden file input
+    //            '<button type="button" class="btn btn-primary upload-button" id="' + uploadButtonId + '" disabled onclick="uploadDocument(\'' + checkboxId + '\', \'' + fileInputId + '\')">Upload</button>' +
+    //            '</div>');
+
+    //        checkboxList.append(checkbox);
+
+    //        // Add change event handler for the checkbox
+    //        $("#" + checkboxId).change(function () {
+    //            // Enable or disable the corresponding upload button based on checkbox state
+    //            var isChecked = $(this).prop("checked");
+    //            var index = $(this).attr("id").replace("prerequisiteCheckbox", "");
+    //            $("#" + uploadButtonId).prop("disabled", !isChecked);
+    //            $("#" + fileInputId).prop("disabled", !isChecked);
+    //        });
+    //    }
+    //}
+
+
+    //function uploadDocument(checkboxId, fileInputId) {
+    //    var fileInput = $("#" + fileInputId)[0];
+    //    var trainingId = parseInt($("#enrollModal").data("trainingId"));
+
+    //    //if (fileInput.files.length > 0) {
+    //    //    // Assuming you are using FormData to send the file to the server
+    //    //    var formData = new FormData();
+    //    //    formData.append("file", fileInput.files[0]);
+    //    //    formData.append("trainingId", trainingId);
+
+    //    //    // Ajax request to send the file data to the controller
+    //    //    $.ajax({
+    //    //        url: '/Enrollment/UploadDocument',
+    //    //        type: 'POST',
+    //    //        data: formData,
+    //    //        contentType: false,
+    //    //        processData: false,
+    //    //        success: function (result) {
+    //    //            alert("Document uploaded successfully!");
+    //    //            // Optionally, you can perform additional actions after successful upload
+    //    //        },
+    //    //        error: function () {
+    //    //            alert("Document upload failed!");
+    //    //        }
+    //    //    });
+    //    //} else {
+    //    //    alert("Please select a file to upload.");
+    //    //}
+    //}
+    //function populateCoursesCheckboxList(prerequisites) {
+    //    var container = $("#coursesCheckboxList");
+    //    container.empty();
+
+    //    for (var i = 0; i < prerequisites.length; i++) {
+    //        var prerequisite = prerequisites[i];
+
+    //        var row = $('<div class="prerequisite-row">' +
+    //            '<span class="prerequisite-id">' + prerequisite.PrerequisiteID + '</span>' +
+    //            '<span class="prerequisite-name">' + prerequisite.PrerequisiteName + '</span>' +
+    //            '<button type="button" class="btn btn-primary upload-button" data-prerequisite-id="' + prerequisite.PrerequisiteID + '" onclick="uploadDocument(' + prerequisite.PrerequisiteID + ')">Upload</button>' +
+    //            '</div>');
+
+    //        container.append(row);
+    //    }
+    //}
+    function populateCoursesCheckboxList(prerequisites) {
+        var container = $("#coursesCheckboxList");
+        container.empty();
+
+        for (var i = 0; i < prerequisites.length; i++) {
+            var prerequisite = prerequisites[i];
+
+            var row = $('<div class="row mb-2">' +
+                '<div class="col-2"><span class="badge bg-primary">' + prerequisite.PrerequisiteID + '</span></div>' +
+                '<div class="col-6"><span class="prerequisite-name">' + prerequisite.PrerequisiteName + '</span></div>' +
+                '<div class="col-4">' +
+                '<div class="input-group">' +
+                '<input type="file" class="form-control" id="fileInput' + prerequisite.PrerequisiteID + '">' +
+                '<button type="button" class="btn btn-primary upload-button" data-prerequisite-id="' + prerequisite.PrerequisiteID + '" onclick="uploadDocument(' + prerequisite.PrerequisiteID + ')">Upload</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>');
+
+            container.append(row);
+        }
+    }
+
+    function uploadDocument(prerequisiteId) {
+        // Handle the upload logic here
+        var fileInput = $("#fileInput" + prerequisiteId);
+        var fileName = fileInput.val().split('\\').pop();
+        alert("Upload button clicked for prerequisite ID: " + prerequisiteId + "\nSelected File: " + fileName);
+    }
+
+
+    function saveEnrollment() {
+        //var trainingId = $("#enrollModal").data("trainingId");
+        var trainingId = parseInt($("#enrollModal").data("trainingId"));
+
+        //var trainingId = $("#trainingInfo").text().split(":")[1].trim();
+        //var departmentId = $("#departmentDropdown").val();
+        console.log("Insave "+trainingId);
+
+
+        //var selectedCourses = [];
+        //$("input[type=checkbox]:checked").each(function () {
+        //    selectedCourses.push($(this).val());
+        //});
+
+        var selectedCourses = [];
+        $("input[type=checkbox]:checked").each(function () {
+            selectedCourses.push(parseInt($(this).val()));
+        });
+
+        var userId = "@HttpContext.Current.Session["UserID"]";
+        console.log(userId)
+        console.log(selectedCourses)
+        // Ajax request to send data to the controller
+        $.ajax({
+            url: '/Enrollment/SaveEnrollment',
+            type: 'POST',
+            data: {
+                UserID: userId,
+                TrainingID: trainingId,
+                // Add other data such as departmentId if needed
+                //courses: selectedCourses
+            },
+            success: function (result) {
+                alert("Enrollment successful!");
+                $("#enrollModal").modal("hide");
+            },
+            error: function () {
+                alert("Enrollment failed!");
+            }
+        });
+    }
+
+           // Call the controller action to save the enrollment
+   //    $.ajax({
+   //        url: '/Enrollment/SaveEnroll',
+   //        type: 'POST',
+   //        data: {
+   //            UserID: userId,
+   //            TrainingID: trainingId,
+
+   //        },
+   //        success: function (result) {
+   //            //
+   //            alert("Enrollment successful!");
+   //            console.log(response.data);
+   //            ////
+   //            //$("#enrollModal").modal("hide");
+   //        },
+   //        error: function () {
+   //            //
+   //            alert("Enrollment failed!");
+   //        }
+   //    });
+   ////    //
+   //    $("#userIdInfo").text(userId);
+
+   //    // dummy data
+   //    var dummyCourses = [
+   //        { CourseID: 1, CourseName: "Course A" },
+   //        { CourseID: 2, CourseName: "Course B" },
+   //        { CourseID: 3, CourseName: "Course C" }
+   //    ];
+
+
+   //    populateCoursesCheckboxList(dummyCourses);
+
+
+   //   // $("#enrollModal").modal("show");
+   //}
+
+   //function populateCoursesCheckboxList(courses) {
+   //    var checkboxList = $("#coursesCheckboxList");
+
+
+   //    checkboxList.empty();
+
+
+   //    for (var i = 0; i < courses.length; i++) {
+   //        var checkboxId = "courseCheckbox" + i;
+   //        var uploadBtnId = "uploadBtn" + i;
+
+   //        var checkbox = $('<div class="form-check">' +
+   //            '<input class="form-check-input" type="checkbox" value="' + courses[i].CourseID + '" id="' + checkboxId + '">' +
+   //            '<label class="form-check-label" for="' + checkboxId + '">' + courses[i].CourseName + '</label>' +
+   //            '</div>');
+
+   //        var uploadBtn = $('<div class="mt-2">' +
+   //            '<input type="file" id="' + uploadBtnId + '" style="display:none;">' +
+   //            '<button type="button" class="btn btn-primary" onclick="showUpload(' + i + ')">Upload</button>' +
+   //            '</div>');
+
+   //        checkboxList.append(checkbox);
+   //        checkboxList.append(uploadBtn);
+   //    }
+   //}
+
+   //function showUpload(index) {
+
+   //    $("#uploadBtn" + index).click();
+   //}
+</script>
+
+

@@ -1,0 +1,231 @@
+﻿@{
+    ViewBag.Title = "Register";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <!-- Toastr JS -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <!-- Your custom script -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            loadDepartments();
+
+            console.log('here1');
+
+            loadManagers();
+
+            console.log('heremanagers');
+
+            $("#registrationForm").submit(function (e) {
+                e.preventDefault();
+
+                var password = $('#Password').val();
+                var confirmPassword = $('#ConfirmPassword').val();
+
+                if (password !== confirmPassword) {
+                    toastr.error("Passwords do not match.");
+                    return;
+                }
+
+                var selectedDepartmentID = $(this).val();
+                var formData = {
+                    FirstName: $('#FirstName').val(),
+                    LastName: $('#LastName').val(),
+                    Email: $('#Email').val(),
+                    NIC: $('#NIC').val(),
+                    MobileNumber: $('#MobileNumber').val(),
+
+                    DepartmentID: parseInt($("#department").val()),
+                    ManagerID: parseInt($("#manager").val()),
+
+                    Password: password,
+                };
+
+                console.log(formData);
+                console.log('here2');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Account/Register",
+                    data: {
+                        FirstName: $('#FirstName').val(),
+                        LastName: $('#LastName').val(),
+                        Email: $('#Email').val(),
+                        NIC: $('#NIC').val(),
+                        MobileNumber: $('#MobileNumber').val(),
+                        DepartmentID: parseInt($("#department").val()),
+                        ManagerID: parseInt($("#manager").val()),
+                        Password: password
+                    },
+
+                    success: function (response) {
+
+                        console.log(response);
+                        window.location = response.url;
+                        //window.location = '/User/Index';
+
+                    },
+
+                    error: function (error) {
+                        console.log("Error:", error);
+                        // toastr.error('Something went wrong. Please try again later.');
+                    }
+                });
+            });
+        });
+
+        function loadManagers() {
+
+            $.ajax({
+                type: "GET",
+                url: "/Account/GetManagers",
+                dataType: "json",
+                success: function (response) {
+                    // Populate the dropdown with department options
+                    var departmentDropdown = $("#manager");
+                    departmentDropdown.empty();
+
+                    departmentDropdown.append('<option value="" selected disabled>Select Manager</option>');
+
+                    response.forEach(function (manager) {
+                        var option = $("<option>")
+                            .attr("value", manager.UserID)
+                            .text(manager.FirstName + ' ' + manager.LastName);
+                        departmentDropdown.append(option);
+                    });
+                },
+                error: function (error) {
+                    toastr.error('Failed to load managers. Please try again.');
+                }
+            });
+        }
+
+
+        function loadDepartments() {
+            // Simulate an AJAX call to retrieve department data
+            $.ajax({
+                type: "GET",
+                url: "/Account/GetDepartments", // Replace with your actual controller and action name
+                dataType: "json",
+                success: function (response) {
+                    // Populate the dropdown with department options
+                    var departmentDropdown = $("#department");
+                    departmentDropdown.empty();
+
+                    departmentDropdown.append('<option value="" selected disabled>Select Department</option>');
+
+                    response.forEach(function (department) {
+                        var option = $("<option>")
+                            .attr("value", department.DepartmentID)
+                            .text(department.DepartmentName);
+                        departmentDropdown.append(option);
+                    });
+                },
+                error: function (error) {
+                    toastr.error('Failed to load departments. Please try again.');
+                }
+            });
+
+        }
+    </script>
+
+</head>
+<body>
+
+    <div class="container">
+        <h2>User Registration</h2>
+
+        <form id="registrationForm">
+
+            <div class="mb-3">
+                <label for="FirstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="FirstName" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="LastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="LastName" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="Email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="Email" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="NIC" class="form-label">NIC</label>
+                <input type="text" class="form-control" id="NIC" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="MobileNumber" class="form-label">Mobile Number</label>
+                <input type="text" class="form-control" id="MobileNumber" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="department">Select your Department:</label>
+                <select class="form-control" id="department" name="department">
+                    <option value="" selected disabled>Select Department</option>
+                    <!-- populated via AJAX -->
+                </select>
+            </div>
+            <!-- Dropdown Managers -->
+            <div class="mb-3">
+                <label for="manager">Select your Manager:</label>
+                <select class="form-control" id="manager" name="manager">
+                    <option value="" selected disabled>Select Manager</option>
+                    <!-- populated via AJAX -->
+                </select>
+            </div>
+
+            <!-- Password Field for Account -->
+            <div class="mb-3">
+                <label for="Password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="Password" required>
+            </div>
+
+
+            <div class="mb-3">
+                <label for="ConfirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="ConfirmPassword" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btnRegister">Register</button>
+        </form>
+    </div>
+
+</body>
+</html>
+@Scripts.Render("~/bundles/jquery")
