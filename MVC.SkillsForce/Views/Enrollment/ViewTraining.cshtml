@@ -22,6 +22,7 @@
         @Html.ActionLink("Create New", "Create")
     </p>*@
 
+
 <table id="trainingTable" class="table">
     <thead>
         <tr>
@@ -46,15 +47,25 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
+            @*@using (Html.BeginForm("ViewTraining", "Enrollment", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <label for="file">Upload File: </label>
+                <input type="file" accept=".csv" name="file" id="file" />
+                <br>
+                <br>
+
+                <input type="submit" value="Upload File" />
+            }*@
+
             <form id="enrollmentForm">
-                <!-- Add the form tag here -->
+                 Add the form tag here 
                 <div class="modal-body">
                     <p id="trainingInfo"></p>
                     <p>Your User ID: <span id="userIdInfo"></span></p>
 
                     <label>You must meet all the following prerequisites:</label>
                     <div id="coursesCheckboxList">
-                        <!-- Your checkbox list goes here -->
+
                     </div>
 
 
@@ -64,7 +75,9 @@
                     <button type="submit" class="btn btn-success" onclick="saveEnrollment()">Save</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
-            </form> <!-- Close the form tag -->
+            </form>  Close the form tag 
+
+
         </div>
     </div>
 </div>
@@ -156,14 +169,14 @@
                 <p class="card-text"><strong>Registration Deadline:</strong> ${formatDate(registrationDeadlineDate)}</p>
                 <p class="card-text"><strong>Capacity:</strong> ${item.Capacity}</p>
                 <p class="card-text"><strong>Department ID:</strong> ${item.DepartmentID}</p>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#enrollModal" onclick="enroll(${item.TrainingID})" ${isEnrollmentOpen ? '' : 'disabled'}>Enroll</button>
+                ${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#enrollModal" onclick="enroll(${item.TrainingID})">Enroll</button>` : 'Enrollment Closed'}
+            
             </div>
         `;
 
                 cardContainer.appendChild(card);
             });
         }
-
         ////  update the table with data
         //function updateTable(data) {
         //    console.log('here')

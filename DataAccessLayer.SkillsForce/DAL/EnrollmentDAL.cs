@@ -84,7 +84,7 @@ namespace DataAccessLayer.SkillsForce.DAL
         public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId)
         {
             const string GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY =
-            @"SELECT E.EnrollmentID, U.UserID,U.FirstName, U.LastName,T.TrainingName, D.DepartmentName, E.EnrollmentDate,E.EnrollmentStatus
+            @"SELECT E.EnrollmentID, U.UserID,U.FirstName, U.LastName, T.TrainingID, T.TrainingName, D.DepartmentName, E.EnrollmentDate,E.EnrollmentStatus
               FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
               WHERE U.ManagerID = @ManagerID";
 
@@ -134,6 +134,60 @@ namespace DataAccessLayer.SkillsForce.DAL
             return "";
         }
 
+        public void ApproveEnrollment(int enrollmentId)
+        {
+            const string UPDATE_STATUS_APPROVED_QUERY = @"UPDATE Enrollment SET EnrollmentStatus = 'Approved' WHERE EnrollmentID = @EnrollmentID";
 
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@EnrollmentID", enrollmentId));
+  
+            _dbCommand.InsertUpdateData(UPDATE_STATUS_APPROVED_QUERY, parameters);
+        }
+
+        public void RejectEnrollment(int enrollmentId)
+        {
+            const string UPDATE_STATUS_REJECTED_QUERY = @"UPDATE Enrollment SET EnrollmentStatus = 'Rejected' WHERE EnrollmentID = @EnrollmentID";
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@EnrollmentID", enrollmentId));
+
+            _dbCommand.InsertUpdateData(UPDATE_STATUS_REJECTED_QUERY, parameters);
+        }
+
+        public EnrollmentNotificationViewModel GetEnrollmentNotificationDetailsByID(int id)
+        {
+            const string GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID =
+                @"SELECT E.EnrollmentID, U.UserID AS AppUserID,U.FirstName AS AppUserFirstName,U.LastName AS AppUserLastName, U.Email AS AppUserEmail, U.RoleID AS AppUserRoleID, 
+                    T.TrainingID,T.TrainingName,D.DepartmentName,E.EnrollmentDate, E.EnrollmentStatus, U.ManagerID,M.Email AS ManagerEmail, M.FirstName AS ManagerFirstName,
+                    M.LastName AS ManagerLastName, M.UserID AS ManagerID
+                FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
+                LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
+
+            var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
+            var dt = _dbCommand.GetDataWithConditions(GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID, parameters);
+
+            if (dt.Rows.Count > 0)
+            {
+                DataRow row = dt.Rows[0];
+                EnrollmentNotificationViewModel enrollment = new EnrollmentNotificationViewModel
+                {
+                    EnrollmentID = int.Parse(row["EnrollmentID"].ToString()),
+                    AppUserID = int.Parse(row["AppUserID"].ToString()),
+                    AppUserFirstName = row["AppUserFirstName"].ToString(),
+                    AppUserLastName = row["AppUserLastName"].ToString(),
+                    AppUserEmail = row["AppUserEmail"].ToString(),
+                    TrainingID = int.Parse(row["TrainingID"].ToString()),
+                    TrainingName = row["TrainingName"].ToString(),
+                    DepartmentName = row["DepartmentName"].ToString(),
+                    EnrollmentDate = DateTime.Parse(row["EnrollmentDate"].ToString()),
+                    EnrollmentStatus = row["EnrollmentStatus"].ToString(),
+                    ManagerID = int.Parse(row["ManagerID"].ToString()),
+                    ManagerEmail = row["ManagerEmail"].ToString(),
+                    ManagerFirstName = row["ManagerFirstName"].ToString(),
+                    ManagerLastName = row["ManagerLastName"].ToString(),
+                };
+                return enrollment;
+            }
+            return null;
+        }
     }
 }

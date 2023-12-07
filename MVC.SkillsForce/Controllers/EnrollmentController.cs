@@ -6,6 +6,7 @@ using Common.SkillsForce.ViewModel;
 using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -19,11 +20,13 @@ namespace MVC.SkillsForce.Controllers
         private readonly IEnrollmentService _enrollmentService;
         private readonly ITrainingService _trainingService;
         private readonly IPrerequisiteService _prerequisiteService;
-        public EnrollmentController(IEnrollmentService enrollmentService, ITrainingService trainingService, IPrerequisiteService prerequisiteService)
+        private readonly INotificationService _notificationService;
+        public EnrollmentController(IEnrollmentService enrollmentService, ITrainingService trainingService, IPrerequisiteService prerequisiteService, INotificationService notificationService)
         {
             _enrollmentService = enrollmentService;
             _trainingService = trainingService;
             _prerequisiteService = prerequisiteService;
+            _notificationService = notificationService;
         }
 
         [CustomAuthorization(RolesEnum.Admin)]
@@ -33,6 +36,44 @@ namespace MVC.SkillsForce.Controllers
             try
             {
                 enrollments = _enrollmentService.GetAllEnrollmentsWithDetails();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return View(enrollments);
+        }
+
+        public ActionResult GetEnrollments()
+        {
+            try
+            {
+                if (Session == null || Session["UserID"] == null || Session["CurrentRole"] == null)
+                {
+                    return RedirectToAction("/Index"); 
+                }
+                var userId = Convert.ToInt32(Session["UserID"]);
+                var currentRole = Session["CurrentRole"].ToString();
+
+                IEnumerable<EnrollmentViewModel> enrollments = currentRole == "Manager"
+                    ? _enrollmentService.GetAllEnrollmentsWithDetailsByManager(userId)
+                    : _enrollmentService.GetAllEnrollmentsWithDetails();
+
+                return View(enrollments);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return View("Error"); 
+            }
+        }
+
+        public ActionResult GetEnrollmentsForManager(int managerId)
+        {
+            IEnumerable<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
+            try
+            {
+                enrollments = _enrollmentService.GetAllEnrollmentsWithDetailsByManager(managerId);
             }
             catch (Exception ex)
             {
@@ -102,6 +143,55 @@ namespace MVC.SkillsForce.Controllers
 
         }
 
+        [HttpPost]
+        public ActionResult ApproveEnrollment(int enrollmentId)
+        {
+            try
+            {
+                // Update the enrollment status to "Approved" in the database
+                _enrollmentService.ApproveEnrollment(enrollmentId);
+                EnrollmentNotificationViewModel enrollment= _enrollmentService.GetEnrollmentNotificationDetailsByID(enrollmentId);
+
+                _notificationService.SendNotification(enrollment);
+                // Return a success status
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return Json(new { success = false, message = ex.Message });
+            }
+
+        }
+
+        [HttpPost]
+        public ActionResult Upload(HttpPostedFileBase file)
+        {
+            if (file != null && file.ContentLength > 0)
+                try
+                {
+                    string path = Path.Combine(Server.MapPath("~/App_Data/Input"), Path.GetFileName(file.FileName));
+
+                    //string[] lists = System.IO.File.ReadAllLines(Server.MapPath(path));
+
+                    file.SaveAs(path);
+                    ViewBag.Message = "File uploaded successfully";
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                }
+            else
+            {
+                ViewBag.Message = "You have not specified a file or file is empty.";
+            }
+
+            //var items = FileManipulation.GetFiles(Server.MapPath("~/App_Data/Input"));
+
+             return Json(new { success = true});
+
+
+        }
         public ActionResult ModalView()
         {
  

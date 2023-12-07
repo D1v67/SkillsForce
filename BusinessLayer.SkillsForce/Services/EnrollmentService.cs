@@ -24,6 +24,11 @@ namespace BusinessLayer.SkillsForce.Services
             _enrollmentDAL.Add(enrollment);
         }
 
+        public void ApproveEnrollment(int enrollmentId)
+        {
+            _enrollmentDAL.ApproveEnrollment(enrollmentId);
+        }
+
         public void Delete(int id)
         {
             throw new NotImplementedException();
@@ -41,12 +46,22 @@ namespace BusinessLayer.SkillsForce.Services
 
         public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId)
         {
-            throw new NotImplementedException();
+            return _enrollmentDAL.GetAllEnrollmentsWithDetailsByManager(managerId);
         }
 
         public EnrollmentViewModel GetByID(int id)
         {
             throw new NotImplementedException();
+        }
+
+        public EnrollmentNotificationViewModel GetEnrollmentNotificationDetailsByID(int id)
+        {
+            return _enrollmentDAL.GetEnrollmentNotificationDetailsByID(id);
+        }
+
+        public void RejectEnrollment(int enrollmentId)
+        {
+            _enrollmentDAL.RejectEnrollment(enrollmentId);
         }
 
         public void Update(EnrollmentViewModel enrollment)

@@ -17,5 +17,8 @@ namespace DataAccessLayer.SkillsForce.Interface
         void Update(EnrollmentViewModel enrollment);
         IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails();
         IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId);
+        void ApproveEnrollment(int enrollmentId);
+        void RejectEnrollment(int enrollmentId);
+        EnrollmentNotificationViewModel GetEnrollmentNotificationDetailsByID(int id);
     }
 }

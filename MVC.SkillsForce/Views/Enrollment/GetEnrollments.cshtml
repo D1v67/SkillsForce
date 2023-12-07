@@ -1,0 +1,148 @@
+﻿@model IEnumerable<Common.SkillsForce.ViewModel.EnrollmentViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Example</title>
+    <!-- Add Bootstrap CSS link -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+       
+        .approve-btn {
+            
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h2>Index</h2>
+
+        <p>
+            @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+        </p>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EnrollmentID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FirstName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LastName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TrainingID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TrainingName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DepartmentName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EnrollmentDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EnrollmentStatus)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EnrollmentID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TrainingID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TrainingName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DepartmentName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EnrollmentDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EnrollmentStatus)
+                        </td>
+                        <td>
+                            @if (item.EnrollmentStatus != "Approved")
+                            {
+                                <button class="btn btn-primary approve-btn" data-enrollment-id="@item.EnrollmentID">Approve</button>
+                            }
+                            else
+                            {
+                                <span class="badge badge-success">Approved</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Bootstrap JS and Popper.js if needed -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $(".approve-btn").click(function () {
+                var button = $(this);
+                var enrollmentId = button.data("enrollment-id");
+
+                $.ajax({
+                    url: '/Enrollment/ApproveEnrollment',
+                    type: 'POST',
+                    data: { enrollmentId: enrollmentId },
+                    success: function (result) {
+                        if (result.success) {
+                            // Update the UI without reloading the page
+                            button.closest('tr').find('td:last-child').html('<span>Approved</span>');
+                            // You might want to disable the button or perform other UI updates as needed
+                            button.prop('disabled', true);
+                        } else {
+                            // Handle the case where the approval was not successful
+                            alert('Error approving enrollment: ' + result.message);
+                        }
+                    },
+                    error: function () {
+                        // Handle error
+                        alert('Error approving enrollment.');
+                    }
+                });
+            });
+        });
+    </script>
+}

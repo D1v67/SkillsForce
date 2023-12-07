@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppLogger\ILogger.cs" />
+    <Compile Include="AppLogger\Logger.cs" />
+    <Compile Include="CustomException.cs" />
+    <Compile Include="EmailSender\EmailSender.cs" />
     <Compile Include="Entity\AccountModel.cs" />
     <Compile Include="Entity\DepartmentModel.cs" />
     <Compile Include="Entity\EnrollmentModel.cs" />
@@ -50,6 +54,7 @@
     <Compile Include="Entity\UserModel.cs" />
     <Compile Include="Enums\RolesEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\EnrollmentNotificationViewModel.cs" />
     <Compile Include="ViewModel\EnrollmentViewModel.cs" />
     <Compile Include="ViewModel\RegisterViewModel.cs" />
     <Compile Include="ViewModel\TrainingViewModel.cs" />

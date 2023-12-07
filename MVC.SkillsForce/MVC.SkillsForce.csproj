@@ -142,6 +142,7 @@
     <Compile Include="Controllers\TrainingController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Custom\CustomAuthorizationAttribute.cs" />
+    <Compile Include="Custom\GlobalExceptionFilter.cs" />
     <Compile Include="Custom\UserSessionAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -174,6 +175,7 @@
     <Content Include="Content\jquery-ui.css" />
     <Content Include="Content\jquery-ui.structure.css" />
     <Content Include="Content\jquery-ui.theme.css" />
+    <Content Include="ErrorLog\log.txt" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -243,6 +245,7 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\Common\AccessDenied.cshtml" />
     <Content Include="Views\Enrollment\ModalView.cshtml" />
+    <Content Include="Views\Enrollment\GetEnrollments.cshtml" />
     <Content Include="Views\Enrollment\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
