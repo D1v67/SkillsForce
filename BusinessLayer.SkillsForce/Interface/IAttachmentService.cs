@@ -1,11 +1,12 @@
 ﻿using Common.SkillsForce.Entity;
 using System.Collections.Generic;
+using System.Web;
 
-namespace DataAccessLayer.SkillsForce.DAL
+namespace BusinessLayer.SkillsForce.Services
 {
-    public interface IAttachmentDAL
+    public interface IAttachmentService
     {
-        void Add(AttachmentModel attachment);
+        void UploadFile(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs);
         IEnumerable<AttachmentModel> GetAll();
         IEnumerable<AttachmentModel> GetAllByEnrollmentID(int id);
         AttachmentModel GetByAttachmentID(int id);

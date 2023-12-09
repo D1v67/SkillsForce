@@ -12,44 +12,68 @@ using System.Web;
 
 namespace BusinessLayer.SkillsForce.Services
 {
-    public class UploaderService : IUploaderService
+    public class AttachmentService : IAttachmentService
     {
         private readonly IAttachmentDAL _attachmentDAL;
 
-        public UploaderService(IAttachmentDAL attachmentDAL)
+        public AttachmentService(IAttachmentDAL attachmentDAL)
         {
             _attachmentDAL = attachmentDAL;
         }
-        public void UploadFile(List<HttpPostedFileBase> files, int EnrollmentID, int PrerequisiteID, int UserID)
+
+        public IEnumerable<AttachmentModel> GetAll()
+        {
+            return _attachmentDAL.GetAll();
+        }
+
+        public AttachmentModel GetByAttachmentID(int id)
+        {
+            return _attachmentDAL.GetByAttachmentID(id);
+        }
+
+        public IEnumerable<AttachmentModel> GetAllByEnrollmentID(int id)
+        {
+            return _attachmentDAL.GetAllByEnrollmentID(id);
+        }
+
+        public void UploadFile(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
         {
             var result = new AttachmentModel();
 
-            if (files != null && files.Any())
+            if (!string.IsNullOrEmpty(PrerequisiteIDs))
             {
-                foreach (var item in files)
+                // Split the comma-separated string into an array of prerequisite IDs
+                var prerequisiteIdArray = PrerequisiteIDs.Split(',');
+
+                // Loop through each file and its corresponding prerequisite ID
+                for (int i = 0; i < files.Count; i++)
                 {
+                    var item = files[i];
+
                     if (item.ContentLength > 0)
                     {
                         using (var reader = new BinaryReader(item.InputStream))
                         {
                             var fileData = reader.ReadBytes(item.ContentLength);
+
+                            // Retrieve the prerequisite ID for the current file
+                            int prerequisiteId = int.Parse(prerequisiteIdArray[i]);
+
                             var attachment = new AttachmentModel()
                             {
                                 FileName = item.FileName,
                                 EnrollmentID = EnrollmentID,
                                 FileData = fileData,
-                                PrerequisiteID = PrerequisiteID,
-                      
+                                PrerequisiteID = prerequisiteId,
                             };
 
                             _attachmentDAL.Add(attachment);
-                            // result = Add(evidence);
                         }
                     }
                 }
             }
 
-           
+
         }
     }
 }

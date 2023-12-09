@@ -4,31 +4,20 @@
     ViewBag.Title = "Index";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Example</title>
-    <!-- Add Bootstrap CSS link -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-       
-        .approve-btn {
-            
-        }
-    </style>
-</head>
-<body>
+<!-- Add Bootstrap CSS link -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 
-    <div class="container mt-5">
-        <h2>Index</h2>
 
-        <p>
-            @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
-        </p>
+<div class="container mt-5">
+    <h2>Index</h2>
 
-        <table class="table table-striped">
+    <p>
+        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+    </p>
+
+    <div class="">
+        
+        <table class="table table-striped mx-auto">
             <thead>
                 <tr>
                     <th>
@@ -43,9 +32,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.LastName)
                     </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.TrainingID)
-                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.TrainingID)
+                        </th>*@
                     <th>
                         @Html.DisplayNameFor(model => model.TrainingName)
                     </th>
@@ -57,6 +46,9 @@
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.EnrollmentStatus)
+                    </th>
+                    <th>
+                        View
                     </th>
                     <th></th>
                 </tr>
@@ -77,9 +69,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.LastName)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TrainingID)
-                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.TrainingID)
+                            </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.TrainingName)
                         </td>
@@ -102,25 +94,53 @@
                                 <span class="badge badge-success">Approved</span>
                             }
                         </td>
+                        <td>
+                            <button type="button" class="btn btn-primary view-attachments-btn" data-toggle="modal" data-target="#attachmentModal" onclick="showAttachments(@item.EnrollmentID)">View Attachments</button>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+</div>
 
-    <!-- Add Bootstrap JS and Popper.js if needed -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-</body>
-</html>
+<!-- Modal to display attachments -->
+<div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registrationModalLabel">View Prerequisite Attachment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Attachments will be displayed here -->
+            <div class="modal-body" id="attachmentModalBody"></div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
 
 @section scripts {
     <script>
-        $(document).ready(function () {
+      
+
             $(".approve-btn").click(function () {
                 var button = $(this);
                 var enrollmentId = button.data("enrollment-id");
+                console.log(enrollmentId)
 
                 $.ajax({
                     url: '/Enrollment/ApproveEnrollment',
@@ -143,6 +163,58 @@
                     }
                 });
             });
-        });
+
+
+
+            function showAttachments(enrollmentId) {
+
+                console.log(enrollmentId)
+                // Make an AJAX request to get attachments by enrollment ID
+                $.ajax({
+                    url: '/Attachment/GetAllAttachmentByEnrollmentID',
+                    type: 'GET',
+                    data: { enrollmentID: parseInt(enrollmentId) },
+                    dataType: "json",
+                    success: function (attachments) {
+
+                        console.log('in success ' + enrollmentId)
+                        // Populate the modal body with attachment data
+                        var modalBody = $('#attachmentModalBody');
+                        modalBody.empty();
+
+                        $.each(attachments, function (index, attachment) {
+                            // Customize this part based on your attachment data structure
+                            var attachmentInfo = attachment.AttachmentID;
+
+                            console.log('in show attach id' + attachment.AttachmentID)
+                            // Add a download button for each attachment
+                            var downloadButton = $('<button class="btn btn-success download-attachment-btn" data-attachment-id="' + attachment.AttachmentID + '">Download</button>');
+
+                            // Append download button and attachment info to modal body
+                            modalBody.append('<p>' + attachmentInfo + '</p>');
+                            modalBody.append(downloadButton);
+
+                            // Attach click event for download button
+                            downloadButton.click(function () {
+                                var attachmentId = $(this).data("attachment-id");
+
+                                // Trigger download when the button is clicked
+                                window.location.href = '/Attachment/DownloadAttachmentByAttachmentID/' + attachmentId;
+                            });
+                        });
+
+                        // Show the modal
+                        $('#attachmentModal').modal('show');
+                    },
+                    error: function (e) {
+                        // Handle error
+                        debugger;
+                        alert('Error fetching attachments.');
+                    }
+                });
+            }
+        
+
+        
     </script>
 }

@@ -44,7 +44,7 @@ namespace MVC.SkillsForce.Controllers
                 this.Session["Email"] = userDetailsWithRoles.Email;
                 this.Session["FirstName"] = userDetailsWithRoles.FirstName;
             }
-            return Json(new { result = IsUserValid, url = Url.Action("ViewTraining", "Enrollment") });
+            return Json(new { result = IsUserValid, url = Url.Action("GetEnrollments", "Enrollment") });
         }
 
         //[HttpPost]

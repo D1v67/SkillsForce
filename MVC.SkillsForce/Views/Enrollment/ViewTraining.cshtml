@@ -234,6 +234,8 @@
                 '<div class="col-4">' +
                 '<div class="input-group">' +
                 '<input type="file" class="form-control fileUploader" id="fileInput' + prerequisite.PrerequisiteID + '" required >' +
+                '<input type="hidden" class="prerequisiteIdInput" value="' + prerequisite.PrerequisiteID + '">' +
+
                 '</div>' +
                 '</div>' +
                 '</div>');
@@ -260,16 +262,27 @@
         //const files = fileInput[0].files;
 
         const formData = new FormData();
-        const fileData = [];
+        const prerequisiteIds = []; // Array to store prerequisite IDs
+
 
         for (const input of fileInputs) {
             var files = input.files;
             for (const element of files) {
                 formData.append('files', element);
+
+                var prerequisiteIdInput = input.parentElement.querySelector('.prerequisiteIdInput');
+                var prerequisiteId = prerequisiteIdInput.value;
+
+                // Append the prerequisite ID to the array
+                prerequisiteIds.push(prerequisiteId);
+
+
             }
         }
         console.log(formData)
         // Append training ID, user ID, and generated enrollment ID to the form data
+        formData.append('PrerequisiteIDs', prerequisiteIds.join(','));
+
         formData.append('TrainingID', parseInt(trainingId));
         formData.append('UserID', parseInt("@HttpContext.Current.Session["UserID"]")); // Replace with the actual user ID
         formData.append('EnrollmentID', parseInt(enrollmentId));
@@ -299,7 +312,7 @@
         //var departmentId = $("#departmentDropdown").val();
         console.log("Insave "+trainingId);
 
-        var userId = 1;
+        var userId = parseInt("@HttpContext.Current.Session["UserID"]");
         console.log(userId)
 
         // Ajax request to send data to the controller

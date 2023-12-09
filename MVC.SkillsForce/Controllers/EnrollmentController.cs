@@ -24,15 +24,15 @@ namespace MVC.SkillsForce.Controllers
         private readonly ITrainingService _trainingService;
         private readonly IPrerequisiteService _prerequisiteService;
         private readonly INotificationService _notificationService;
-        private readonly IUploaderService _uploaderService;
+        private readonly IAttachmentService _attachmentService;
 
-        public EnrollmentController(IEnrollmentService enrollmentService, ITrainingService trainingService, IPrerequisiteService prerequisiteService, INotificationService notificationService, IUploaderService uploaderService)
+        public EnrollmentController(IEnrollmentService enrollmentService, ITrainingService trainingService, IPrerequisiteService prerequisiteService, INotificationService notificationService, IAttachmentService attachmentService)
         {
             _enrollmentService = enrollmentService;
             _trainingService = trainingService;
             _prerequisiteService = prerequisiteService;
             _notificationService = notificationService;
-            _uploaderService = uploaderService;
+            _attachmentService = attachmentService;
         }
 
         //[CustomAuthorization(RolesEnum.Admin)]
@@ -173,12 +173,12 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
-        public  ActionResult UploadFiles(List<HttpPostedFileBase> files, int TrainingID, int UserID, int EnrollmentID)
+        public  ActionResult UploadFiles(List<HttpPostedFileBase> files,  int EnrollmentID, string PrerequisiteIDs)
         {
 
-            _uploaderService.UploadFile(files, TrainingID, UserID, EnrollmentID);
+            _attachmentService.UploadFile(files, EnrollmentID, PrerequisiteIDs);
             // return Json(new { success = false, error = "No files uploaded." });
-            return View();
+            return Json(new { success = true });
         }
 
         //[HttpPost]
