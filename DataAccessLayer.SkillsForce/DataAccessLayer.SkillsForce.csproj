@@ -43,10 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DAL\AccounDAL.cs" />
+    <Compile Include="DAL\AttachmentDAL.cs" />
     <Compile Include="DAL\Common\DataAccessLayer.cs" />
     <Compile Include="DAL\Common\DBCommand.cs" />
     <Compile Include="DAL\DepartmentDAL.cs" />
     <Compile Include="DAL\EnrollmentDAL.cs" />
+    <Compile Include="Interface\IAttachmentDAL.cs" />
     <Compile Include="DAL\PrerequisiteDAL.cs" />
     <Compile Include="DAL\TrainingDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />

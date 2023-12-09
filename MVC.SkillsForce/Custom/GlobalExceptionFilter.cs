@@ -9,15 +9,23 @@ namespace MVC.SkillsForce.Custom
 {
     public class GlobalExceptionFilter : IExceptionFilter
     {
-        private readonly ILogger _logger;
-        public GlobalExceptionFilter(ILogger logger)
+        private readonly ILogger Logger;
+        public GlobalExceptionFilter(ILogger _logger)
         {
-            _logger = logger;
+            this.Logger = _logger;
         }
-
         public void OnException(ExceptionContext filterContext)
         {
-           // _logger.LogError(filterContext.Exception);
+            //Logger.LogError(filterContext.Exception);
+
+            //filterContext.ExceptionHandled = true;
+            //filterContext.Result = new ViewResult()
+            //{
+            //    ViewName = "Error",
+            //    TempData = filterContext.Controller.TempData
+            //};
+
+
         }
     }
 }

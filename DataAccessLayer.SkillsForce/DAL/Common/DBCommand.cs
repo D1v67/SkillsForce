@@ -56,6 +56,28 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         }
 
+        public int InsertDataAndReturnIdentity(string query, List<SqlParameter> parameters)
+        {
+            int generatedId = 0;
+            DataAccessLayer dal = new DataAccessLayer();
+
+            using (SqlCommand cmd = new SqlCommand(query + "; SELECT SCOPE_IDENTITY();", dal.connection))
+            {
+                cmd.CommandType = CommandType.Text;
+                if (parameters != null)
+                {
+                    parameters.ForEach(parameter =>
+                    {
+                        cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                    });
+                }
+                generatedId = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+            dal.CloseConnection();
+
+            return generatedId;
+        }
+
         public DataTable GetDataWithConditions(string query, List<SqlParameter> parameters)
         {
             DataAccessLayer dal = new DataAccessLayer();

@@ -48,6 +48,7 @@ namespace Common.SkillsForce.AppLogger
             fullMessage += Environment.NewLine + $"Inner Exception: {ex.InnerException}";
             fullMessage += Environment.NewLine + $"Stack Trace: {ex.StackTrace}";
             fullMessage += Environment.NewLine + "--------------------------------------------------";
+
             Log(fullMessage);
         }
 

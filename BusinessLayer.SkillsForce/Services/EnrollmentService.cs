@@ -19,9 +19,9 @@ namespace BusinessLayer.SkillsForce.Services
         {
             _enrollmentDAL = enrollmentDAL;
         }
-        public void Add(EnrollmentViewModel enrollment)
+        public int Add(EnrollmentViewModel enrollment)
         {
-            _enrollmentDAL.Add(enrollment);
+           return _enrollmentDAL.Add(enrollment);
         }
 
         public void ApproveEnrollment(int enrollmentId)

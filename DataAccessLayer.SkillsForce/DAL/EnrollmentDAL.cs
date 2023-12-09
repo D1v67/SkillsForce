@@ -20,16 +20,41 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand = dbCommand;
         }
 
-        public void Add(EnrollmentViewModel enrollment)
+
+        public int Add(EnrollmentViewModel enrollment)
         {
-            const string INSERT_ENROLLMENT_QUERY = @" INSERT INTO [dbo].[Enrollment] ([UserID],[TrainingID]) VALUES( @UserID, @TrainingID) ";
+            const string INSERT_ENROLLMENT_QUERY = @"
+                INSERT INTO [dbo].[Enrollment] ([UserID], [TrainingID]) 
+                OUTPUT INSERTED.EnrollmentID
+                VALUES (@UserID, @TrainingID)
+            ";
 
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@UserID", enrollment.UserID));
-            parameters.Add(new SqlParameter("@TrainingID", enrollment.TrainingID));
+            List<SqlParameter> parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@UserID", enrollment.UserID),
+                new SqlParameter("@TrainingID", enrollment.TrainingID)
+            };
 
-            _dbCommand.InsertUpdateData(INSERT_ENROLLMENT_QUERY, parameters);
+                    // Use the InsertUpdateData method to insert data and get the generated ID
+             int generatedEnrollmentId = _dbCommand.InsertDataAndReturnIdentity(INSERT_ENROLLMENT_QUERY, parameters);
+
+                    // Return the generated enrollment ID
+              return generatedEnrollmentId;
         }
+
+
+
+
+        //public void Add(EnrollmentViewModel enrollment)
+        //{
+        //    const string INSERT_ENROLLMENT_QUERY = @" INSERT INTO [dbo].[Enrollment] ([UserID],[TrainingID]) VALUES( @UserID, @TrainingID) ";
+
+        //    List<SqlParameter> parameters = new List<SqlParameter>();
+        //    parameters.Add(new SqlParameter("@UserID", enrollment.UserID));
+        //    parameters.Add(new SqlParameter("@TrainingID", enrollment.TrainingID));
+
+        //    _dbCommand.InsertUpdateData(INSERT_ENROLLMENT_QUERY, parameters);
+        //}
 
         public void Delete(int id)
         {

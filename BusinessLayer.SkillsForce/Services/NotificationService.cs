@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 namespace BusinessLayer.SkillsForce.Services
 {
 
-        public class NotificationService : INotificationService
+    public class NotificationService : INotificationService
+    {
+        public string SendNotification(EnrollmentNotificationViewModel enrollment)
         {
-            public string SendNotification(EnrollmentNotificationViewModel enrollment)
-            {
-                // Update the IsApproved to true / false based on the clicks
-                string result = enrollment.EnrollmentStatus;
-                // Build the message body
-                string htmlBody = $@"
+            // Update the IsApproved to true / false based on the clicks
+            string result = enrollment.EnrollmentStatus;
+            // Build the message body
+            string htmlBody = $@"
                                     <html>
                                     <head>
                                     <title>HTML Email</title>
@@ -33,18 +33,18 @@ namespace BusinessLayer.SkillsForce.Services
                                     </body>
                                     </html>
                                                 ";
-                string subject = $"Training Request - {result}";
-                try
-                {
-                    string success = EmailSender.SendEmail(subject, htmlBody, enrollment.AppUserEmail);
-                    return success;
-                }
-                catch (Exception ex)
-                {
-                    return ex.ToString();
-                }
+            string subject = $"Training Request - {result}";
+            try
+            {
+                string success = EmailSender.SendEmail(subject, htmlBody, enrollment.AppUserEmail);
+                return success;
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
             }
         }
     }
+}
 
 

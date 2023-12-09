@@ -50,6 +50,9 @@ namespace MVC.SkillsForce
 
             container.RegisterType<INotificationService, NotificationService>();
 
+            container.RegisterType<IUploaderService, UploaderService>();
+            container.RegisterType<IAttachmentDAL, AttachmentDAL>();
+
 
 
 

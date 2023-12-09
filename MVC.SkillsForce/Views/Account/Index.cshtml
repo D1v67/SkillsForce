@@ -1,9 +1,7 @@
 ﻿
 @{
-        Layout = null;
+    Layout = null;
 }
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,24 +13,19 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
-
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-
     <!-- jQuery -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-
-    <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
-
+    @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>*@
 
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <!-- Toastr JS -->
@@ -42,25 +35,38 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            //sessionStorage.removeItem('toastr');
+            //localStorage.removeItem('toastr');
+
             $("#loginForm").submit(function (e) {
                 e.preventDefault();
+
+
+                // Reset previous error styles
+                // Reset previous error styles
+                $(".error-message").remove();
+                $(".form-control").removeClass("is-invalid");
 
                 var emailAddress = $("#emailAddress").val();
                 var password = $("#password").val();
 
-                $(".error-message").remove(); // Remove existing error messages
-
+                // Validate Email Address
                 if (!emailAddress) {
-                    $("#emailAddress").after('<div class="text-danger error-message">Email is required.</div>');
+                    $("#emailAddress").addClass("is-invalid");
+                    $("#emailAddress").after('<div class="invalid-feedback error-message">Email is required.</div>');
                 }
 
+                // Validate Password
                 if (!password) {
-                    $("#password").after('<div class="text-danger error-message">Password is required.</div>');
+                    $("#password").addClass("is-invalid");
+                    $("#password").after('<div class="invalid-feedback error-message">Password is required.</div>');
                 }
 
+                // Check if any field is empty
                 if (!emailAddress || !password) {
                     return;
                 }
+
 
                 var authObj = { Email: emailAddress, Password: password };
 
@@ -74,7 +80,9 @@
                             window.location = response.url;
                             //console.log("Authentication succeeded. Redirecting to relevant page...");
                             toastr.success("Authentication succeeded. Redirecting to relevant page...");
-
+                            setTimeout(function () {
+                                window.location.href = response.url;
+                            }, 2000);
                             //console.log(response.url);
                         } else {
                             toastr.error('Unable to authenticate user.');
@@ -98,23 +106,38 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card">
+                <div class="card shadow">
                     <div class="card-header">
+                        <svg class="mx-auto d-flex justify-content-center" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                        </svg>
                         <h3 class="text-center">Login</h3>
                     </div>
+
                     <div class="card-body">
                         <!-- Form -->
                         <form id="loginForm">
-                            <div class="form-group">
-                                <label for="emailAddress">Email Address</label>
-                                <input type="text" class="form-control" id="emailAddress" placeholder="Enter your Email Address"
-                                       required>
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <label for="emailAddress" class="input-group-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
+                                        </svg>
+                                    </label>
+                                </div>
+                                <input type="text" class="form-control" id="emailAddress" placeholder="Enter your Email Address">
                             </div>
 
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password"
-                                       placeholder="Enter your password" required>
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <label for="password" class="input-group-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
+                                        </svg>
+                                    </label>
+                                </div>
+                                <input type="password" class="form-control" id="password" placeholder="Enter your password">
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-block">Login</button>
@@ -133,4 +156,316 @@
 </body>
 </html>
 
-@Scripts.Render("~/bundles/jquery")
+
+<!--@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login Page</title>
+
+    <!-- Bootstrap CSS -->
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">-->
+    <!-- Toastr CSS -->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">-->
+    <!-- jQuery -->
+    <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>-->
+    @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>*@
+
+    @*<script src="~/Scripts/jquery-3.7.1.min.js"></script>*@
+    <!-- Toastr JS -->
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //sessionStorage.removeItem('toastr');
+            //localStorage.removeItem('toastr');
+
+            $("#loginForm").submit(function (e) {
+                e.preventDefault();
+
+
+                // Reset previous error styles
+                // Reset previous error styles
+                $(".error-message").remove();
+                $(".form-control").removeClass("is-invalid");
+
+                var emailAddress = $("#emailAddress").val();
+                var password = $("#password").val();
+
+                // Validate Email Address
+                if (!emailAddress) {
+                    $("#emailAddress").addClass("is-invalid");
+                    $("#emailAddress").after('<div class="invalid-feedback error-message">Email is required.</div>');
+                }
+
+                // Validate Password
+                if (!password) {
+                    $("#password").addClass("is-invalid");
+                    $("#password").after('<div class="invalid-feedback error-message">Password is required.</div>');
+                }
+
+                // Check if any field is empty
+                if (!emailAddress || !password) {
+                    return;
+                }
+
+
+                var authObj = { Email: emailAddress, Password: password };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Account/Authenticate",
+                    data: authObj,
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.result) {
+                            window.location = response.url;
+                            //console.log("Authentication succeeded. Redirecting to relevant page...");
+                            toastr.success("Authentication succeeded. Redirecting to relevant page...");
+                            setTimeout(function () {
+                                window.location.href = response.url;
+                            }, 2000);
+                            //console.log(response.url);
+                        } else {
+                            toastr.error('Unable to authenticate user.');
+                        }
+                    },
+                    error: function (error) {
+                        console.log("Error:", error);
+                        toastr.error('Something went wrong. Please try again later.');
+                    }
+                });
+            });
+
+            $("#btnRegister").click(function () {
+                window.location = '/Account/Register';
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <svg class="mx-auto d-flex justify-content-center" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                        </svg>
+                        <h3 class="text-center">Login</h3>
+                    </div>
+
+                    <div class="card-body">-->
+                        <!-- Form -->
+                        <!--<form id="loginForm">
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <label for="emailAddress" class="input-group-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
+                                        </svg>
+                                    </label>
+                                </div>
+                                <input type="text" class="form-control" id="emailAddress" placeholder="Enter your Email Address">
+                            </div>
+
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <label for="password" class="input-group-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
+                                        </svg>
+                                    </label>
+                                </div>
+                                <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        </form>-->
+                        <!-- End Form -->
+                    <!--</div>
+                    <div class="card-footer text-center">
+                        <p>Don't have an account? </p>
+                        <button type="button" class="btn btn-success" id="btnRegister">Register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>-->
+<!--@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login Page</title>
+
+    <!-- Bootstrap CSS -->
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">-->
+    <!-- Toastr CSS -->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">-->
+    <!-- jQuery -->
+    <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>-->
+    @*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>*@
+
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>-->
+    <!-- Toastr JS -->
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //sessionStorage.removeItem('toastr');
+            //localStorage.removeItem('toastr');
+
+            $("#loginForm").submit(function (e) {
+                e.preventDefault();
+
+
+                // Reset previous error styles
+                // Reset previous error styles
+                $(".error-message").remove();
+                $(".form-control").removeClass("is-invalid");
+
+                var emailAddress = $("#emailAddress").val();
+                var password = $("#password").val();
+
+                // Validate Email Address
+                if (!emailAddress) {
+                    $("#emailAddress").addClass("is-invalid");
+                    $("#emailAddress").after('<div class="invalid-feedback error-message">Email is required.</div>');
+                }
+
+                // Validate Password
+                if (!password) {
+                    $("#password").addClass("is-invalid");
+                    $("#password").after('<div class="invalid-feedback error-message">Password is required.</div>');
+                }
+
+                // Check if any field is empty
+                if (!emailAddress || !password) {
+                    return;
+                }
+
+
+                var authObj = { Email: emailAddress, Password: password };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Account/Authenticate",
+                    data: authObj,
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.result) {
+                            window.location = response.url;
+                            //console.log("Authentication succeeded. Redirecting to relevant page...");
+                            toastr.success("Authentication succeeded. Redirecting to relevant page...");
+                            setTimeout(function () {
+                                window.location.href = response.url;
+                            }, 2000);
+                            //console.log(response.url);
+                        } else {
+                            toastr.error('Unable to authenticate user.');
+                        }
+                    },
+                    error: function (error) {
+                        console.log("Error:", error);
+                        toastr.error('Something went wrong. Please try again later.');
+                    }
+                });
+            });
+
+            $("#btnRegister").click(function () {
+                window.location = '/Account/Register';
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <svg class="mx-auto d-flex justify-content-center" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                        </svg>
+                        <h3 class="text-center">Login</h3>
+                    </div>
+
+                    <div class="card-body">-->
+                        <!-- Form -->
+                        <!--<form id="loginForm">
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <label for="emailAddress" class="input-group-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
+                                        </svg>
+                                    </label>
+                                </div>
+                                <input type="text" class="form-control" id="emailAddress" placeholder="Enter your Email Address">
+                            </div>
+
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <label for="password" class="input-group-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
+                                        </svg>
+                                    </label>
+                                </div>
+                                <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        </form>-->
+                        <!-- End Form -->
+                    <!--</div>
+                    <div class="card-footer text-center">
+                        <p>Don't have an account? </p>
+                        <button type="button" class="btn btn-success" id="btnRegister">Register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>-->

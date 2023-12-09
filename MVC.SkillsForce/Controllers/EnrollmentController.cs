@@ -9,29 +9,36 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Policy;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
 
 namespace MVC.SkillsForce.Controllers
 {
+    //[HandleError]
     public class EnrollmentController : Controller
     {
         private readonly IEnrollmentService _enrollmentService;
         private readonly ITrainingService _trainingService;
         private readonly IPrerequisiteService _prerequisiteService;
         private readonly INotificationService _notificationService;
-        public EnrollmentController(IEnrollmentService enrollmentService, ITrainingService trainingService, IPrerequisiteService prerequisiteService, INotificationService notificationService)
+        private readonly IUploaderService _uploaderService;
+
+        public EnrollmentController(IEnrollmentService enrollmentService, ITrainingService trainingService, IPrerequisiteService prerequisiteService, INotificationService notificationService, IUploaderService uploaderService)
         {
             _enrollmentService = enrollmentService;
             _trainingService = trainingService;
             _prerequisiteService = prerequisiteService;
             _notificationService = notificationService;
+            _uploaderService = uploaderService;
         }
 
-        [CustomAuthorization(RolesEnum.Admin)]
+        //[CustomAuthorization(RolesEnum.Admin)]
         public ActionResult Index()
         {
+            //throw new Exception();
             IEnumerable<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
             try
             {
@@ -117,9 +124,10 @@ namespace MVC.SkillsForce.Controllers
             //EnrollmentViewModel enrollment = model;
             try
             {
-                _enrollmentService.Add(model);
+                int generatedEnrollmentId = _enrollmentService.Add(model);
                 // Console.WriteLine("Enrolled");
-                return Json(new { success = true, message = "Enrollment successful!" });
+                //return Json(new { success = true, message = "Enrollment successful!" });
+                return Json(new { success = true, message = "Enrollment successful!", EnrollmentID = generatedEnrollmentId });
             }
             catch (Exception ex)
             {
@@ -165,33 +173,75 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
-        public ActionResult Upload(HttpPostedFileBase file)
+        public  ActionResult UploadFiles(List<HttpPostedFileBase> files, int TrainingID, int UserID, int EnrollmentID)
         {
-            if (file != null && file.ContentLength > 0)
-                try
-                {
-                    string path = Path.Combine(Server.MapPath("~/App_Data/Input"), Path.GetFileName(file.FileName));
 
-                    //string[] lists = System.IO.File.ReadAllLines(Server.MapPath(path));
-
-                    file.SaveAs(path);
-                    ViewBag.Message = "File uploaded successfully";
-                }
-                catch (Exception ex)
-                {
-                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
-                }
-            else
-            {
-                ViewBag.Message = "You have not specified a file or file is empty.";
-            }
-
-            //var items = FileManipulation.GetFiles(Server.MapPath("~/App_Data/Input"));
-
-             return Json(new { success = true});
-
-
+            _uploaderService.UploadFile(files, TrainingID, UserID, EnrollmentID);
+            // return Json(new { success = false, error = "No files uploaded." });
+            return View();
         }
+
+        //[HttpPost]
+        //public async Task<ActionResult> UploadFiles()
+        //{
+        //    try
+        //    {
+        //        if (Request.Files.Count > 0)
+        //        {
+        //            List<string> fileNames = new List<string>();
+
+        //            // Process each uploaded file
+        //            foreach (string fileKey in Request.Files)
+        //            {
+        //                HttpPostedFileBase file = Request.Files[fileKey];
+
+        //                // Do something with the file (e.g., save it to the server)
+        //                // For example: 
+        //                // file.SaveAs(Path.Combine(Server.MapPath("~/Uploads"), file.FileName));
+
+        //                fileNames.Add(file.FileName);
+        //            }
+
+        //            return Json(new { success = true, message = "Files uploaded successfully", files = fileNames });
+        //        }
+
+        //        return Json(new { success = false, error = "No files uploaded." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, error = $"Error: {ex.Message}" });
+        //    }
+        //}
+
+
+
+        //[HttpPost]
+        //public ActionResult Upload(HttpPostedFileBase file)
+        //{
+        //    if (file != null && file.ContentLength > 0)
+        //        try
+        //        {
+        //            string path = Path.Combine(Server.MapPath("~/App_Data/Input"), Path.GetFileName(file.FileName));
+
+        //            //string[] lists = System.IO.File.ReadAllLines(Server.MapPath(path));
+
+        //            file.SaveAs(path);
+        //            ViewBag.Message = "File uploaded successfully";
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            ViewBag.Message = "ERROR:" + ex.Message.ToString();
+        //        }
+        //    else
+        //    {
+        //        ViewBag.Message = "You have not specified a file or file is empty.";
+        //    }
+
+        //    //var items = FileManipulation.GetFiles(Server.MapPath("~/App_Data/Input"));
+
+        //     return Json(new { success = true});
+        //}
+
         public ActionResult ModalView()
         {
  

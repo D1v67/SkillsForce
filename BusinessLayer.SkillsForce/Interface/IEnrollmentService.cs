@@ -12,7 +12,7 @@ namespace BusinessLayer.SkillsForce.Interface
     {
         IEnumerable<EnrollmentViewModel> GetAll();
         EnrollmentViewModel GetByID(int id);
-        void Add(EnrollmentViewModel enrollment);
+        int Add(EnrollmentViewModel enrollment);
         void Delete(int id);
         void Update(EnrollmentViewModel enrollment);
         IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails();
