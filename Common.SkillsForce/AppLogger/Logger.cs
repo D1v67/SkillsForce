@@ -52,6 +52,5 @@ namespace Common.SkillsForce.AppLogger
             Log(fullMessage);
         }
 
-
     }
 }

@@ -176,6 +176,7 @@
     <Content Include="Content\jquery-ui.css" />
     <Content Include="Content\jquery-ui.structure.css" />
     <Content Include="Content\jquery-ui.theme.css" />
+    <Content Include="Content\MyImages\login_bg.jpg" />
     <Content Include="ErrorLog\log.txt" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />

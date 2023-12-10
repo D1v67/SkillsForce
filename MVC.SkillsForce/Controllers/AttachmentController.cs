@@ -61,7 +61,7 @@ namespace MVC.SkillsForce.Controllers
             var result = _attachmentService.GetByAttachmentID(id);
 
             byte[] binaryData = result.FileData;
-            string filename = "dd";
+            string filename = result.AttachmentURL;
             //// enhancement
             //// - get the extension and look up for the appropriate mime type
             string contentType = "application/pdf";

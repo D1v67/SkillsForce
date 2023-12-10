@@ -1,240 +1,388 @@
 ﻿@{
     ViewBag.Title = "Register";
+    Layout = null;
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration</title>
+
+<!-- Bootstrap CSS -->
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous">-->
+<!-- Toastr CSS -->
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">-->
+<!-- jQuery -->
+<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>-->
+<!-- Bootstrap JS and dependencies -->
+<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>-->
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>*@
+@*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>*@
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>*@
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
+<!-- Your custom script -->
+<script type="text/javascript">
+    $(document).ready(function () {
 
-    <!-- Toastr CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict'
 
-    <!-- jQuery -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
 
 
-    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
-    <!-- Toastr JS -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <!-- Your custom script -->
-    <script type="text/javascript">
-        $(document).ready(function () {
 
-            loadDepartments();
+        loadDepartments();
 
-            console.log('here1');
+        console.log('here1');
 
-            loadManagers();
+        loadManagers();
 
-            console.log('heremanagers');
+        console.log('heremanagers');
 
-            $("#registrationForm").submit(function (e) {
-                e.preventDefault();
+        $("#registrationForm").submit(function (e) {
+            e.preventDefault();
 
-                var password = $('#Password').val();
-                var confirmPassword = $('#ConfirmPassword').val();
+            var password = $('#Password').val();
+            var confirmPassword = $('#ConfirmPassword').val();
 
-                if (password !== confirmPassword) {
-                    toastr.error("Passwords do not match.");
-                    return;
-                }
+            // Remove existing validation classes
+            $('#Password, #ConfirmPassword').removeClass('is-valid is-invalid');
 
-                var selectedDepartmentID = $(this).val();
-                var formData = {
+            if (password === '') {
+                $('#Password').addClass('is-invalid');
+            }
+
+            if (confirmPassword === '') {
+                $('#ConfirmPassword').addClass('is-invalid');
+            }
+
+            if (password !== confirmPassword) {
+                $('#passwordMismatchError').text('Passwords do not match.');
+                $('#Password, #ConfirmPassword').addClass('is-invalid');
+                toastr.error("Passwords do not match.");
+                return;
+            } else {
+                $('#passwordMismatchError').text('');
+            }
+            var selectedDepartmentID = $(this).val();
+            var formData = {
+                FirstName: $('#FirstName').val(),
+                LastName: $('#LastName').val(),
+                Email: $('#Email').val(),
+                NIC: $('#NIC').val(),
+                MobileNumber: $('#MobileNumber').val(),
+
+                DepartmentID: parseInt($("#department").val()),
+                ManagerID: parseInt($("#manager").val()),
+
+                Password: password,
+            };
+
+            console.log(formData);
+            console.log('here2');
+
+            $.ajax({
+                type: "POST",
+                url: "/Account/Register",
+                data: {
                     FirstName: $('#FirstName').val(),
                     LastName: $('#LastName').val(),
                     Email: $('#Email').val(),
                     NIC: $('#NIC').val(),
                     MobileNumber: $('#MobileNumber').val(),
-
                     DepartmentID: parseInt($("#department").val()),
                     ManagerID: parseInt($("#manager").val()),
+                    Password: password
+                },
 
-                    Password: password,
-                };
+                success: function (response) {
 
-                console.log(formData);
-                console.log('here2');
+                    console.log(response);
+                    toastr.success("Authentication succeeded. Redirecting to relevant page...");
+                    setTimeout(function () {
+                        window.location.href = response.url;
+                    }, 500);
+                    $('#registrationSuccessDiv').show();
+                    //window.location = '/User/Index';
 
-                $.ajax({
-                    type: "POST",
-                    url: "/Account/Register",
-                    data: {
-                        FirstName: $('#FirstName').val(),
-                        LastName: $('#LastName').val(),
-                        Email: $('#Email').val(),
-                        NIC: $('#NIC').val(),
-                        MobileNumber: $('#MobileNumber').val(),
-                        DepartmentID: parseInt($("#department").val()),
-                        ManagerID: parseInt($("#manager").val()),
-                        Password: password
-                    },
+                },
 
-                    success: function (response) {
-
-                        console.log(response);
-                        window.location = response.url;
-                        //window.location = '/User/Index';
-
-                    },
-
-                    error: function (error) {
-                        console.log("Error:", error);
-                        // toastr.error('Something went wrong. Please try again later.');
-                    }
-                });
+                error: function (error) {
+                    console.log("Error:", error);
+                    // toastr.error('Something went wrong. Please try again later.');
+                }
             });
         });
+    });
 
-        function loadManagers() {
+    function loadManagers() {
 
-            $.ajax({
-                type: "GET",
-                url: "/Account/GetManagers",
-                dataType: "json",
-                success: function (response) {
-                    // Populate the dropdown with department options
-                    var departmentDropdown = $("#manager");
-                    departmentDropdown.empty();
+        $.ajax({
+            type: "GET",
+            url: "/Account/GetManagers",
+            dataType: "json",
+            success: function (response) {
+                // Populate the dropdown with department options
+                var departmentDropdown = $("#manager");
+                departmentDropdown.empty();
 
-                    departmentDropdown.append('<option value="" selected disabled>Select Manager</option>');
+                departmentDropdown.append('<option value="" selected disabled>Select Manager</option>');
 
-                    response.forEach(function (manager) {
-                        var option = $("<option>")
-                            .attr("value", manager.UserID)
-                            .text(manager.FirstName + ' ' + manager.LastName);
-                        departmentDropdown.append(option);
-                    });
-                },
-                error: function (error) {
-                    toastr.error('Failed to load managers. Please try again.');
-                }
-            });
+                response.forEach(function (manager) {
+                    var option = $("<option>")
+                        .attr("value", manager.UserID)
+                        .text(manager.FirstName + ' ' + manager.LastName);
+                    departmentDropdown.append(option);
+                });
+            },
+            error: function (error) {
+                toastr.error('Failed to load managers. Please try again.');
+            }
+        });
+    }
+
+
+    function loadDepartments() {
+        // Simulate an AJAX call to retrieve department data
+        $.ajax({
+            type: "GET",
+            url: "/Account/GetDepartments", // Replace with your actual controller and action name
+            dataType: "json",
+            success: function (response) {
+                // Populate the dropdown with department options
+                var departmentDropdown = $("#department");
+                departmentDropdown.empty();
+
+                departmentDropdown.append('<option value="" selected disabled>Select Department</option>');
+
+                response.forEach(function (department) {
+                    var option = $("<option>")
+                        .attr("value", department.DepartmentID)
+                        .text(department.DepartmentName);
+                    departmentDropdown.append(option);
+                });
+            },
+            error: function (error) {
+                toastr.error('Failed to load departments. Please try again.');
+            }
+        });
+
+
+    }
+
+
+    $('#NIC').on('input', function () {
+        validateNIC();
+    });
+
+    $('#MobileNumber').on('input', function () {
+        validateMobileNumber();
+    });
+
+    $('#Email').on('input', function () {
+        validateEmail();
+    });
+
+    $('#Password').on('input', function () {
+        validatePassword();
+    });
+
+
+
+    function validateNIC() {
+        var nicInput = $('#NIC').val();
+        var nicPattern = /^[0-9]{9}[vVxX]$/;
+
+        if (!nicPattern.test(nicInput)) {
+            $('#NIC').addClass('is-invalid');
+            $('#NIC').removeClass('is-valid');
+            $('#NIC').next('.invalid-feedback').text('Please enter a valid NIC (e.g., 123456789V).');
+        } else {
+            $('#NIC').removeClass('is-invalid');
+            $('#NIC').addClass('is-valid');
+            $('#NIC').next('.invalid-feedback').text('');
         }
+    }
 
+    function validateMobileNumber() {
+        var mobileNumberInput = $('#MobileNumber').val();
+        var mobileNumberPattern = /^[0-9]{10}$/;
 
-        function loadDepartments() {
-            // Simulate an AJAX call to retrieve department data
-            $.ajax({
-                type: "GET",
-                url: "/Account/GetDepartments", // Replace with your actual controller and action name
-                dataType: "json",
-                success: function (response) {
-                    // Populate the dropdown with department options
-                    var departmentDropdown = $("#department");
-                    departmentDropdown.empty();
-
-                    departmentDropdown.append('<option value="" selected disabled>Select Department</option>');
-
-                    response.forEach(function (department) {
-                        var option = $("<option>")
-                            .attr("value", department.DepartmentID)
-                            .text(department.DepartmentName);
-                        departmentDropdown.append(option);
-                    });
-                },
-                error: function (error) {
-                    toastr.error('Failed to load departments. Please try again.');
-                }
-            });
-
+        if (!mobileNumberPattern.test(mobileNumberInput)) {
+            $('#MobileNumber').addClass('is-invalid');
+            $('#MobileNumber').removeClass('is-valid');
+            $('#MobileNumber').next('.invalid-feedback').text('Please enter a valid 10-digit Mobile Number.');
+        } else {
+            $('#MobileNumber').removeClass('is-invalid');
+            $('#MobileNumber').addClass('is-valid');
+            $('#MobileNumber').next('.invalid-feedback').text('');
         }
-    </script>
+    }
+</script>
 
-</head>
-<body>
 
-    <div class="container">
-        <div class="card mx-auto mt-5"  style="max-width: 600px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" >
-            <div class="card-body">
-                <h2 class="card-title text-center mb-4">User Registration</h2>
 
-                <form id="registrationForm">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="FirstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="FirstName" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="LastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="LastName" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="Email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="Email" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="NIC" class="form-label">NIC</label>
-                                <input type="text" class="form-control" id="NIC" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="MobileNumber" class="form-label">Mobile Number</label>
-                                <input type="text" class="form-control" id="MobileNumber" required>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="department">Select your Department:</label>
-                                <select class="form-control" id="department" name="department">
-                                    <option value="" selected disabled>Select Department</option>
-                                    <!-- populated via AJAX -->
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="manager">Select your Manager:</label>
-                                <select class="form-control" id="manager" name="manager">
-                                    <option value="" selected disabled>Select Manager</option>
-                                    <!-- populated via AJAX -->
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="Password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="Password" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="ConfirmPassword" class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control" id="ConfirmPassword" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary" id="btnRegister">Register</button>
-                    </div>
-                </form>
+<div class="container">
+    <div class="card mx-auto mt-5" style="max-width: 600px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div class="card-body">
+            <div class="bg-primary text-white p-3 mb-3 rounded">
+                <h2 class="card-title text-center mb-0">Welcome to SkillsForce</h2>
             </div>
+            <h2 class="card-title text-center mb-4">Register User</h2>
+
+            <div id="registrationSuccessDiv" style="display: none;">
+                <div class="alert alert-success" role="alert">
+                    Registration successful! You can now log in.
+                </div>
+            </div>
+
+            <form id="registrationForm" class="needs-validation" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="FirstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="FirstName" required>
+                            <div class="invalid-feedback">
+                                Please enter your First Name
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="LastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="LastName" required>
+                            <div class="invalid-feedback">
+                                Please enter your Last Name
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="Email" required>
+                            <div class="invalid-feedback">
+                                Please enter your Email Address
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="NIC" class="form-label">NIC</label>
+                            <input type="text" class="form-control" id="NIC" required>
+                            <div class="invalid-feedback">
+                                Please enter your NIC
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="MobileNumber" class="form-label">Mobile Number</label>
+                            <input type="text" class="form-control" id="MobileNumber" pattern="^[0-9]{10}$" required>
+                            <div class="invalid-feedback">
+                                Please enter your Mbile
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="department">Select your Department:</label>
+                            <select class="form-control" id="department" name="department" required>
+                                <option value="" selected disabled>Select Department</option>
+                                <!-- populated via AJAX -->
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select dEPT
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="manager">Select your Manager:</label>
+                            <select class="form-control" id="manager" name="manager" required>
+                                <option value="" selected disabled>Select Manager</option>
+                                <!-- populated via AJAX -->
+                            </select>
+                            <div class="invalid-feedback">
+                                Please SELECT MANAGER
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="Password" required>
+                            <div class="invalid-feedback">
+                                Please enter pass
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ConfirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="ConfirmPassword" required>
+                            <div class="invalid-feedback">
+                                Please confirm pass
+                            </div>
+                            <div id="passwordMismatchError" class="text-danger"></div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="termsCheck" required>
+                        <label class="form-check-label" for="termsCheck">
+                            Agree to <a href="#">Terms and Conditions</a>
+                        </label>
+                        <div class="invalid-feedback">
+                            You must agree to the Terms and Conditions.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary" id="btnRegister">Register</button>
+                </div>
+                <div class="text-center">
+
+                    <p class="mt-3">Already have an account? <a href="/Account/Index">Login</a></p>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-</body>
-</html>
+
 @Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")

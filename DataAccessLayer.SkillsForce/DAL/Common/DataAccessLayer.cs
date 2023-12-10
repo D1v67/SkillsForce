@@ -11,11 +11,8 @@ namespace DataAccessLayer.SkillsForce.DAL
     public class DataAccessLayer
     {
         //public const string connectionstring = @"server=localhost;database=EmployeeTrainingDB;uid=wbpoc;pwd=sql@tfs2008";
-
         public string connectionstring = ConfigurationManager.ConnectionStrings["DefaultConnectionString"].ConnectionString;
-
         public SqlConnection connection;
-
 
         public DataAccessLayer()
         {
@@ -46,6 +43,5 @@ namespace DataAccessLayer.SkillsForce.DAL
                 connection.Dispose();
             }
         }
-
     }
 }

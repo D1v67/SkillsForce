@@ -44,7 +44,7 @@ namespace MVC.SkillsForce.Controllers
                 this.Session["Email"] = userDetailsWithRoles.Email;
                 this.Session["FirstName"] = userDetailsWithRoles.FirstName;
             }
-            return Json(new { result = IsUserValid, url = Url.Action("GetEnrollments", "Enrollment") });
+            return Json(new { result = IsUserValid, url = Url.Action("Index", "Home") });
         }
 
         //[HttpPost]
@@ -63,7 +63,7 @@ namespace MVC.SkillsForce.Controllers
             RegisterViewModel registerViewModel = model;
             _loginService.RegisterUser(registerViewModel);
 
-            return Json(new { url = Url.Action("Index", "User") });
+            return Json(new { url = Url.Action("Index", "Home") });
         }
 
         public ActionResult Logout()

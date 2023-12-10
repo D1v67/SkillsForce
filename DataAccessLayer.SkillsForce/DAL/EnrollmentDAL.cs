@@ -20,41 +20,18 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand = dbCommand;
         }
 
-
         public int Add(EnrollmentViewModel enrollment)
         {
-            const string INSERT_ENROLLMENT_QUERY = @"
-                INSERT INTO [dbo].[Enrollment] ([UserID], [TrainingID]) 
-                OUTPUT INSERTED.EnrollmentID
-                VALUES (@UserID, @TrainingID)
-            ";
+            const string INSERT_ENROLLMENT_QUERY = @"INSERT INTO [dbo].[Enrollment] ([UserID], [TrainingID]) OUTPUT INSERTED.EnrollmentID VALUES (@UserID, @TrainingID)";
 
             List<SqlParameter> parameters = new List<SqlParameter>
             {
                 new SqlParameter("@UserID", enrollment.UserID),
                 new SqlParameter("@TrainingID", enrollment.TrainingID)
             };
-
-                    // Use the InsertUpdateData method to insert data and get the generated ID
-             int generatedEnrollmentId = _dbCommand.InsertDataAndReturnIdentity(INSERT_ENROLLMENT_QUERY, parameters);
-
-                    // Return the generated enrollment ID
-              return generatedEnrollmentId;
+            int generatedEnrollmentId = _dbCommand.InsertDataAndReturnIdentity(INSERT_ENROLLMENT_QUERY, parameters);
+            return generatedEnrollmentId;
         }
-
-
-
-
-        //public void Add(EnrollmentViewModel enrollment)
-        //{
-        //    const string INSERT_ENROLLMENT_QUERY = @" INSERT INTO [dbo].[Enrollment] ([UserID],[TrainingID]) VALUES( @UserID, @TrainingID) ";
-
-        //    List<SqlParameter> parameters = new List<SqlParameter>();
-        //    parameters.Add(new SqlParameter("@UserID", enrollment.UserID));
-        //    parameters.Add(new SqlParameter("@TrainingID", enrollment.TrainingID));
-
-        //    _dbCommand.InsertUpdateData(INSERT_ENROLLMENT_QUERY, parameters);
-        //}
 
         public void Delete(int id)
         {
@@ -83,8 +60,8 @@ namespace DataAccessLayer.SkillsForce.DAL
         public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails()
         {
             const string GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY =
-             @"SELECT E.EnrollmentID, U.UserID, U.FirstName,U.LastName,T.TrainingID, TrainingName, D.DepartmentName,E.EnrollmentDate, E.EnrollmentStatus
-               FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID";
+            @"SELECT E.EnrollmentID, U.UserID, U.FirstName,U.LastName,T.TrainingID, TrainingName, D.DepartmentName,E.EnrollmentDate, E.EnrollmentStatus
+              FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID";
 
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
 
@@ -140,7 +117,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             return null;
         }
 
-
         public EnrollmentViewModel GetByID(int id)
         {
             throw new NotImplementedException();
@@ -150,19 +126,10 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             throw new NotImplementedException();
         }
-        public String retrieve()
-        {
-            string query = @"SELECT * FROM visitor";
-            var dt = _dbCommand.GetData(query);
-
-            var temp = 0;
-            return "";
-        }
 
         public void ApproveEnrollment(int enrollmentId)
         {
             const string UPDATE_STATUS_APPROVED_QUERY = @"UPDATE Enrollment SET EnrollmentStatus = 'Approved' WHERE EnrollmentID = @EnrollmentID";
-
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@EnrollmentID", enrollmentId));
   
@@ -182,10 +149,10 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             const string GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID =
                 @"SELECT E.EnrollmentID, U.UserID AS AppUserID,U.FirstName AS AppUserFirstName,U.LastName AS AppUserLastName, U.Email AS AppUserEmail, U.RoleID AS AppUserRoleID, 
-                    T.TrainingID,T.TrainingName,D.DepartmentName,E.EnrollmentDate, E.EnrollmentStatus, U.ManagerID,M.Email AS ManagerEmail, M.FirstName AS ManagerFirstName,
-                    M.LastName AS ManagerLastName, M.UserID AS ManagerID
-                FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
-                LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
+                  T.TrainingID,T.TrainingName,D.DepartmentName,E.EnrollmentDate, E.EnrollmentStatus, U.ManagerID,M.Email AS ManagerEmail, M.FirstName AS ManagerFirstName,
+                  M.LastName AS ManagerLastName, M.UserID AS ManagerID
+                  FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
+                  LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
             var dt = _dbCommand.GetDataWithConditions(GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID, parameters);

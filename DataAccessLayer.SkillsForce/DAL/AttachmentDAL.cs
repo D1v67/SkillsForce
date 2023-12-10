@@ -15,12 +15,10 @@ namespace DataAccessLayer.SkillsForce.DAL
     public class AttachmentDAL : IAttachmentDAL
     {
         private readonly DBCommand _dbCommand;
-
         public AttachmentDAL(DBCommand dbCommand)
         {
             _dbCommand = dbCommand;
         }
-
         public IEnumerable<AttachmentModel> GetAll()
         {
             const string GET_ALL_ATTACHMENTS_QUERY = @"SELECT * FROM [dbo].[Attachment]";
@@ -58,11 +56,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                     attachment.AttachmentID = int.Parse(row["AttachmentID"].ToString());
                     attachment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
                     attachment.PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString());
-                   // attachment.AttachmentURL = row["AttachmentURL"].ToString();
-
-                    // Assuming the FileData column is of type byte[] in the database
-                    attachment.FileData = row["FileData"] as byte[];
-
+                    //attachment.FileData = row["FileData"] as byte[];
                     attachments.Add(attachment);
                 }
                 return attachments;
@@ -85,10 +79,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                     EnrollmentID = int.Parse(row["EnrollmentID"].ToString()),
                     PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString()),
                    // AttachmentURL = row["AttachmentURL"].ToString(),
-
-                    // Assuming the FileData column is of type byte[] in the database
                     FileData = row["FileData"] as byte[],
-
                     //FileName = row["FileName"].ToString()
                 };
                 return attachment;
@@ -103,13 +94,11 @@ namespace DataAccessLayer.SkillsForce.DAL
             VALUES (@EnrollmentID, @PrerequisiteID, @FileData)";
 
             List<SqlParameter> parameters = new List<SqlParameter>
-        {
-            new SqlParameter("@EnrollmentID", attachment.EnrollmentID),
-            new SqlParameter("@PrerequisiteID", attachment.PrerequisiteID),
-            new SqlParameter("@FileData", attachment.FileData),
-
-        };
-
+            {
+                new SqlParameter("@EnrollmentID", attachment.EnrollmentID),
+                new SqlParameter("@PrerequisiteID", attachment.PrerequisiteID),
+                new SqlParameter("@FileData", attachment.FileData),
+            };
             _dbCommand.InsertUpdateData(INSERT_EVIDENCE_QUERY, parameters);
         }
 

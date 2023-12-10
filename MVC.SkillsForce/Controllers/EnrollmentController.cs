@@ -173,10 +173,10 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
-        public  ActionResult UploadFiles(List<HttpPostedFileBase> files,  int EnrollmentID, string PrerequisiteIDs)
+        public  ActionResult UploadFiles(List<HttpPostedFileBase> files,  string EnrollmentID, string PrerequisiteIDs)
         {
 
-            _attachmentService.UploadFile(files, EnrollmentID, PrerequisiteIDs);
+            _attachmentService.UploadFile(files, int.Parse(EnrollmentID), PrerequisiteIDs);
             // return Json(new { success = false, error = "No files uploaded." });
             return Json(new { success = true });
         }

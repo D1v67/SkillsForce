@@ -38,14 +38,10 @@ namespace BusinessLayer.SkillsForce.Services
 
         public void UploadFile(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
         {
-            var result = new AttachmentModel();
-
             if (!string.IsNullOrEmpty(PrerequisiteIDs))
-            {
-                // Split the comma-separated string into an array of prerequisite IDs
+            {             
                 var prerequisiteIdArray = PrerequisiteIDs.Split(',');
-
-                // Loop through each file and its corresponding prerequisite ID
+               
                 for (int i = 0; i < files.Count; i++)
                 {
                     var item = files[i];
@@ -55,24 +51,19 @@ namespace BusinessLayer.SkillsForce.Services
                         using (var reader = new BinaryReader(item.InputStream))
                         {
                             var fileData = reader.ReadBytes(item.ContentLength);
-
-                            // Retrieve the prerequisite ID for the current file
                             int prerequisiteId = int.Parse(prerequisiteIdArray[i]);
-
                             var attachment = new AttachmentModel()
                             {
-                                FileName = item.FileName,
+                                //FileName = item.FileName,
                                 EnrollmentID = EnrollmentID,
                                 FileData = fileData,
                                 PrerequisiteID = prerequisiteId,
                             };
-
                             _attachmentDAL.Add(attachment);
                         }
                     }
                 }
             }
-
 
         }
     }

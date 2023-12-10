@@ -15,11 +15,6 @@ namespace DataAccessLayer.SkillsForce.DAL
     {
         private readonly IDBCommand _dbCommand;
 
-        public const string GET_PREREQUISITE_BY_TRAINING_ID_QUERY = @"SELECT P.PrerequisiteID, TP.TrainingID, T.TrainingName, P.PrerequisiteName
-                                                                    FROM TrainingPrerequisite TP
-                                                                    JOIN Training T ON TP.TrainingID = T.TrainingID
-                                                                    JOIN Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID
-                                                                    WHERE T.TrainingID = @TrainingID";
         public PrerequisiteDAL(IDBCommand dbCommand)
         {
             _dbCommand = dbCommand;
@@ -27,6 +22,11 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public IEnumerable<PrerequisiteModel> GetPrerequisiteByTrainingID(int TrainingID)
         {
+            const string GET_PREREQUISITE_BY_TRAINING_ID_QUERY = @"SELECT P.PrerequisiteID, TP.TrainingID, T.TrainingName, P.PrerequisiteName
+                                                                    FROM TrainingPrerequisite TP
+                                                                    JOIN Training T ON TP.TrainingID = T.TrainingID
+                                                                    JOIN Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID
+                                                                    WHERE T.TrainingID = @TrainingID";
             List<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
             var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", TrainingID) };
             var dt = _dbCommand.GetDataWithConditions(GET_PREREQUISITE_BY_TRAINING_ID_QUERY, parameters);
@@ -58,10 +58,11 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public IEnumerable<PrerequisiteModel> GetAll()
         {
+            const string GET_ALL_PREREQUISITE_QUERY = @"SELECT * FROM Prerequisite";
             List<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
 
             PrerequisiteModel prerequisite;
-            var dt = _dbCommand.GetData(GET_PREREQUISITE_BY_TRAINING_ID_QUERY);
+            var dt = _dbCommand.GetData(GET_ALL_PREREQUISITE_QUERY);
             foreach (DataRow row in dt.Rows)
             {
                 prerequisite = new PrerequisiteModel();

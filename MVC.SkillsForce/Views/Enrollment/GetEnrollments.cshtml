@@ -4,8 +4,11 @@
     ViewBag.Title = "Index";
 }
 
-<!-- Add Bootstrap CSS link -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<style>
+   
+
+</style>
+
 
 
 <div class="container mt-5">
@@ -175,23 +178,24 @@
                     type: 'GET',
                     data: { enrollmentID: parseInt(enrollmentId) },
                     dataType: "json",
-                    success: function (attachments) {
+                    success: function (result) {
 
                         console.log('in success ' + enrollmentId)
                         // Populate the modal body with attachment data
+
+                        var attachments = result.result
                         var modalBody = $('#attachmentModalBody');
                         modalBody.empty();
 
-                        $.each(attachments, function (index, attachment) {
+                        for (let i = 0; i < attachments.length; i++) {
                             // Customize this part based on your attachment data structure
-                            var attachmentInfo = attachment.AttachmentID;
-
-                            console.log('in show attach id' + attachment.AttachmentID)
+                            var attachmentInfo = attachments[i];
+                            console.log('in show attach id' + attachmentInfo.AttachmentID)
                             // Add a download button for each attachment
-                            var downloadButton = $('<button class="btn btn-success download-attachment-btn" data-attachment-id="' + attachment.AttachmentID + '">Download</button>');
+                            var downloadButton = $('<button class="btn btn-success download-attachment-btn" data-attachment-id="' + attachmentInfo.AttachmentID + '">Download</button>');
 
                             // Append download button and attachment info to modal body
-                            modalBody.append('<p>' + attachmentInfo + '</p>');
+                            modalBody.append('<p>' + attachmentInfo.AttachmentURL + '</p>');
                             modalBody.append(downloadButton);
 
                             // Attach click event for download button
@@ -201,7 +205,7 @@
                                 // Trigger download when the button is clicked
                                 window.location.href = '/Attachment/DownloadAttachmentByAttachmentID/' + attachmentId;
                             });
-                        });
+                        }
 
                         // Show the modal
                         $('#attachmentModal').modal('show');

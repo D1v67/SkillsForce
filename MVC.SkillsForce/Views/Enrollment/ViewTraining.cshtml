@@ -6,38 +6,72 @@
 }
 
 
-@*<link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-    crossorigin="anonymous" />*@
+
+@*<head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+
+    </head>*@
+
+<style>
+    .card-container {
+        /* background-color: #f0f0f0;*/ /* Set the background color for the card container */
+        padding: 20px; /* Adjust the padding as needed */
+    }
+
+    .card {
+        /*border: none;*/
+        border-radius: 15px;
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        margin-bottom: 40px; /* Adjust the margin between cards as needed */
+
+    }
+
+    .card-header {
+        background-color: #3498db; /* Set the background color for the card header */
+        color: #fff; /* Set the text color for the card header */
+        padding: 10px; /* Adjust the padding for the card header */
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-body {
+        background-color: #e8eceb;
+        padding: 15px;
+    }
+    .header-container {
+        background: linear-gradient(131deg, rgba(9,91,134,1) 0%, rgba(93,184,218,1) 46%, rgba(34,114,215,1) 75%, rgba(22,157,217,1) 95%); /* Set your desired gradient colors */ /* Set your desired gradient colors */
+        padding: 20px;
+        color: #fff; /* Set the text color for the header */
+        text-align: center;
+        margin-bottom: 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+        margin: 0;
+    }
+    
+</style>
 
 
-
-
-<h2>Index</h2>
+@*<h2>Index</h2>
 <h2>@Session["Firstname"]</h2>
-<h2>@Session["Email"]</h2>
+<h2>@Session["Email"]</h2>*@
 
 @*<p>
         @Html.ActionLink("Create New", "Create")
     </p>*@
 
-
-<table id="trainingTable" class="table">
-    <thead>
-        <tr>
-            <th>Training ID</th>
-            <th>Training Name</th>
-            <th>Training Description</th>
-            <th>Registration Deadline</th>
-            <th>Capacity</th>
-            <th>Department ID</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
-
+@*<div class="header-container">
+    <h1>Trainings On Offer</h1>
+</div>*@
 
 <!-- Registration Modal with File Upload -->
 <div class="modal fade" id="enrollModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
@@ -51,7 +85,7 @@
             </div>
 
             <!-- Modified form with added onsubmit attribute -->
-            <form id="enrollForm" onsubmit="saveEnrollment(); return false;">
+            <form id="enrollForm" onsubmit="saveEnrollment(); return false;" enctype="multipart/form-data">
                 <div class="modal-body" id="modalBody">
                     <h3>Enroll in Training</h3>
                     <p>Your User ID: <span id="userIdInfo"></span></p>
@@ -70,36 +104,6 @@
         </div>
     </div>
 </div>
-<!-- Modal -->
-<!--<div class="modal fade" id="enrollModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Enroll in Training</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <form id="enrollmentForm">
-                <div class="modal-body">
-                    <p>Your User ID: <span id="userIdInfo"></span></p>
-                    <p id="trainingInfo"></p>
-
-                    <label>You must meet all the following prerequisites:</label>
-                    <div id="coursesCheckboxList"></div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="saveEnrollment()">Save changes</button>
-                </div>
-            </form>
-
-
-        </div>
-    </div>
-</div>-->
 
 
 <div id="trainingCardContainer" class="card-deck"></div>
@@ -130,9 +134,7 @@
                 .then(data => updateTable(data))
                 .catch(error => console.error('Error:', error));
         }
-
         function updateTable(data) {
-            console.log('here');
             var cardContainer = document.querySelector('#trainingCardContainer');
             cardContainer.innerHTML = '';
 
@@ -141,24 +143,34 @@
                 var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
                 var isEnrollmentOpen = registrationDeadlineDate >= new Date();
 
+                var col = document.createElement('div');
+                col.className = 'col-md-4 mb-3'; // Adjust the column size as needed
+
                 var card = document.createElement('div');
-                card.className = 'card mb-3';
+                card.className = 'card shadow'; // Added box-shadow to the card
+                // Added border-radius to the card
 
+                // ...
                 card.innerHTML = `
-            <div class="card-body">
-                <h5 class="card-title">${item.TrainingName}</h5>
-                <p class="card-text">${item.TrainingDescription}</p>
-                <p class="card-text"><strong>Registration Deadline:</strong> ${formatDate(registrationDeadlineDate)}</p>
-                <p class="card-text"><strong>Capacity:</strong> ${item.Capacity}</p>
-                <p class="card-text"><strong>Department ID:</strong> ${item.DepartmentID}</p>
-                ${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#enrollModal" onclick="enroll(${item.TrainingID})">Enroll</button>` : 'Enrollment Closed'}
+                        <div class="card-header">
+                            <h5 class="card-title"><strong>${item.TrainingName}</strong> </h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">${item.TrainingDescription}</p>
+                            <p class="card-text"><strong>Registration Deadline:</strong> ${formatDate(registrationDeadlineDate)}</p>
 
-            </div>
-        `;
+                            ${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#enrollModal" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
+                        </div>
+                     `;
+                // ...
 
-                cardContainer.appendChild(card);
+                col.appendChild(card);
+                cardContainer.appendChild(col);
             });
         }
+
+        //        <p class="card-text"><strong>Capacity:</strong> ${item.Capacity}</p>
+        //<p class="card-text"><strong>Department ID:</strong> ${item.DepartmentID}</p>
 
         // format date in 'YYYY-MM-DD'
         function formatDate(date) {
@@ -208,12 +220,6 @@
             success: function (prerequisites) {
                 console.log(prerequisites);
                 populateCoursesCheckboxList(prerequisites);
-
-                // Now that prerequisites are fetched, show the modal
-
-
-                // Optionally, you can also trigger the save enrollment function here if needed
-                // saveEnrollment();
             },
             error: function () {
                 alert("Failed to fetch prerequisites!");
@@ -244,20 +250,10 @@
         }
     }
 
-    //function uploadDocument(prerequisiteId) {
-    //    // Handle the upload logic here
-    //    var fileInput = $("#fileInput" + prerequisiteId);
-    //    var fileName = fileInput.val().split('\\').pop();
-    //    alert("Upload button clicked for prerequisite ID: " + prerequisiteId + "\nSelected File: " + fileName);
-    //}//function uploadDocument(prerequisiteId) {
-    //    // Handle the upload logic here
-    //    var fileInput = $("#fileInput" + prerequisiteId);
-    //    var fileName = fileInput.val().split('\\').pop();
-    //    alert("Upload button clicked for prerequisite ID: " + prerequisiteId + "\nSelected File: " + fileName);
-    //}
+
 
     function uploadFiles(trainingId, enrollmentId) {
-        console.log('entered fucntion pload')
+        console.log('entered fucntion u')
         const fileInputs = document.getElementsByClassName('fileUploader');
         //const files = fileInput[0].files;
 
@@ -280,14 +276,15 @@
             }
         }
         console.log(formData)
+        formData.append('EnrollmentID', enrollmentId);
         // Append training ID, user ID, and generated enrollment ID to the form data
         formData.append('PrerequisiteIDs', prerequisiteIds.join(','));
 
-        formData.append('TrainingID', parseInt(trainingId));
-        formData.append('UserID', parseInt("@HttpContext.Current.Session["UserID"]")); // Replace with the actual user ID
-        formData.append('EnrollmentID', parseInt(enrollmentId));
-        console.log(formData)
+        //formData.append('TrainingID', parseInt(trainingId));
 
+  
+        console.log(formData)
+        debugger;
 
         fetch('/Enrollment/UploadFiles', {
             method: 'POST',
@@ -327,6 +324,7 @@
             },
             success: function (result) {
                 var generatedEnrollmentId = result.EnrollmentID;
+                debugger;
                 uploadFiles(parseInt(trainingId), parseInt(generatedEnrollmentId));
 
                 alert("Enrollment successful!");
@@ -334,17 +332,7 @@
 
                 //
                 $("#enrollModal").modal("hide");
-                // Check if the modal is currently visible before trying to hide it
-                //if ($("#enrollModal").is(':visible')) {
-                //    // Hide the modal after successful enrollment
-                //    $("#enrollModal").modal("hide");
 
-                //    // Check if the modal backdrop exists before removing it
-                //    if ($('.modal-backdrop').length > 0) {
-                //        $('body').removeClass('modal-open');
-                //        $('.modal-backdrop').remove();
-                //    }
-                //}
             },
             error: function () {
                 alert("Enrollment failed!");
