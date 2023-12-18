@@ -23,12 +23,6 @@ namespace MVC.SkillsForce.Controllers
         }
         public ActionResult Index()
         {
-            _logger.Log("log");
-
-            //throw new NotImplementedException();
-            int zero = 0;
-            int sum = 10 / zero;
-
             return View();
         }
 
