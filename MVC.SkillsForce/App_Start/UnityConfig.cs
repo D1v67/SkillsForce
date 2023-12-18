@@ -1,6 +1,7 @@
 using BusinessLayer.SkillsForce.Interface;
 using BusinessLayer.SkillsForce.Services;
-using Common.SkillsForce.AppLogger;
+
+//using Common.SkillsForce.AppLogger;//using Common.SkillsForce.AppLogger;
 using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
 using System.Web.Mvc;
@@ -26,7 +27,7 @@ namespace MVC.SkillsForce
             // e.g. container.RegisterType<ITestService, TestService>();
             //container.RegisterType<Test_IDataAccessLayer, Test_DataAccessLayer>();
             //container.RegisterType<Test_IDataAccessLayer, Test_DataAccessLayer>();
-            container.RegisterType<ILogger, Logger>();
+           // container.RegisterType<ILogger, Logger>();
             //container.RegisterType<IDataAccessLayer, DataAccessLayer>();
             container.RegisterType<IDBCommand, DBCommand>();
 
@@ -52,8 +53,6 @@ namespace MVC.SkillsForce
 
             container.RegisterType<IAttachmentService, AttachmentService>();
             container.RegisterType<IAttachmentDAL, AttachmentDAL>();
-
-
 
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));

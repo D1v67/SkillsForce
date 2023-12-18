@@ -4,9 +4,7 @@ using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BusinessLayer.SkillsForce.Services
 {

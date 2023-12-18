@@ -1,5 +1,9 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
+using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
+using Common.SkillsForce.ViewModel;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +15,14 @@ namespace MVC.SkillsForce.Controllers
     public class TrainingController : Controller
     {
         private readonly ITrainingService _trainingService;
-        public TrainingController(ITrainingService trainingService)
+        private readonly IPrerequisiteService _prerequisiteService;
+        public TrainingController(ITrainingService trainingService, IPrerequisiteService prerequisiteService)
         {
             _trainingService = trainingService;
+            _prerequisiteService = prerequisiteService;
         }
         //GET ALL TRAINING
+        [CustomAuthorization(RolesEnum.Admin)]
         public ActionResult Index()
         {
             IEnumerable<TrainingModel> trainings = new List<TrainingModel>();
@@ -29,11 +36,38 @@ namespace MVC.SkillsForce.Controllers
             }
             return View(trainings);
         }
-        // GET: Training/Details/5
-        public ActionResult Details(int id)
+
+        public ActionResult GetAllTrainingWithPrerequsiites()
         {
-            return View();
+
+            IEnumerable<TrainingViewModel> trainings = new List<TrainingViewModel>();
+            try
+            {
+                trainings = _trainingService.GetAllTrainingWithPrerequsiites();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return View(trainings);
         }
+        // 
+
+        public JsonResult GetCapacityById(int id)
+        {
+            int capacity = _trainingService.GetCapacityID(id);
+
+            if (capacity != -1) 
+            {
+                return Json(new { success = true, capacity = capacity }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = false, message = $"No capacity found for Training ID {id}" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        // GET: Training/Details/5
+
         // GET: Training/Create
         public ActionResult Create()
         {

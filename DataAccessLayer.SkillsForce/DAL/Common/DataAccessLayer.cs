@@ -2,32 +2,29 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
     public class DataAccessLayer
     {
         //public const string connectionstring = @"server=localhost;database=EmployeeTrainingDB;uid=wbpoc;pwd=sql@tfs2008";
-        public string connectionstring = ConfigurationManager.ConnectionStrings["DefaultConnectionString"].ConnectionString;
-        public SqlConnection connection;
+        public string databaseConnectionstring = ConfigurationManager.ConnectionStrings["DefaultConnectionString"].ConnectionString;
+        public SqlConnection _databaseConnection;
 
         public DataAccessLayer()
         {
-            connection = new SqlConnection(connectionstring);
+            _databaseConnection = new SqlConnection(databaseConnectionstring);
             OpenConnection();
         }
         public void OpenConnection()
         {
             try
             {
-                if (connection.State == System.Data.ConnectionState.Open)
+                if (_databaseConnection.State == System.Data.ConnectionState.Open)
                 {
-                    connection.Close();
+                    _databaseConnection.Close();
                 }
-                connection.Open();
+                _databaseConnection.Open();
             }
             catch (SqlException ex)
             {
@@ -37,10 +34,10 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public void CloseConnection()
         {
-            if (connection != null && connection.State == System.Data.ConnectionState.Open)
+            if (_databaseConnection != null && _databaseConnection.State == System.Data.ConnectionState.Open)
             {
-                connection.Close();
-                connection.Dispose();
+                _databaseConnection.Close();
+                _databaseConnection.Dispose();
             }
         }
     }

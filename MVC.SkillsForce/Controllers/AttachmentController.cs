@@ -1,7 +1,9 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
 using Common.SkillsForce.ViewModel;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,18 +18,16 @@ namespace MVC.SkillsForce.Controllers
 
         public AttachmentController(IAttachmentService attachmentService)
         {
-
             _attachmentService = attachmentService;
         }
-        // GET: Download
+
+        [CustomAuthorization(RolesEnum.Admin)]
         public ActionResult Index()
         {
-            //throw new Exception();
             IEnumerable<AttachmentModel> attachments = new List<AttachmentModel>();
             try
             {
                 attachments = _attachmentService.GetAll();
-                //attachments = _uploaderService
             }
             catch (Exception ex)
             {
@@ -36,10 +36,10 @@ namespace MVC.SkillsForce.Controllers
             return View(attachments);
         }
 
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
         [HttpGet]
         public JsonResult GetAllAttachmentByEnrollmentID(int enrollmentID)
-        {
-           
+        {         
             IEnumerable<AttachmentModel> attachments = new List<AttachmentModel>();
             try
             {
@@ -51,19 +51,15 @@ namespace MVC.SkillsForce.Controllers
                 Console.WriteLine(ex.Message);
             }
             return Json(new { result = attachments }, JsonRequestBehavior.AllowGet);
-
-            //return Json(attachments, JsonRequestBehavior.AllowGet);
         }
 
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
         public ActionResult DownloadAttachmentByAttachmentID(int id)
         {
-            //var results = _EvidenceRepositoryBL.GetAll().GetModelList().FirstOrDefault(f => f.FileId == id);
             var result = _attachmentService.GetByAttachmentID(id);
 
             byte[] binaryData = result.FileData;
             string filename = result.AttachmentURL;
-            //// enhancement
-            //// - get the extension and look up for the appropriate mime type
             string contentType = "application/pdf";
 
             return File(binaryData, contentType, filename);

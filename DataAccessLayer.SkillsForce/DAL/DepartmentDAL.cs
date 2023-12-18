@@ -37,7 +37,7 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public DepartmentModel GetByID(int id)
         {
-            const string GET_DEPARTMENT_BY_ID_QUERY = @"";
+           // const string GET_DEPARTMENT_BY_ID_QUERY = @"";
             throw new NotImplementedException();
         }
 

@@ -1,5 +1,7 @@
 ﻿using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +18,7 @@ namespace MVC.SkillsForce.Controllers
         {
             _prerequisiteService = prerequisiteService;
         }
-        // GET: Prerequisite
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         public ActionResult Index()
         {
             IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
@@ -29,9 +31,9 @@ namespace MVC.SkillsForce.Controllers
                 Console.WriteLine(ex.Message);
             }
             return View(prerequisites);
-
         }
 
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         public ActionResult GetPrerequisiteByTrainingID(int TrainigID)
         {
             IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();

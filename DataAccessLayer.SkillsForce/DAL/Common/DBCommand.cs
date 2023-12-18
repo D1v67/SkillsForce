@@ -2,105 +2,91 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DataAccessLayer.SkillsForce.Interface;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
     public class DBCommand : IDBCommand
     {
-        //private readonly IDataAccessLayer _dal;
-        //public DBCommand(IDataAccessLayer dal)
-        //{
-        //    _dal = dal;
-        //}
         public DataTable GetData(string query)
         {
-            DataAccessLayer dal = new DataAccessLayer();
-            DataTable dt = new DataTable();
-            using (SqlCommand cmd = new SqlCommand(query, dal.connection))
+            DataAccessLayer dataAccess = new DataAccessLayer();
+            DataTable resultTable = new DataTable();
+            using (SqlCommand command = new SqlCommand(query, dataAccess._databaseConnection))
             {
-                cmd.CommandType = CommandType.Text;
-                using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
+                command.CommandType = CommandType.Text;
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
-                    sda.Fill(dt);
+                    adapter.Fill(resultTable);
                 }
             }
-            dal.CloseConnection();
-
-            return dt;
+            dataAccess.CloseConnection();
+            return resultTable;
         }
 
         public int InsertUpdateData(string query, List<SqlParameter> parameters)
         {
-            int numRows = 0;
-            DataAccessLayer dal = new DataAccessLayer();
-
-            using (SqlCommand cmd = new SqlCommand(query, dal.connection))
+            int affectedRows = 0;
+            DataAccessLayer dataAccess = new DataAccessLayer();
+            using (SqlCommand command = new SqlCommand(query, dataAccess._databaseConnection))
             {
-                cmd.CommandType = CommandType.Text;
+                command.CommandType = CommandType.Text;
                 if (parameters != null)
                 {
                     parameters.ForEach(parameter =>
                     {
-                        cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                        command.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
                     });
                 }
-                numRows = cmd.ExecuteNonQuery();
+                affectedRows = command.ExecuteNonQuery();
             }
-            dal.CloseConnection();
-
-            return numRows;
+            dataAccess.CloseConnection();
+            return affectedRows;
 
         }
 
         public int InsertDataAndReturnIdentity(string query, List<SqlParameter> parameters)
         {
-            int generatedId = 0;
-            DataAccessLayer dal = new DataAccessLayer();
-
-            using (SqlCommand cmd = new SqlCommand(query + "; SELECT SCOPE_IDENTITY();", dal.connection))
+            int generatedIdentity = 0;
+            DataAccessLayer dataAccess = new DataAccessLayer();
+            using (SqlCommand command = new SqlCommand(query + "; SELECT SCOPE_IDENTITY();", dataAccess._databaseConnection))
             {
-                cmd.CommandType = CommandType.Text;
+                command.CommandType = CommandType.Text;
                 if (parameters != null)
                 {
                     parameters.ForEach(parameter =>
                     {
-                        cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                        command.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
                     });
                 }
-                generatedId = Convert.ToInt32(cmd.ExecuteScalar());
+                generatedIdentity = Convert.ToInt32(command.ExecuteScalar());
             }
-            dal.CloseConnection();
-
-            return generatedId;
+            dataAccess.CloseConnection();
+            return generatedIdentity;
         }
 
         public DataTable GetDataWithConditions(string query, List<SqlParameter> parameters)
         {
-            DataAccessLayer dal = new DataAccessLayer();
-            DataTable dt = new DataTable();
-            using (SqlCommand cmd = new SqlCommand(query, dal.connection))
+            DataAccessLayer dataAccess = new DataAccessLayer();
+            DataTable resultTable = new DataTable();
+            using (SqlCommand command = new SqlCommand(query, dataAccess._databaseConnection))
             {
-                cmd.CommandType = CommandType.Text;
+                command.CommandType = CommandType.Text;
+
                 if (parameters != null)
                 {
                     parameters.ForEach(parameter =>
                     {
-                        cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                        command.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
                     });
                 }
-                using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
-                    sda.Fill(dt);
+                    adapter.Fill(resultTable);
                 }
             }
-
-            dal.CloseConnection();
-
-            return dt;
+            dataAccess.CloseConnection();
+            return resultTable;
         }
     }
 }

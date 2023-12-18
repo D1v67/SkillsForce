@@ -17,43 +17,41 @@
             crossorigin="anonymous"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Navbar styling */
-        /* Navbar styling */
+
+
         .navbar-nav .nav-link {
-            color: #ffffff !important; /* Default text color */
-            transition: color 0.3s ease; /* Smooth transition for text color */
-            line-height: 30px; /* Adjust the line height to match the navbar height */
-            padding: 10px 15px; /* Adjust padding to create space around the text */
+            color: #ffffff !important; 
+            transition: color 0.3s ease; 
+            line-height: 30px; 
+            padding: 10px 15px; 
         }
             .navbar-nav .nav-link:hover {
-                /*color: #007bff !important;*/ /* Hover text color */
-                background-color: #000080 !important; /* Hover background color */
+
+                background-color: #000080 !important; 
                 line-height: 30px;
             }
 
-        /* Responsive navbar toggler styling */
         .navbar-toggler-icon {
-            background-color: #ffffff !important; /* Toggler icon color */
+            background-color: #ffffff !important; 
         }
 
         .navbar {
-            background-color: #0047AB !important; /* Navbar background color */
+            background-color: #0047AB !important; 
         }
 
         .gradient-background {
-            background: linear-gradient(90deg, rgba(70,150,191,1) 0%, rgba(65,126,193,1) 50%, rgba(22,95,217,1) 100%, rgba(0,212,255,1) 100%); /* Set your desired gradient colors */
-            padding: 20px; /* Adjust padding as needed */
+            background: linear-gradient(90deg, rgba(70,150,191,1) 0%, rgba(65,126,193,1) 50%, rgba(22,95,217,1) 100%, rgba(0,212,255,1) 100%); 
+            padding: 20px; 
             padding-left:300px;
-            color: #fff; /* Set the text color for the gradient div */
-            display: flex; /* Use flexbox for layout */
-            justify-content: space-between; /* Space elements evenly within the div */
-            align-items: center; /* Align items vertically at the center */
+            color: #fff; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        /* Add styling for the greeting text */
         .greeting-text {
-            margin: 0; /* Remove any default margin */
+            margin: 0;
         }
         .overlay-container {
             position: relative;
@@ -69,7 +67,7 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.5); /* Adjust the alpha value for transparency */
+                background: rgba(0, 0, 0, 0.5); 
                 z-index: -1;
                 
                 border-radius: 15px;
@@ -81,7 +79,7 @@
 <body>
 
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-        <div class="container">
+        <div class="container-fluid">
             <strong>@Html.ActionLink("SkillsForce", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })</strong>
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -95,16 +93,13 @@
 
                     @if (Session["CurrentRole"] != null && (Session["CurrentRole"].ToString() == "Admin" || Session["CurrentRole"].ToString() == "Manager"))
                     {
-                        <!-- Only display "Enrollments" link for Admin and Manager roles -->
                         <li>@Html.ActionLink("Enrollments", "GetEnrollments", "Enrollment", new { area = "" }, new { @class = "nav-link" })</li>
                     }
                 </ul>
 
                 <ul class="navbar-nav ml-auto">
-                    <!-- This class moves the items to the right -->
                     @if (Session["UserId"] != null)
                     {
-                        <!-- User is logged in, display additional menu items or logout link -->
                         <li>@Html.ActionLink("Dashboard", "Dashboard", "User", new { area = "" }, new { @class = "nav-link" })</li>
                         <li>@Html.ActionLink("Logout", "Logout", "Account", new { area = "" }, new { @class = "nav-link" })</li>
                         <li class="ml-2"></li>
@@ -120,7 +115,6 @@
                     }
                     else
                     {
-                        <!-- User is not logged in, display login/register links -->
                         <li>@Html.ActionLink("Login", "Index", "Account", new { area = "" }, new { @class = "nav-link" })</li>
                         <li>@Html.ActionLink("Register", "Register", "Account", new { area = "" }, new { @class = "nav-link" })</li>
                     }
@@ -130,20 +124,18 @@
         </div>
     </nav>
 
-    <div class="gradient-background">
-        <div class="overlay-container">
+    <div class="gradient-background container-fluid">
+        <div class="overlay-container ">
             @if (Session["FirstName"] != null)
             {
                 <h1>Hello, @Session["FirstName"].</h1>
             }
 
-            <!-- Display "Hello, User" on the left side -->
             <p class="greeting-text"></p>
-            <!-- Add any additional content or text as needed on the right side -->
         </div>
     </div>
 
-    <div class="container body-content">
+    <div class="container-fluid">
         @RenderBody()
         <hr />
         <footer>

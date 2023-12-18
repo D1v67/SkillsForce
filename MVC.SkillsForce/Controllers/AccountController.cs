@@ -1,14 +1,7 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
-using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
@@ -28,7 +21,7 @@ namespace MVC.SkillsForce.Controllers
         }
         public ActionResult Index()
         {
-
+            //throw new NotImplementedException();
             return View();
         }
 
@@ -63,7 +56,7 @@ namespace MVC.SkillsForce.Controllers
             RegisterViewModel registerViewModel = model;
             _loginService.RegisterUser(registerViewModel);
 
-            return Json(new { url = Url.Action("Index", "Home") });
+            return Json(new { url = Url.Action("Index", "Account") });
         }
 
         public ActionResult Logout()
@@ -72,12 +65,14 @@ namespace MVC.SkillsForce.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+       
         [HttpGet]
         public JsonResult GetDepartments()
         {
             IEnumerable<DepartmentModel> departments = _departmentService.GetAll();
             return Json(departments, JsonRequestBehavior.AllowGet);
         }
+
 
         public JsonResult GetManagers()
         {

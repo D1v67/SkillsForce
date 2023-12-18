@@ -1,10 +1,9 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
 using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
@@ -17,6 +16,8 @@ namespace MVC.SkillsForce.Controllers
         {
             _userService = userService;
         }
+
+        [CustomAuthorization(RolesEnum.Admin)]
         public ActionResult Index()
         {
             IEnumerable<UserModel> users = new List<UserModel>();

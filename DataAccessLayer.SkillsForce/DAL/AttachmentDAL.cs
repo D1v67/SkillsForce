@@ -56,6 +56,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                     attachment.AttachmentID = int.Parse(row["AttachmentID"].ToString());
                     attachment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
                     attachment.PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString());
+                    attachment.FileName = row["FileName"].ToString();
                     //attachment.FileData = row["FileData"] as byte[];
                     attachments.Add(attachment);
                 }
@@ -78,9 +79,9 @@ namespace DataAccessLayer.SkillsForce.DAL
                     AttachmentID = int.Parse(row["AttachmentID"].ToString()),
                     EnrollmentID = int.Parse(row["EnrollmentID"].ToString()),
                     PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString()),
-                   // AttachmentURL = row["AttachmentURL"].ToString(),
+                    FileName = row["FileName"].ToString(),
+                // AttachmentURL = row["AttachmentURL"].ToString(),
                     FileData = row["FileData"] as byte[],
-                    //FileName = row["FileName"].ToString()
                 };
                 return attachment;
             }
@@ -90,14 +91,15 @@ namespace DataAccessLayer.SkillsForce.DAL
         public void Add(AttachmentModel attachment)
         {
             const string INSERT_EVIDENCE_QUERY = @"
-            INSERT INTO Attachment (EnrollmentID, PrerequisiteID, FileData)
-            VALUES (@EnrollmentID, @PrerequisiteID, @FileData)";
+            INSERT INTO Attachment (EnrollmentID, PrerequisiteID, FileName, FileData)
+            VALUES (@EnrollmentID, @PrerequisiteID, @FileName, @FileData)";
 
             List<SqlParameter> parameters = new List<SqlParameter>
             {
                 new SqlParameter("@EnrollmentID", attachment.EnrollmentID),
                 new SqlParameter("@PrerequisiteID", attachment.PrerequisiteID),
                 new SqlParameter("@FileData", attachment.FileData),
+                new SqlParameter("@FileName", attachment.FileName),
             };
             _dbCommand.InsertUpdateData(INSERT_EVIDENCE_QUERY, parameters);
         }

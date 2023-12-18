@@ -1,5 +1,7 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +17,15 @@ namespace MVC.SkillsForce.Controllers
         {
             _departmentService = departmentService;
         }
+
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         public ActionResult Index()
         {
             IEnumerable<DepartmentModel> departments = GetListOfDepartments();
             return View(departments);
         }
 
+         [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         private IEnumerable<DepartmentModel> GetListOfDepartments()
         {
             try

@@ -4,47 +4,20 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common.SkillsForce.Enums;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
     public class UserDAL : IUserDAL
     {
-        public const string GET_ALL_USER_QUERY = @"SELECT * FROM [dbo].[User]";
-
-        public const string GET_USER_BY_ID_QUERY = @"SELECT u.* FROM [User] u WHERE u.UserID = @UserID";
-
-        public const string INSERT_USER_QUERY = @"INSERT INTO [dbo].[User] ([FirstName],[LastName],[Email],[NIC],[MobileNumber],[RoleID],[DepartmentID],[ManagerID]) 
-                                                 VALUES (@FirstName, @LastName, @Email, @NIC, @MobileNumber, @RoleID, @DepartmentID, @ManagerID)";
-
-        public const string UPDATE_USER_QUERY = @"UPDATE [dbo].[User]
-                                                 SET [FirstName] = @FirstName,[LastName] = @LastName,[Email] = @Email,[NIC] = @NIC,[MobileNumber] = @MobileNumber,[RoleID] = @RoleID,[DepartmentID] = @DepartmentID,[ManagerID] = @ManagerID
-                                                 WHERE [UserID] = @UserID";
-
-        public const string DELETE_USER_QUERY = @"DELETE FROM [dbo].[User] WHERE [UserID] = @UserID";
-
-        public const string GET_ALL_MANAGERS = @"SELECT U.*
-                                                FROM [User] U
-                                                JOIN Role R ON U.RoleID = R.RoleID
-                                                WHERE R.RoleType = @RoleName;";
-
-        public const string GET_USER_BY_NIC = @"SELECT * FROM Users WHERE NIC = @NIC";
-        public const string GET_USER_BY_EMAIL = @"SELECT * FROM Users WHERE Email = @Email;";
-        public const string GET_USER_BY_MOBILE_NUMBER = @"SELECT * FROM Users WHERE MobileNumber = @MobileNumber";
-
-        public const string SET_USER_PASSWORD = "";
-
         private readonly IDBCommand _dbCommand;
         public UserDAL(IDBCommand dbCommand)
         {
             _dbCommand = dbCommand;
         }
-
         public IEnumerable<UserModel> GetAll()
         {
+            const string GET_ALL_USER_QUERY = @"SELECT * FROM [dbo].[User]";
             List<UserModel> users = new List<UserModel>();
 
             UserModel user;
@@ -68,6 +41,7 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
         public UserModel GetByID(int id)
         {
+            const string GET_USER_BY_ID_QUERY = @"SELECT u.* FROM [User] u WHERE u.UserID = @UserID";
             var parameters = new List<SqlParameter> { new SqlParameter("@UserID", id) };
             var dt = _dbCommand.GetDataWithConditions(GET_USER_BY_ID_QUERY, parameters);
 
@@ -92,6 +66,8 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
         public void Add(UserModel user)
         {
+            const string INSERT_USER_QUERY = @"INSERT INTO [dbo].[User] ([FirstName],[LastName],[Email],[NIC],[MobileNumber],[RoleID],[DepartmentID],[ManagerID]) 
+                                                 VALUES (@FirstName, @LastName, @Email, @NIC, @MobileNumber, @RoleID, @DepartmentID, @ManagerID)";
             List<SqlParameter> parameters = new List<SqlParameter>();
 
             parameters.Add(new SqlParameter("@FirstName", user.FirstName));
@@ -107,12 +83,16 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
         public void Delete(int id)
         {
+            const string DELETE_USER_QUERY = @"DELETE FROM [dbo].[User] WHERE [UserID] = @UserID";
             var parameters = new List<SqlParameter> { new SqlParameter("@UserID", id) };
             _dbCommand.InsertUpdateData(DELETE_USER_QUERY, parameters);
         }
 
         public void Update(UserModel user)
         {
+            const string UPDATE_USER_QUERY = @"UPDATE [dbo].[User]
+                                                 SET [FirstName] = @FirstName,[LastName] = @LastName,[Email] = @Email,[NIC] = @NIC,[MobileNumber] = @MobileNumber,[RoleID] = @RoleID,[DepartmentID] = @DepartmentID,[ManagerID] = @ManagerID
+                                                 WHERE [UserID] = @UserID";
             List<SqlParameter> parameters = new List<SqlParameter>();
 
             parameters.Add(new SqlParameter("@FirstName", user.MobileNumber));
@@ -129,6 +109,7 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public IEnumerable<UserModel> GetAllManager()
         {
+            const string GET_ALL_MANAGERS = @"SELECT U.* FROM [User] U JOIN Role R ON U.RoleID = R.RoleID WHERE R.RoleType = @RoleName;";
             List<UserModel> managers = new List<UserModel>();
 
             var parameters = new List<SqlParameter> { new SqlParameter("@RoleName", RolesEnum.Manager.ToString()) };
@@ -177,3 +158,12 @@ namespace DataAccessLayer.SkillsForce.DAL
 
     }
 }
+
+
+
+
+//const string GET_USER_BY_NIC = @"SELECT * FROM Users WHERE NIC = @NIC";
+//const string GET_USER_BY_EMAIL = @"SELECT * FROM Users WHERE Email = @Email;";
+//const string GET_USER_BY_MOBILE_NUMBER = @"SELECT * FROM Users WHERE MobileNumber = @MobileNumber";
+
+//const string SET_USER_PASSWORD = "";

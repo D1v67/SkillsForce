@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Common.SkillsForce.ViewModel.TrainingViewModel>
+
+@{
+    ViewBag.Title = "GetAllTrainingWithPrerequsiites";
+}
+
+<h2>All Trainings with Prerequisites</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TrainingName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TrainingDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RegistrationDeadline)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Capacity)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DepartmentID)
+        </th>
+        <th>
+            Prerequisites
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrainingName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrainingDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegistrationDeadline)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Capacity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepartmentID)
+            </td>
+            <td>
+                @foreach (var prerequisite in item.Prerequisites)
+                {
+                    @Html.DisplayFor(modelItem => prerequisite.PrerequisiteName)<br />
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Enroll", "EnrollTraining", "Enrollment", new { trainingID =  item.TrainingID }, new { @class = "btn btn-primary" })
+
+
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.TrainingID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.TrainingID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.TrainingID })
+            </td>
+        </tr>
+    }
+</table>

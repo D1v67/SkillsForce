@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
-
     public class AccountDAL : IAccountDAL
     {
         private readonly IDBCommand _dbCommand;
@@ -43,7 +42,7 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
         public AccountModel GetUserDetailsWithRoles(AccountModel account)
         {
-            const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.*, r.* FROM [User] u WITH(NOLOCK) INNER JOIN Role r WITH(NOLOCK) ON u.RoleID = r.RoleID  WHERE u.Email = @Email";
+            const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.*, r.* FROM [User] u  INNER JOIN Role r  ON u.RoleID = r.RoleID  WHERE u.Email = @Email";
             AccountModel user = new AccountModel();
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@Email", account.Email));
@@ -67,6 +66,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                                                                 SELECT @key = @@IDENTITY
                                                                 INSERT INTO [dbo].[Account]([UserID],[Password]) 
                                                                 VALUES(@key, @Password)";
+
             List<SqlParameter> parameters = new List<SqlParameter>();
 
             parameters.Add(new SqlParameter("@FirstName", registerViewModel.FirstName));

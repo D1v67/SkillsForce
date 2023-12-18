@@ -5,8 +5,6 @@
     ViewBag.Title = "Index";
 }
 
-
-
 @*<head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
 
@@ -14,8 +12,7 @@
 
 <style>
     .card-container {
-        /* background-color: #f0f0f0;*/ /* Set the background color for the card container */
-        padding: 20px; /* Adjust the padding as needed */
+        padding: 20px;
     }
 
     .card {
@@ -23,14 +20,13 @@
         border-radius: 15px;
         transition: transform 0.3s ease-in-out;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        margin-bottom: 40px; /* Adjust the margin between cards as needed */
-
+        margin-bottom: 40px;
     }
 
     .card-header {
-        background-color: #3498db; /* Set the background color for the card header */
-        color: #fff; /* Set the text color for the card header */
-        padding: 10px; /* Adjust the padding for the card header */
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px;
         border-top-left-radius: 15px;
         border-top-right-radius: 15px;
     }
@@ -44,10 +40,11 @@
         background-color: #e8eceb;
         padding: 15px;
     }
+
     .header-container {
-        background: linear-gradient(131deg, rgba(9,91,134,1) 0%, rgba(93,184,218,1) 46%, rgba(34,114,215,1) 75%, rgba(22,157,217,1) 95%); /* Set your desired gradient colors */ /* Set your desired gradient colors */
+        background: linear-gradient(131deg, rgba(9,91,134,1) 0%, rgba(93,184,218,1) 46%, rgba(34,114,215,1) 75%, rgba(22,157,217,1) 95%);
         padding: 20px;
-        color: #fff; /* Set the text color for the header */
+        color: #fff;
         text-align: center;
         margin-bottom: 30px;
         border-radius: 15px;
@@ -57,65 +54,142 @@
     h1 {
         margin: 0;
     }
-    
 </style>
 
 
 @*<h2>Index</h2>
-<h2>@Session["Firstname"]</h2>
-<h2>@Session["Email"]</h2>*@
+    <h2>@Session["Firstname"]</h2>
+    <h2>@Session["Email"]</h2>*@
 
 @*<p>
         @Html.ActionLink("Create New", "Create")
     </p>*@
 
 @*<div class="header-container">
-    <h1>Trainings On Offer</h1>
-</div>*@
+        <h1>Trainings On Offer</h1>
+    </div>*@
 
-<!-- Registration Modal with File Upload -->
-<div class="modal fade" id="enrollModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="registrationModalLabel">Training Registration</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+<div class="table-responsive container-fluid mt-5 mb-5">
 
-            <!-- Modified form with added onsubmit attribute -->
-            <form id="enrollForm" onsubmit="saveEnrollment(); return false;" enctype="multipart/form-data">
-                <div class="modal-body" id="modalBody">
-                    <h3>Enroll in Training</h3>
-                    <p>Your User ID: <span id="userIdInfo"></span></p>
-                    <p id="trainingInfo"></p>
-
-                    <label>You must meet all the following prerequisites:</label>
-                    <div id="coursesCheckboxList"></div>
-
-                    <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+    <div class="modal fade" id="enrollModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registrationModalLabel">Training Registration</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </form>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                <form id="enrollForm" onsubmit="saveEnrollment(); return false;" enctype="multipart/form-data">
+                    <div class="modal-body" id="modalBody">
+                        <h3>Enroll in Training</h3>
+                        <p>Your User ID: <span id="userIdInfo"></span></p>
+                        <p id="trainingInfo"></p>
+
+                        <label>You must meet all the following prerequisites:</label>
+                        <div id="coursesCheckboxList"></div>
+
+                        <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                    </div>
+                </form>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
+
+
+    <div class="row mb-3">
+        <div class="col-md-10 d-flex align-items-center">
+            <div class="input-group">
+                <span class="input-group-text" id="searchIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                    </svg>
+                </span>
+                <input type="text" class="form-control" id="searchInput" placeholder="Search trainings...">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-secondary " id="changeViewBtn" data-view="grid">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x2" viewBox="0 0 16 16">
+                    <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5zM1.5 3a.5.5 0 0 0-.5.5V7h4V3zM5 8H1v3.5a.5.5 0 0 0 .5.5H5zm1 0v4h4V8zm4-1V3H6v4zm1 1v4h3.5a.5.5 0 0 0 .5-.5V8zm0-1h4V3.5a.5.5 0 0 0-.5-.5H11z" />
+                </svg>
+                Change View
+            </button>
+        </div>
+    </div>
+
+
+    <div id="trainingCardContainer" class="card-deck mt-5"></div>
+
+    <table id="trainingTable" class="table mt-3">
+        <thead>
+
+        </thead>
+        <tbody></tbody>
+    </table>
+
 </div>
-
-
-<div id="trainingCardContainer" class="card-deck"></div>
 
 
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
+"></script>
+
+
+
 <script>
 
     document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = $("#searchInput");
+        loadData(true, searchInput.val());
 
-        function loadData() {
+
+        $("#changeViewBtn").data("view", "grid");
+        $("#changeViewBtn").click(function () {
+         
+            var currentValue = $(this).data("view");
+
+           
+            var newValue = currentValue === "grid" ? "list" : "grid";
+
+           
+            $(this).data("view", newValue);
+
+        
+            console.log("View changed to:", newValue);
+
+           
+            $(this).text(newValue === "grid" ? "Grid View" : "List View");
+
+           
+            if (newValue === "grid") {
+                $("#trainingCardContainer").show();
+                $("#trainingTable").hide();
+                loadData(true, searchInput.val());
+            } else {
+                $("#trainingCardContainer").hide();
+                $("#trainingTable").show();
+                loadData(false, searchInput.val());
+            }
+        });
+
+        searchInput.on("input", function () {
+       
+            loadData(true, $(this).val());
+        });
+
+
+
+        function loadData(isCard, searchTerm) {
+            console.log('in load' + isCard)
             fetch('/Enrollment/ViewTrainingData', {
                 method: 'GET',
                 headers: {
@@ -131,9 +205,22 @@
                         console.log(response.status)
                     }
                 })
-                .then(data => updateTable(data))
+                .then(data => {
+                    if (searchTerm) {
+                        data = _.filter(data, training => training.TrainingName.toLowerCase().includes(searchTerm.toLowerCase()));
+                    }
+
+                    if (isCard) {
+                        updateTable(data);
+                    } else {
+
+                        updateTableGrid(data);
+                    }
+                })
                 .catch(error => console.error('Error:', error));
         }
+
+
         function updateTable(data) {
             var cardContainer = document.querySelector('#trainingCardContainer');
             cardContainer.innerHTML = '';
@@ -144,13 +231,11 @@
                 var isEnrollmentOpen = registrationDeadlineDate >= new Date();
 
                 var col = document.createElement('div');
-                col.className = 'col-md-4 mb-3'; // Adjust the column size as needed
+                col.className = 'col-md-4 mb-3';
 
                 var card = document.createElement('div');
-                card.className = 'card shadow'; // Added box-shadow to the card
-                // Added border-radius to the card
+                card.className = 'card shadow';
 
-                // ...
                 card.innerHTML = `
                         <div class="card-header">
                             <h5 class="card-title"><strong>${item.TrainingName}</strong> </h5>
@@ -169,6 +254,45 @@
             });
         }
 
+        //  update the table with data
+        function updateTableGrid(data) {
+            var tableBody = document.querySelector('#trainingTable tbody');
+            var tableHead = document.querySelector('#trainingTable thead');
+            tableBody.innerHTML = '';
+            tableHead.innerHTML = '';
+
+        
+            var headerRow = document.createElement('tr');
+            var headers = ['ID', 'Training Name', 'Description', 'Registration Deadline', 'Capacity', 'Department ID', 'Action'];
+            headers.forEach(function (header) {
+                var th = document.createElement('th');
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+            tableHead.appendChild(headerRow);
+
+           
+            data.forEach(function (item) {
+                var currentDate = new Date().toJSON().slice(0, 10);
+                var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
+                var isEnrollmentOpen = registrationDeadlineDate >= new Date();
+
+                var row = document.createElement('tr');
+                row.innerHTML = `
+            <td>${item.TrainingID}</td>
+            <td>${item.TrainingName}</td>
+            <td>${item.TrainingDescription}</td>
+            <td>${formatDate(registrationDeadlineDate)}</td>
+            <td>${item.Capacity}</td>
+            <td>${item.DepartmentID}</td>
+            <td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#enrollModal" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
+        `;
+
+                tableBody.appendChild(row);
+            });
+        }
+
+
         //        <p class="card-text"><strong>Capacity:</strong> ${item.Capacity}</p>
         //<p class="card-text"><strong>Department ID:</strong> ${item.DepartmentID}</p>
 
@@ -180,7 +304,7 @@
             return year + '-' + month + '-' + day;
         }
 
-        loadData();
+
     });
 </script>
 
@@ -188,12 +312,10 @@
 
 <script>
     function enroll(trainingId) {
-        // Set the training information in the modal
+
         /*$("#trainingInfo").text("Enroll in Training: " + trainingId);*/
 
-        // Retrieve user information from the session
         //var userId = 1;
-
 
         var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
@@ -201,7 +323,6 @@
         $("#trainingInfo").text("Enroll in Training: " + trainingId);
         $("#userIdInfo").text("User : " + userId);
 
-        // Store the training ID in a data attribute of the modal
         $("#enrollModal").data("trainingId", trainingId);
 
 
@@ -210,9 +331,8 @@
             TrainingID: trainingId,
 
         };
-
         console.log(enrollmentData)
-        // Call the controller action to get prerequisites
+
         $.ajax({
             url: '/Enrollment/GetPrerequisiteByTrainingID',
             type: 'GET',
@@ -239,9 +359,8 @@
                 '<div class="col-6">' + prerequisite.PrerequisiteName + '</div>' +
                 '<div class="col-4">' +
                 '<div class="input-group">' +
-                '<input type="file" class="form-control fileUploader" id="fileInput' + prerequisite.PrerequisiteID + '" required >' +
-                '<input type="hidden" class="prerequisiteIdInput" value="' + prerequisite.PrerequisiteID + '">' +
-
+                '<input type="file" class="form-control  fileUploader" id="fileInput' + prerequisite.PrerequisiteID + '" data-prerequisite-id="' + prerequisite.PrerequisiteID + '" required >' +
+                '<button type="button" class="btn btn-primary upload-button" onclick="uploadFiles()">Upload</button>' +
                 '</div>' +
                 '</div>' +
                 '</div>');
@@ -250,55 +369,47 @@
         }
     }
 
+        function uploadFiles(enrollmentId) {
+                    console.log('entered function uploadFiles');
 
+                const formData = new FormData();
+                const prerequisiteIds = [];
 
-    function uploadFiles(trainingId, enrollmentId) {
-        console.log('entered fucntion u')
-        const fileInputs = document.getElementsByClassName('fileUploader');
-        //const files = fileInput[0].files;
+                    // Iterate through each file input and its corresponding prerequisite ID
+                    $('.fileUploader').each(function () {
+                        const files = this.files;
+                        const prerequisiteId = $(this).data('prerequisite-id');
 
-        const formData = new FormData();
-        const prerequisiteIds = []; // Array to store prerequisite IDs
+                        for (const file of files) {
+                            formData.append('files', file);
+                            //formData.append('prerequisiteIds', prerequisiteId);
+                            console.log('File:', file);
+                            console.log('Prerequisite ID:', prerequisiteId);
+                            prerequisiteIds.push(prerequisiteId);
+                        }
+                    });
 
+                    formData.append('PrerequisiteIDs', prerequisiteIds.join(','));
+                    formData.append('EnrollmentID', parseInt(enrollmentId));
+                    console.log('FormData:', formData);
 
-        for (const input of fileInputs) {
-            var files = input.files;
-            for (const element of files) {
-                formData.append('files', element);
-
-                var prerequisiteIdInput = input.parentElement.querySelector('.prerequisiteIdInput');
-                var prerequisiteId = prerequisiteIdInput.value;
-
-                // Append the prerequisite ID to the array
-                prerequisiteIds.push(prerequisiteId);
-
-
-            }
-        }
-        console.log(formData)
-        formData.append('EnrollmentID', enrollmentId);
-        // Append training ID, user ID, and generated enrollment ID to the form data
-        formData.append('PrerequisiteIDs', prerequisiteIds.join(','));
-
-        //formData.append('TrainingID', parseInt(trainingId));
-
-  
-        console.log(formData)
-        debugger;
-
-        fetch('/Enrollment/UploadFiles', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log("File uploaded");
-                console.log(formData)
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
+                    // Perform the fetch using jQuery
+                    $.ajax({
+                        url: '/Enrollment/UploadFiles',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            console.log('File uploaded');
+                            console.log(formData);
+                        },
+                        error: function (error) {
+                            console.error('Error:', error);
+                            console.log('Error in upload');
+                        }
+                    });
+                }
 
 
     function saveEnrollment() {
@@ -312,20 +423,18 @@
         var userId = parseInt("@HttpContext.Current.Session["UserID"]");
         console.log(userId)
 
-        // Ajax request to send data to the controller
         $.ajax({
             url: '/Enrollment/SaveEnrollment',
             type: 'POST',
             data: {
                 UserID: parseInt(userId),
                 TrainingID: trainingId,
-                // Add other data such as departmentId if needed
-                //courses: selectedCourses
+
             },
             success: function (result) {
                 var generatedEnrollmentId = result.EnrollmentID;
-                debugger;
-                uploadFiles(parseInt(trainingId), parseInt(generatedEnrollmentId));
+               // debugger;
+                uploadFiles(parseInt(generatedEnrollmentId));
 
                 alert("Enrollment successful!");
                 saveButton.prop('disabled', true);
@@ -341,5 +450,4 @@
     }
 
 </script>
-
 

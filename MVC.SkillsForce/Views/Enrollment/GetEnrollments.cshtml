@@ -5,21 +5,19 @@
 }
 
 <style>
-   
-
 </style>
 
 
 
-<div class="container mt-5">
+<div class="container-fluid">
     <h2>Index</h2>
 
     <p>
         @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
     </p>
 
-    <div class="">
-        
+    <div class="table-bordered table-hover table-responsive">
+
         <table class="table table-striped mx-auto">
             <thead>
                 <tr>
@@ -51,9 +49,9 @@
                         @Html.DisplayNameFor(model => model.EnrollmentStatus)
                     </th>
                     <th>
-                        View
+                        Approve/Reject
                     </th>
-                    <th></th>
+                    <th>Attachments</th>
                 </tr>
             </thead>
             <tbody>
@@ -91,14 +89,17 @@
                             @if (item.EnrollmentStatus != "Approved")
                             {
                                 <button class="btn btn-primary approve-btn" data-enrollment-id="@item.EnrollmentID">Approve</button>
+                                <button class="btn btn-danger reject-btn" data-enrollment-id="@item.EnrollmentID" disabled>Reject</button>
                             }
                             else
                             {
-                                <span class="badge badge-success">Approved</span>
+                                <button class="btn btn-primary approve-btn" data-enrollment-id="@item.EnrollmentID" disabled>Approve</button>
+                                <button class="btn btn-danger reject-btn" data-enrollment-id="@item.EnrollmentID">Reject</button>
                             }
+
                         </td>
                         <td>
-                            <button type="button" class="btn btn-primary view-attachments-btn" data-toggle="modal" data-target="#attachmentModal" onclick="showAttachments(@item.EnrollmentID)">View Attachments</button>
+                            <button type="button" class="btn btn-info view-attachments-btn" data-toggle="modal" data-target="#attachmentModal" onclick="showAttachments(@item.EnrollmentID)">View Attachments</button>
                         </td>
                     </tr>
                 }
@@ -107,7 +108,6 @@
     </div>
 </div>
 
-<!-- Modal to display attachments -->
 <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -118,7 +118,6 @@
                 </button>
             </div>
 
-            <!-- Attachments will be displayed here -->
             <div class="modal-body" id="attachmentModalBody"></div>
 
 
@@ -138,87 +137,214 @@
 
 @section scripts {
     <script>
-      
 
-            $(".approve-btn").click(function () {
-                var button = $(this);
-                var enrollmentId = button.data("enrollment-id");
-                console.log(enrollmentId)
 
-                $.ajax({
-                    url: '/Enrollment/ApproveEnrollment',
-                    type: 'POST',
-                    data: { enrollmentId: enrollmentId },
-                    success: function (result) {
-                        if (result.success) {
-                            // Update the UI without reloading the page
-                            button.closest('tr').find('td:last-child').html('<span>Approved</span>');
-                            // You might want to disable the button or perform other UI updates as needed
-                            button.prop('disabled', true);
-                        } else {
-                            // Handle the case where the approval was not successful
-                            alert('Error approving enrollment: ' + result.message);
-                        }
-                    },
-                    error: function () {
-                        // Handle error
-                        alert('Error approving enrollment.');
+        $(".approve-btn").click(function () {
+            var button = $(this);
+            var enrollmentId = button.data("enrollment-id");
+            console.log(enrollmentId)
+
+            $.ajax({
+                url: '/Enrollment/ApproveEnrollment',
+                type: 'POST',
+                data: { enrollmentId: enrollmentId },
+                success: function (result) {
+                    if (result.success) {
+
+                        //button.closest('tr').find('td:last-child').html('<span>Approved</span>');
+                        button.closest('tr').find('td:eq(7)').html('Approved');
+
+                        button.prop('disabled', true);
+                        $(".reject-btn").prop('disabled', false);
+                    } else {
+
+                        alert('Error approving enrollment: ' + result.message);
                     }
-                });
+                },
+                error: function () {
+
+                    alert('Error approving enrollment.');
+                }
             });
+        });
 
+        $(".reject-btn").click(function () {
+            var button = $(this);
+            var enrollmentId = button.data("enrollment-id");
+            console.log(enrollmentId)
 
+            $.ajax({
+                url: '/Enrollment/RejectEnrollment',
+                type: 'POST',
+                data: { enrollmentId: enrollmentId },
+                success: function (result) {
+                    if (result.success) {
 
-            function showAttachments(enrollmentId) {
+                        //button.closest('tr').find('td:last-child').html('<span>Approved</span>');
+                        button.closest('tr').find('td:eq(7)').html('Rejected');
 
-                console.log(enrollmentId)
-                // Make an AJAX request to get attachments by enrollment ID
-                $.ajax({
-                    url: '/Attachment/GetAllAttachmentByEnrollmentID',
-                    type: 'GET',
-                    data: { enrollmentID: parseInt(enrollmentId) },
-                    dataType: "json",
-                    success: function (result) {
+                        button.prop('disabled', true);
+                        $(".approve-btn").prop('disabled', false);
+                    } else {
 
-                        console.log('in success ' + enrollmentId)
-                        // Populate the modal body with attachment data
-
-                        var attachments = result.result
-                        var modalBody = $('#attachmentModalBody');
-                        modalBody.empty();
-
-                        for (let i = 0; i < attachments.length; i++) {
-                            // Customize this part based on your attachment data structure
-                            var attachmentInfo = attachments[i];
-                            console.log('in show attach id' + attachmentInfo.AttachmentID)
-                            // Add a download button for each attachment
-                            var downloadButton = $('<button class="btn btn-success download-attachment-btn" data-attachment-id="' + attachmentInfo.AttachmentID + '">Download</button>');
-
-                            // Append download button and attachment info to modal body
-                            modalBody.append('<p>' + attachmentInfo.AttachmentURL + '</p>');
-                            modalBody.append(downloadButton);
-
-                            // Attach click event for download button
-                            downloadButton.click(function () {
-                                var attachmentId = $(this).data("attachment-id");
-
-                                // Trigger download when the button is clicked
-                                window.location.href = '/Attachment/DownloadAttachmentByAttachmentID/' + attachmentId;
-                            });
-                        }
-
-                        // Show the modal
-                        $('#attachmentModal').modal('show');
-                    },
-                    error: function (e) {
-                        // Handle error
-                        debugger;
-                        alert('Error fetching attachments.');
+                        alert('Error rejecting enrollment: ' + result.message);
                     }
-                });
-            }
-        
+                },
+                error: function () {
 
-        
+                    alert('Error rejecting enrollment.');
+                }
+            });
+        });
+
+        function showAttachments(enrollmentId) {
+
+            console.log(enrollmentId)
+
+            $.ajax({
+                url: '/Attachment/GetAllAttachmentByEnrollmentID',
+                type: 'GET',
+                data: { enrollmentID: parseInt(enrollmentId) },
+                dataType: "json",
+                success: function (result) {
+
+                    console.log('in success ' + enrollmentId)
+
+
+                    var attachments = result.result
+                    var modalBody = $('#attachmentModalBody');
+                    modalBody.empty();
+
+                    for (let i = 0; i < attachments.length; i++) {
+
+                        var attachmentInfo = attachments[i];
+                        console.log('in show attach id ' + attachmentInfo.AttachmentID)
+
+                        var downloadButton = $('<button class="btn btn-success download-attachment-btn" data-attachment-id="' + attachmentInfo.AttachmentID + '">Download</button>');
+
+                        modalBody.append('<p>' + attachmentInfo.FileName + '</p>');
+                        modalBody.append(downloadButton);
+
+                        downloadButton.click(function () {
+                            var attachmentId = $(this).data("attachment-id");
+
+                            window.location.href = '/Attachment/DownloadAttachmentByAttachmentID/' + attachmentId;
+                        });
+                    }
+
+                    $('#attachmentModal').modal('show');
+                },
+                error: function (e) {
+
+                    debugger;
+                    alert('Error fetching attachments.');
+                }
+            });
+        }
+
+
+
     </script>
 }
+
+
+@*@model IEnumerable<Common.SkillsForce.ViewModel.EnrollmentViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+</style>*@
+
+
+
+
+@*<div class="container-fluid">
+        <h2>Index</h2>
+
+        <p>
+            @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+        </p>
+
+        @foreach (var group in Model.GroupBy(item => item.TrainingName))
+        {
+            <div class="table-bordered table-hover table-responsive mt-4">
+                <h3>@group.Key</h3>
+                <table class="table table-striped mx-auto">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EnrollmentID)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.UserID)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.FirstName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.LastName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DepartmentName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EnrollmentDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EnrollmentStatus)
+                            </th>
+                            <th>
+                                Approve/Reject
+                            </th>
+                            <th>Attachments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in group)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EnrollmentID)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UserID)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FirstName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LastName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DepartmentName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EnrollmentDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EnrollmentStatus)
+                                </td>
+                                <td>
+                                    @if (item.EnrollmentStatus != "Approved")
+                                    {
+                                        <button class="btn btn-primary approve-btn" data-enrollment-id="@item.EnrollmentID">Approve</button>
+                                        <button class="btn btn-danger reject-btn" data-enrollment-id="@item.EnrollmentID" disabled>Reject</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-primary approve-btn" data-enrollment-id="@item.EnrollmentID" disabled>Approve</button>
+                                        <button class="btn btn-danger reject-btn" data-enrollment-id="@item.EnrollmentID">Reject</button>
+                                    }
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-info view-attachments-btn" data-toggle="modal" data-target="#attachmentModal" onclick="showAttachments(@item.EnrollmentID)">View Attachments</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>*@

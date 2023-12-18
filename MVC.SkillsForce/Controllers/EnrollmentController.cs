@@ -7,17 +7,15 @@ using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Security.Policy;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
 
 namespace MVC.SkillsForce.Controllers
 {
-    //[HandleError]
+   // [UserSession]
     public class EnrollmentController : Controller
     {
         private readonly IEnrollmentService _enrollmentService;
@@ -35,10 +33,9 @@ namespace MVC.SkillsForce.Controllers
             _attachmentService = attachmentService;
         }
 
-        //[CustomAuthorization(RolesEnum.Admin)]
+        [CustomAuthorization(RolesEnum.Admin)]
         public ActionResult Index()
         {
-            //throw new Exception();
             IEnumerable<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
             try
             {
@@ -51,6 +48,7 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
         public ActionResult GetEnrollments()
         {
             try
@@ -75,6 +73,7 @@ namespace MVC.SkillsForce.Controllers
             }
         }
 
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
         public ActionResult GetEnrollmentsForManager(int managerId)
         {
             IEnumerable<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
@@ -89,11 +88,16 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         public ActionResult ViewTraining()
         {
             return View();
-        }
 
+        }
+      ///  [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
+      ///  [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
+      /// </summary>
+      /// <returns></returns>
         public JsonResult ViewTrainingData()
         {
 
@@ -111,22 +115,43 @@ namespace MVC.SkillsForce.Controllers
 
         public ActionResult EnrollTraining(int? trainingID)
         {
+            //IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
+
+            //prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)trainingID);
+            //ViewBag.ListOfPrerequisiteByTrainingID = prerequisites;
+            //return View(prerequisites);
+
+            if (trainingID == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
 
             prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)trainingID);
-            ViewBag.ListOfPrerequisiteByTrainingID = prerequisites;
-            return View();
+            if (prerequisites == null)
+            {
+                return HttpNotFound();
+            }
+            return View(prerequisites);
         }
 
+
+        //[HttpPost]
+
+        //public ActionResult UploadFiles(List<HttpPostedFileBase> files)
+        //{
+        //    //var results = EvidenceBL.UploadFile(files).GetAddedRows();
+        //    return View();
+        //}
+
+
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         [HttpPost]
         public ActionResult SaveEnrollment(EnrollmentViewModel model)
         {
-            //EnrollmentViewModel enrollment = model;
             try
             {
                 int generatedEnrollmentId = _enrollmentService.Add(model);
-                // Console.WriteLine("Enrolled");
-                //return Json(new { success = true, message = "Enrollment successful!" });
                 return Json(new { success = true, message = "Enrollment successful!", EnrollmentID = generatedEnrollmentId });
             }
             catch (Exception ex)
@@ -136,6 +161,7 @@ namespace MVC.SkillsForce.Controllers
             }
         }
 
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         public ActionResult GetPrerequisiteByTrainingID(int TrainigID)
         {
             IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
@@ -151,32 +177,47 @@ namespace MVC.SkillsForce.Controllers
 
         }
 
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
         [HttpPost]
         public ActionResult ApproveEnrollment(int enrollmentId)
         {
             try
             {
-                // Update the enrollment status to "Approved" in the database
                 _enrollmentService.ApproveEnrollment(enrollmentId);
                 EnrollmentNotificationViewModel enrollment= _enrollmentService.GetEnrollmentNotificationDetailsByID(enrollmentId);
 
                 _notificationService.SendNotification(enrollment);
-                // Return a success status
+         
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                // Log the exception
                 return Json(new { success = false, message = ex.Message });
             }
-
         }
 
-        [HttpPost]
-        public  ActionResult UploadFiles(List<HttpPostedFileBase> files,  string EnrollmentID, string PrerequisiteIDs)
-        {
 
-            _attachmentService.UploadFile(files, int.Parse(EnrollmentID), PrerequisiteIDs);
+        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
+        [HttpPost]
+        public ActionResult RejectEnrollment(int enrollmentId)
+        {
+            try
+            {
+                _enrollmentService.RejectEnrollment(enrollmentId);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        //[CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
+        [HttpPost]
+        public ActionResult UploadFiles(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
+        {
+            _attachmentService.UploadFile(files, EnrollmentID, PrerequisiteIDs);
+            // _attachmentService.UploadFile(files, EnrollmentID, PrerequisiteIDs);
             // return Json(new { success = false, error = "No files uploaded." });
             return Json(new { success = true });
         }

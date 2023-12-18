@@ -1,11 +1,9 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLayer.SkillsForce.Services
 {
@@ -33,9 +31,19 @@ namespace BusinessLayer.SkillsForce.Services
             return _trainingDAL.GetAll();
         }
 
+        public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites()
+        {
+            return _trainingDAL.GetAllTrainingWithPrerequsiites();
+        }
+
         public TrainingModel GetByID(int id)
         {
             return _trainingDAL.GetByID(id);
+        }
+
+        public int GetCapacityID(int id)
+        {
+            return _trainingDAL.GetCapacityID(id);
         }
 
         public void Update(TrainingModel training)

@@ -8,8 +8,12 @@ namespace MVC.SkillsForce.Controllers
 {
     public class CommonController : Controller
     {
-        // GET: Common
         public ActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        public ActionResult NotFound()
         {
             return View();
         }

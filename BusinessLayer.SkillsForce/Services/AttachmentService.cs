@@ -3,11 +3,6 @@ using DataAccessLayer.SkillsForce.DAL;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Mail;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace BusinessLayer.SkillsForce.Services
@@ -54,7 +49,7 @@ namespace BusinessLayer.SkillsForce.Services
                             int prerequisiteId = int.Parse(prerequisiteIdArray[i]);
                             var attachment = new AttachmentModel()
                             {
-                                //FileName = item.FileName,
+                                FileName = item.FileName,
                                 EnrollmentID = EnrollmentID,
                                 FileData = fileData,
                                 PrerequisiteID = prerequisiteId,
