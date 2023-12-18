@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
+using Common.SkillsForce.AppLogger;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
 using System.Collections.Generic;
@@ -6,22 +7,28 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
-
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
         private readonly IAccountService _loginService;
         private readonly IDepartmentService _departmentService;
+        private readonly ILogger _logger;
 
-        public AccountController(IUserService userService, IAccountService loginService, IDepartmentService departmentService)
+        public AccountController(IUserService userService, IAccountService loginService, IDepartmentService departmentService, ILogger logger)
         {
             _userService = userService;
             _loginService = loginService;
             _departmentService = departmentService;
+            _logger = logger;
         }
         public ActionResult Index()
         {
+            _logger.Log("log");
+
             //throw new NotImplementedException();
+            int zero = 0;
+            int sum = 10 / zero;
+
             return View();
         }
 

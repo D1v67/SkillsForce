@@ -196,6 +196,7 @@
     <Compile Include="Services\TrainingService.cs" />
     <Compile Include="Services\AttachmentService.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\ValidationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common.SkillsForce\Common.SkillsForce.csproj">

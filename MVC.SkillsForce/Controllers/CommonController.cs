@@ -17,5 +17,9 @@ namespace MVC.SkillsForce.Controllers
         {
             return View();
         }
+        public ActionResult InternalServerError()
+        {
+            return View();
+        }
     }
 }

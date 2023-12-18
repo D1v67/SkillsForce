@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,48 +10,45 @@ namespace Common.SkillsForce.AppLogger
 {
     public class Logger : ILogger
     {
-        private readonly string logFilePath;
-
-        public Logger(string filePath = "C:\\SkillsForce\\MVC.SkillsForce\\ErrorLog\\log.txt")
+        private readonly string _loggerFilePath;
+        string loggerFilePath = "ErrorLog\\log.txt";
+        public Logger()
         {
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            logFilePath = Path.Combine(baseDirectory, filePath);
+            string rootDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            _loggerFilePath = Path.Combine(rootDirectory, loggerFilePath);
         }
 
         public void Log(string message)
         {
-            string logMessage = $"{message}";
+            string errorLogMessage = $"{message}";
 
             try
             {
-                if (!File.Exists(logFilePath))
+                if (!File.Exists(_loggerFilePath))
                 {
-                    File.Create(logFilePath);
+                    File.Create(_loggerFilePath);
                 }
-
-                using (StreamWriter writer = File.AppendText(logFilePath))
+                using (StreamWriter writer = File.AppendText(_loggerFilePath))
                 {
-                    writer.WriteLine(logMessage);
+                    writer.WriteLine(errorLogMessage);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error writing to log file: {ex.Message}");
+                Debug.WriteLine($"Error writing to log file: {ex.Message}");
             }
         }
 
-        public void LogError(Exception ex)
+        public void LogError(Exception exception)
         {
-            string fullMessage = "--------------------------------------------------";
+            string fullMessage = "---------------------------------------------------------";
             fullMessage += Environment.NewLine + $"Timestamp: {DateTime.Now}";
-            fullMessage += Environment.NewLine + $"Exception Type: {ex.GetType().FullName}";
-            fullMessage += Environment.NewLine + $"Message: {ex.Message}";
-            fullMessage += Environment.NewLine + $"Inner Exception: {ex.InnerException}";
-            fullMessage += Environment.NewLine + $"Stack Trace: {ex.StackTrace}";
-            fullMessage += Environment.NewLine + "--------------------------------------------------";
-
+            fullMessage += Environment.NewLine + $"Exception Type: {this.GetType().FullName}";
+            fullMessage += Environment.NewLine + $"Message: {exception.Message}";
+            fullMessage += Environment.NewLine + $"Inner Exception: {exception.InnerException}";
+            fullMessage += Environment.NewLine + $"Stack Trace: {exception.StackTrace}";
+            fullMessage += Environment.NewLine + "\"---------------------------------------------------------\";";
             Log(fullMessage);
         }
-
     }
 }

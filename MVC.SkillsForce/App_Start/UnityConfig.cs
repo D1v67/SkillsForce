@@ -1,5 +1,6 @@
 using BusinessLayer.SkillsForce.Interface;
 using BusinessLayer.SkillsForce.Services;
+using Common.SkillsForce.AppLogger;
 
 //using Common.SkillsForce.AppLogger;//using Common.SkillsForce.AppLogger;
 using DataAccessLayer.SkillsForce.DAL;
@@ -16,19 +17,8 @@ namespace MVC.SkillsForce
         {
 			var container = new UnityContainer();
 
-            // register all your components with the container here
-            // it is NOT necessary to register your controllers
+            container.RegisterType<ILogger, Logger>();
 
-            // e.g. container.RegisterType<ITestService, TestService>();
-
-            // register all your components with the container here
-            // it is NOT necessary to register your controllers
-
-            // e.g. container.RegisterType<ITestService, TestService>();
-            //container.RegisterType<Test_IDataAccessLayer, Test_DataAccessLayer>();
-            //container.RegisterType<Test_IDataAccessLayer, Test_DataAccessLayer>();
-           // container.RegisterType<ILogger, Logger>();
-            //container.RegisterType<IDataAccessLayer, DataAccessLayer>();
             container.RegisterType<IDBCommand, DBCommand>();
 
             container.RegisterType<ITrainingDAL, TrainingDAL>();
@@ -54,6 +44,19 @@ namespace MVC.SkillsForce
             container.RegisterType<IAttachmentService, AttachmentService>();
             container.RegisterType<IAttachmentDAL, AttachmentDAL>();
 
+            // register all your components with the container here
+            // it is NOT necessary to register your controllers
+
+            // e.g. container.RegisterType<ITestService, TestService>();
+
+            // register all your components with the container here
+            // it is NOT necessary to register your controllers
+
+            // e.g. container.RegisterType<ITestService, TestService>();
+            //container.RegisterType<Test_IDataAccessLayer, Test_DataAccessLayer>();
+            //container.RegisterType<Test_IDataAccessLayer, Test_DataAccessLayer>();
+            
+            //container.RegisterType<IDataAccessLayer, DataAccessLayer>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

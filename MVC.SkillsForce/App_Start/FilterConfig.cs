@@ -1,5 +1,5 @@
 ﻿using Common.SkillsForce.AppLogger;
-using MVC.SkillsForce.App_Start;
+using MVC.SkillsForce.Custom;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce
@@ -10,10 +10,8 @@ namespace MVC.SkillsForce
         {
             filters.Add(new HandleErrorAttribute());
 
-            var logger = DependencyResolver.Current.GetService<ILogger>();
-            filters.Add(new GlobalExceptionHandler(logger));
-
-
+            var mylogger = DependencyResolver.Current.GetService<ILogger>();
+            filters.Add(new GlobalExceptionHandler(mylogger));
         }
     }
 }

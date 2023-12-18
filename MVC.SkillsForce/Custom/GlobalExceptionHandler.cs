@@ -9,7 +9,7 @@ using System.Security.Authentication;
 using System.Web;
 using System.Web.Mvc;
 
-namespace MVC.SkillsForce.App_Start
+namespace MVC.SkillsForce.Custom
 {
     public class GlobalExceptionHandler : HandleErrorAttribute
     {
@@ -22,14 +22,14 @@ namespace MVC.SkillsForce.App_Start
         public override void OnException(ExceptionContext filterContext)
         {
             base.OnException(filterContext);
-            var logger = DependencyResolver.Current.GetService<ILogger>();
-            logger.LogError(filterContext.Exception);
+
+            _logger.LogError(filterContext.Exception);
 
             filterContext.ExceptionHandled = true;
             filterContext.HttpContext.Response.StatusCode = 500;
             filterContext.Result = new ViewResult()
             {
-                ViewName = "Error",
+                ViewName = "InternalServerError",
                 TempData = filterContext.Controller.TempData
             };
         }

@@ -95,12 +95,8 @@ namespace MVC.SkillsForce.Controllers
 
         }
       ///  [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
-      ///  [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
-      /// </summary>
-      /// <returns></returns>
         public JsonResult ViewTrainingData()
         {
-
             IEnumerable<TrainingModel> trainings = new List<TrainingModel>();
             try
             {
@@ -113,36 +109,6 @@ namespace MVC.SkillsForce.Controllers
             return Json(trainings, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult EnrollTraining(int? trainingID)
-        {
-            //IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
-
-            //prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)trainingID);
-            //ViewBag.ListOfPrerequisiteByTrainingID = prerequisites;
-            //return View(prerequisites);
-
-            if (trainingID == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
-
-            prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)trainingID);
-            if (prerequisites == null)
-            {
-                return HttpNotFound();
-            }
-            return View(prerequisites);
-        }
-
-
-        //[HttpPost]
-
-        //public ActionResult UploadFiles(List<HttpPostedFileBase> files)
-        //{
-        //    //var results = EvidenceBL.UploadFile(files).GetAddedRows();
-        //    return View();
-        //}
 
 
         [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
@@ -217,10 +183,23 @@ namespace MVC.SkillsForce.Controllers
         public ActionResult UploadFiles(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
         {
             _attachmentService.UploadFile(files, EnrollmentID, PrerequisiteIDs);
-            // _attachmentService.UploadFile(files, EnrollmentID, PrerequisiteIDs);
-            // return Json(new { success = false, error = "No files uploaded." });
             return Json(new { success = true });
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         //[HttpPost]
         //public async Task<ActionResult> UploadFiles()
@@ -281,6 +260,37 @@ namespace MVC.SkillsForce.Controllers
         //    //var items = FileManipulation.GetFiles(Server.MapPath("~/App_Data/Input"));
 
         //     return Json(new { success = true});
+        //}
+
+        //public ActionResult EnrollTraining(int? trainingID)
+        //{
+        //    //IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
+
+        //    //prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)trainingID);
+        //    //ViewBag.ListOfPrerequisiteByTrainingID = prerequisites;
+        //    //return View(prerequisites);
+
+        //    if (trainingID == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
+
+        //    prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)trainingID);
+        //    if (prerequisites == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(prerequisites);
+        //}
+
+
+        //[HttpPost]
+
+        //public ActionResult UploadFiles(List<HttpPostedFileBase> files)
+        //{
+        //    //var results = EvidenceBL.UploadFile(files).GetAddedRows();
+        //    return View();
         //}
 
         public ActionResult ModalView()

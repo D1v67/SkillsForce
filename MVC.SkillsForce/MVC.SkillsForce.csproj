@@ -137,7 +137,7 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\GlobalExceptionHandler.cs" />
+    <Compile Include="Custom\GlobalExceptionHandler.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -243,17 +243,15 @@
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Department\Index.cshtml" />
-    <Content Include="Views\Enrollment\TrainingTest.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\Common\AccessDenied.cshtml" />
-    <Content Include="Views\Enrollment\ModalView.cshtml" />
     <Content Include="Views\Enrollment\GetEnrollments.cshtml" />
     <Content Include="Views\Enrollment\Index.cshtml" />
     <Content Include="Views\Enrollment\ViewTraining.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
     <Content Include="Views\Common\NotFound.cshtml" />
     <Content Include="Views\Training\GetAllTrainingWithPrerequsiites.cshtml" />
-    <Content Include="Views\Enrollment\EnrollTraining.cshtml" />
+    <Content Include="Views\Common\InternalServerError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
