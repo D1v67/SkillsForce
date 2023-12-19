@@ -23,6 +23,16 @@ namespace DataAccessLayer.SkillsForce.DAL
             dataAccess.CloseConnection();
             return resultTable;
         }
+        public  SqlDataReader GetDataReader(string query)
+        {
+            DataAccessLayer dataAccess = new DataAccessLayer();
+            SqlCommand cmd = new SqlCommand(query, dataAccess._databaseConnection)
+            {
+                CommandType = CommandType.Text
+            };
+
+            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
+        }
 
         public int InsertUpdateData(string query, List<SqlParameter> parameters)
         {
@@ -44,6 +54,8 @@ namespace DataAccessLayer.SkillsForce.DAL
             return affectedRows;
 
         }
+
+
 
         public int InsertDataAndReturnIdentity(string query, List<SqlParameter> parameters)
         {
@@ -87,6 +99,22 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
             dataAccess.CloseConnection();
             return resultTable;
+        }
+
+        public  SqlDataReader GetDataWithConditionsReader(string query, List<SqlParameter> parameters)
+        {
+            DataAccessLayer dataAccess = new DataAccessLayer();
+            SqlCommand cmd = new SqlCommand(query, dataAccess._databaseConnection);
+            cmd.CommandType = CommandType.Text;
+
+            if (parameters != null)
+            {
+                parameters.ForEach(parameter =>
+                {
+                    cmd.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                });
+            }
+            return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
     }
 }
