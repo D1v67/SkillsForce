@@ -37,6 +37,8 @@ namespace MVC.SkillsForce.Controllers
             IEnumerable<UserModel> managers = _userService.GetAllManager();
             return Json(managers, JsonRequestBehavior.AllowGet);
         }
+
+
         //TODO
         // GET: UserDefault/Details/5
         public ActionResult Details(int id)

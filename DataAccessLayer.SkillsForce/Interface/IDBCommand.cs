@@ -13,6 +13,10 @@ namespace DataAccessLayer.SkillsForce.Interface
         DataTable GetData(string query);
         DataTable GetDataWithConditions(string query, List<SqlParameter> parameters);
         int InsertUpdateData(string query, List<SqlParameter> parameters);
-        int InsertDataAndReturnIdentity(string query, List<SqlParameter> parameters);    
+        int InsertDataAndReturnIdentity(string query, List<SqlParameter> parameters);
+
+
+        SqlDataReader GetDataReader(string query);
+        SqlDataReader GetDataWithConditionsReader(string query, List<SqlParameter> parameters);
     }
 }
