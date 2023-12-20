@@ -51,9 +51,11 @@
     <Compile Include="Entity\DepartmentModel.cs" />
     <Compile Include="Entity\EnrollmentModel.cs" />
     <Compile Include="Entity\PrerequisiteModel.cs" />
+    <Compile Include="Entity\UserRoleModel.cs" />
     <Compile Include="Entity\TrainingModel.cs" />
     <Compile Include="Entity\UserModel.cs" />
     <Compile Include="Enums\RolesEnum.cs" />
+    <Compile Include="Helpers\PasswordHasher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\EnrollmentNotificationViewModel.cs" />
     <Compile Include="ViewModel\EnrollmentViewModel.cs" />

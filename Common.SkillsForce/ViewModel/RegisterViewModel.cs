@@ -15,6 +15,8 @@ namespace Common.SkillsForce.ViewModel
         public int DepartmentID { get; set; }
         public int ManagerID { get; set; }
         public string Password { get; set; }
+        public byte[] SaltValue { get; set; }
+        public byte[] HashedPassword { get; set; }
         public IEnumerable<UserModel> ListOfManagers { get; set; }
         public IEnumerable<DepartmentModel> ListOfDepartments { get; set; }
     }

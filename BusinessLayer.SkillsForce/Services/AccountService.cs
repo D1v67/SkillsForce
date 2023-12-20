@@ -1,4 +1,5 @@
-﻿using BusinessLayer.SkillsForce.Interface;
+﻿using BusinessLayer.SkillsForce.Helpers;
+using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
@@ -27,6 +28,10 @@ namespace BusinessLayer.SkillsForce.Services
 
         public void RegisterUser(RegisterViewModel model)
         {
+            var hashedPassword = PasswordHasher.HashPassword(model.Password);
+            model.HashedPassword = hashedPassword.Item1;
+            model.SaltValue = hashedPassword.Item2;
+
             _loginDAL.Register(model);
         }
     }
