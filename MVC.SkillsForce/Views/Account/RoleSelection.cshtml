@@ -1,0 +1,81 @@
+﻿@model List<string>
+
+@{
+    ViewBag.Title = "Role Selection";
+    Layout = null;
+}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+<style>
+
+    body{
+        justify-content:center;
+         align-content: center;
+         display:flex;
+         background-color: aliceblue;
+    }
+    .card {
+        width: 30rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-size: 18px; 
+    }
+
+    .btn-primary {
+        border-radius: 15px;
+        width: 100%; /* Make the button width 100% */
+        font-size: 18px; /* Increase text size */
+    }
+</style>
+
+<!-- jQuery -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+<body>
+    @using (Html.BeginForm("SetRole", "Account", FormMethod.Post, new { @class = "mx-auto" }))
+    {
+        if (Model != null && Model.Any())
+        {
+            <div class="card mx-auto mt-5 p-5">
+                <div class="card-body shadow-lg">
+                    <h5 class="card-title">Role Selection</h5>
+                    <div class="form-check">
+                        @foreach (var role in Model)
+                        {
+                            <input type="radio" id="@role" name="selectedRole" value="@role" class="form-check-input"
+                                   @(role == Model.First() ? "checked" : "")> <!-- Select the first role by default -->
+                            <label for="@role" class="form-check-label">@role</label><br>
+                        }
+                    </div>
+                    <div class="mt-3 text-center">
+                        <button type="submit" class="btn btn-primary">NEXT</button>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p>No roles available.</p>
+        }
+    }
+</body>
+

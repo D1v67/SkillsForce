@@ -183,6 +183,7 @@
     <Compile Include="Interface\IEnrollmentService.cs" />
     <Compile Include="Interface\INotificationService.cs" />
     <Compile Include="Interface\IPrerequisteService.cs" />
+    <Compile Include="Interface\ISessionService.cs" />
     <Compile Include="Interface\ITrainingService.cs" />
     <Compile Include="Interface\IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -192,6 +193,7 @@
     <Compile Include="Services\DepartmentService.cs" />
     <Compile Include="Services\EnrollmentService.cs" />
     <Compile Include="Services\PrerequisiteService.cs" />
+    <Compile Include="Services\SessionService.cs" />
     <Compile Include="Services\StorageService.cs" />
     <Compile Include="Services\TrainingService.cs" />
     <Compile Include="Services\AttachmentService.cs" />

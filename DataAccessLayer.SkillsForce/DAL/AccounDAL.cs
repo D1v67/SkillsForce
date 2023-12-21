@@ -58,30 +58,29 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
         }
 
-
         public AccountModel GetUserDetailsWithRoles(AccountModel account)
         {
             const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT
-                                                                u.UserID,
-                                                                u.FirstName,
-                                                                u.LastName,
-                                                                u.Email,
-                                                                u.NIC,
-                                                                u.MobileNumber,
-                                                                u.DepartmentID,
-                                                                d.DepartmentName,
-                                                                u.ManagerID,
-                                                                r.RoleName,
-                                                                r.RoleID
-                                                            FROM
-                                                                [User] u
-                                                            LEFT JOIN
-                                                                Department d ON u.DepartmentID = d.DepartmentID
-                                                            LEFT JOIN
-                                                                UserRole ur ON u.UserID = ur.UserID
-                                                            LEFT JOIN
-                                                                Role r ON ur.RoleID = r.RoleID
-                                                            WHERE u.Email = @Email";
+                                                           u.UserID,
+                                                           u.FirstName,
+                                                           u.LastName,
+                                                           u.Email,
+                                                           u.NIC,
+                                                           u.MobileNumber,
+                                                           u.DepartmentID,
+                                                           d.DepartmentName,
+                                                           u.ManagerID,
+                                                           r.RoleName,
+                                                           r.RoleID
+                                                       FROM
+                                                           [User] u
+                                                       LEFT JOIN
+                                                           Department d ON u.DepartmentID = d.DepartmentID
+                                                       LEFT JOIN
+                                                           UserRole ur ON u.UserID = ur.UserID
+                                                       LEFT JOIN
+                                                           Role r ON ur.RoleID = r.RoleID
+                                                       WHERE u.Email = @Email";
             AccountModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@Email", account.Email));
@@ -93,16 +92,77 @@ namespace DataAccessLayer.SkillsForce.DAL
                     user = new AccountModel
                     {
                         UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
-                        RoleName = reader.GetString(reader.GetOrdinal("RoleName")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
                         Email = reader.GetString(reader.GetOrdinal("Email")).Trim(),
-                        RoleId = reader.GetByte(reader.GetOrdinal("RoleId")),
-                        FirstName = reader.GetString(reader.GetOrdinal("FirstName"))
+                        //RoleName = reader.GetString(reader.GetOrdinal("RoleName")),
+                        //RoleId = reader.GetInt32(reader.GetOrdinal("RoleID")),
+                        listOfRoles = new List<UserRoleModel>()
                     };
+
+                    // Add roles to the listOfRoles property
+                    do
+                    {
+                        UserRoleModel role = new UserRoleModel
+                        {
+                            UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
+                            RoleName = reader.GetString(reader.GetOrdinal("RoleName")),
+                            RoleID = reader.GetByte(reader.GetOrdinal("RoleID"))
+                        };
+                        user.listOfRoles.Add(role);
+                    } while (reader.Read());
                 }
             }
 
             return user;
+
         }
+        //public AccountModel GetUserDetailsWithRoles(AccountModel account)
+        //{
+        //    const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT
+        //                                                        u.UserID,
+        //                                                        u.FirstName,
+        //                                                        u.LastName,
+        //                                                        u.Email,
+        //                                                        u.NIC,
+        //                                                        u.MobileNumber,
+        //                                                        u.DepartmentID,
+        //                                                        d.DepartmentName,
+        //                                                        u.ManagerID,
+        //                                                        r.RoleName,
+        //                                                        r.RoleID
+        //                                                    FROM
+        //                                                        [User] u
+        //                                                    LEFT JOIN
+        //                                                        Department d ON u.DepartmentID = d.DepartmentID
+        //                                                    LEFT JOIN
+        //                                                        UserRole ur ON u.UserID = ur.UserID
+        //                                                    LEFT JOIN
+        //                                                        Role r ON ur.RoleID = r.RoleID
+        //                                                    WHERE u.Email = @Email";
+        //    AccountModel user = null;
+        //    List<SqlParameter> parameters = new List<SqlParameter>();
+        //    parameters.Add(new SqlParameter("@Email", account.Email));
+
+        //    using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_USER_DETAILS_WITH_ROLE_QUERY, parameters))
+        //    {
+        //        if (reader.Read())
+        //        {
+        //            user = new AccountModel
+        //            {
+        //                UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
+        //                RoleName = reader.GetString(reader.GetOrdinal("RoleName")),
+        //                Email = reader.GetString(reader.GetOrdinal("Email")).Trim(),
+        //                RoleId = reader.GetByte(reader.GetOrdinal("RoleId")),
+        //                FirstName = reader.GetString(reader.GetOrdinal("FirstName"))
+        //            };
+        //        }
+        //    }
+
+        //    return user;
+        //}
+
+
         //public AccountModel GetUserDetailsWithRoles(AccountModel account)
         //{
         //    const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.*, r.* FROM [User] u  INNER JOIN Role r  ON u.RoleID = r.RoleID  WHERE u.Email = @Email";

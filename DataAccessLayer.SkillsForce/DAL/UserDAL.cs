@@ -20,7 +20,6 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             const string GET_ALL_USER_QUERY = @"SELECT * FROM [dbo].[User]";
             List<UserModel> users = new List<UserModel>();
-
             using (SqlDataReader reader = _dbCommand.GetDataReader(GET_ALL_USER_QUERY))
             {
                 while (reader.Read())
@@ -37,20 +36,16 @@ namespace DataAccessLayer.SkillsForce.DAL
                         DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID")),
                        // ManagerID = reader.IsDBNull(reader.GetOrdinal("ManagerID")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("ManagerID"))
                     };
-
                     users.Add(user);
                 }
             }
-
             return users;
         }
-
 
         public UserModel GetByID(int id)
         {
             const string GET_USER_BY_ID_QUERY = @"SELECT * FROM [dbo].[User] WHERE UserID = @UserID";
             var parameters = new List<SqlParameter> { new SqlParameter("@UserID", id) };
-
             using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_USER_BY_ID_QUERY, parameters))
             {
                 if (reader.Read())
@@ -75,9 +70,8 @@ namespace DataAccessLayer.SkillsForce.DAL
         public void Add(UserModel user)
         {
             const string INSERT_USER_QUERY = @"INSERT INTO [dbo].[User] ([FirstName],[LastName],[Email],[NIC],[MobileNumber],[RoleID],[DepartmentID],[ManagerID]) 
-                                                 VALUES (@FirstName, @LastName, @Email, @NIC, @MobileNumber, @RoleID, @DepartmentID, @ManagerID)";
+                                               VALUES (@FirstName, @LastName, @Email, @NIC, @MobileNumber, @RoleID, @DepartmentID, @ManagerID)";
             List<SqlParameter> parameters = new List<SqlParameter>();
-
             parameters.Add(new SqlParameter("@FirstName", user.FirstName));
             parameters.Add(new SqlParameter("@LastName", user.LastName));
             parameters.Add(new SqlParameter("@Email", user.Email));
@@ -98,11 +92,8 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public void Update(UserModel user)
         {
-            const string UPDATE_USER_QUERY = @"UPDATE [dbo].[User]
-                                                 SET [FirstName] = @FirstName,[LastName] = @LastName,[Email] = @Email,[NIC] = @NIC,[MobileNumber] = @MobileNumber,[RoleID] = @RoleID,[DepartmentID] = @DepartmentID,[ManagerID] = @ManagerID
-                                                 WHERE [UserID] = @UserID";
+            const string UPDATE_USER_QUERY = @"UPDATE [dbo].[User] SET [FirstName] = @FirstName,[LastName] = @LastName,[Email] = @Email,[NIC] = @NIC,[MobileNumber] = @MobileNumber,[RoleID] = @RoleID,[DepartmentID] = @DepartmentID,[ManagerID] = @ManagerID WHERE [UserID] = @UserID";
             List<SqlParameter> parameters = new List<SqlParameter>();
-
             parameters.Add(new SqlParameter("@FirstName", user.MobileNumber));
             parameters.Add(new SqlParameter("@LastName", user.LastName));
             parameters.Add(new SqlParameter("@Email", user.Email));
@@ -117,15 +108,10 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public IEnumerable<UserModel> GetAllManager()
         {
-            const string GET_ALL_MANAGERS = @"SELECT U.* 
-                                                FROM [User] U 
-                                                JOIN UserRole UR ON U.UserID = UR.UserID
-                                                JOIN Role R ON UR.RoleID = R.RoleID 
-                                                WHERE R.RoleName = @RoleName";
+            const string GET_ALL_MANAGERS = @"SELECT U.* FROM [User] U JOIN UserRole UR ON U.UserID = UR.UserID JOIN Role R ON UR.RoleID = R.RoleID WHERE R.RoleName = @RoleName";
             List<UserModel> managers = new List<UserModel>();
 
             var parameters = new List<SqlParameter> { new SqlParameter("@RoleName", RolesEnum.Manager.ToString()) };
-
             using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_ALL_MANAGERS, parameters))
             {
                 while (reader.Read())
@@ -137,16 +123,13 @@ namespace DataAccessLayer.SkillsForce.DAL
                         LastName = reader.GetString(reader.GetOrdinal("LastName"))
 
                     };
-
                     managers.Add(manager);
                 }
             }
-
             if (managers.Count > 0)
             {
                 return managers;
             }
-
             return null;
         }
 

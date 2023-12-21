@@ -137,6 +137,7 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Custom\GlobalExceptionHandler.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
@@ -252,6 +253,9 @@
     <Content Include="Views\Common\NotFound.cshtml" />
     <Content Include="Views\Training\GetAllTrainingWithPrerequsiites.cshtml" />
     <Content Include="Views\Common\InternalServerError.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Training\Create.cshtml" />
+    <Content Include="Views\Account\RoleSelection.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

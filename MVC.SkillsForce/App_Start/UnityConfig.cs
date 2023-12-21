@@ -21,6 +21,8 @@ namespace MVC.SkillsForce
 
             container.RegisterType<IDBCommand, DBCommand>();
 
+            container.RegisterType<ISessionService, SessionService>();
+
             container.RegisterType<ITrainingDAL, TrainingDAL>();
             container.RegisterType<ITrainingService, TrainingService>();
             //container.RegisterType<IDataAccessLayer, DataAccessLayer>();
