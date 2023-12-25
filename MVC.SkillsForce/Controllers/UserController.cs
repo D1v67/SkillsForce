@@ -17,7 +17,6 @@ namespace MVC.SkillsForce.Controllers
             _userService = userService;
         }
 
-        [CustomAuthorization(RolesEnum.Admin)]
         public ActionResult Index()
         {
             IEnumerable<UserModel> users = new List<UserModel>();

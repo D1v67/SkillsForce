@@ -18,7 +18,6 @@ namespace MVC.SkillsForce.Controllers
         {
             _prerequisiteService = prerequisiteService;
         }
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         public ActionResult Index()
         {
             IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
@@ -33,7 +32,6 @@ namespace MVC.SkillsForce.Controllers
             return View(prerequisites);
         }
 
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         public ActionResult GetPrerequisiteByTrainingID(int TrainigID)
         {
             IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();

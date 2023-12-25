@@ -133,32 +133,35 @@ namespace DataAccessLayer.SkillsForce.DAL
             return null;
         }
 
-        public bool ApproveRequest(UserModel user, TrainingModel traning)
+        public bool IsEmailAlreadyExists(string email)
         {
-            throw new NotImplementedException();
+            const string IS_EMAIL_ALREADY_EXIST_QUERY = "SELECT 1 FROM [User] WHERE Email = @Email";
+            var parameters = new List<SqlParameter> { new SqlParameter("@Email", email) };
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(IS_EMAIL_ALREADY_EXIST_QUERY, parameters))
+            {
+                return reader.Read();      
+            }
         }
 
-        public bool DeclineRequest(UserModel user, TrainingModel traning)
+        public bool IsNICExists(string nic)
         {
-            throw new NotImplementedException();
+            const string IS_NIC_ALREADY_EXIST_QUERY = "SELECT 1 FROM [User] WHERE NIC = @NIC";
+            var parameters = new List<SqlParameter> { new SqlParameter("@NIC", nic) };
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(IS_NIC_ALREADY_EXIST_QUERY, parameters))
+            {
+                return reader.Read();
+            }
         }
 
-        public bool Login(UserModel user)
+        public bool IsMobileNumberExists(string mobileNumber)
         {
-            throw new NotImplementedException();
+            const string IS_MOBILE_NUMBER_ALREADY_EXIST_QUERY = "SELECT 1 FROM [User] WHERE MobileNumber = @MobileNumber";
+            var parameters = new List<SqlParameter> { new SqlParameter("@MobileNumber", mobileNumber) };
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(IS_MOBILE_NUMBER_ALREADY_EXIST_QUERY, parameters))
+            {
+                return reader.Read();
+            }
         }
-
-        public bool Logout(UserModel user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Register(UserModel user)
-        {
-            throw new NotImplementedException();
-        }
-
-
     }
 }
 

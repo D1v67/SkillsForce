@@ -6,7 +6,14 @@
 
 <style>
 </style>
-
+<script type="text/javascript" src="
+https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+@*
+    https://codeseven.github.io/toastr/*@
+<script type="text/javascript" src="
+https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link rel="stylesheet" href="
+https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
 
 <div class="container-fluid">
@@ -88,18 +95,37 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.EnrollmentStatus)
                             </td>
+
+                            @*<td>
+                                    @if (item.EnrollmentStatus != "Approved")
+                                    {
+                                        <button class="btn btn-primary approve-btn" data-enrollment-id="@item.EnrollmentID">Approve</button>
+                                        <button class="btn btn-danger reject-btn" data-enrollment-id="@item.EnrollmentID" disabled>Reject</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-primary approve-btn" data-enrollment-id="@item.EnrollmentID" disabled>Approve</button>
+                                        <button class="btn btn-danger reject-btn" data-enrollment-id="@item.EnrollmentID">Reject</button>
+                                    }
+
+                                </td>*@
+
                             <td>
-                                @if (item.EnrollmentStatus != "Approved")
+                                @if (item.EnrollmentStatus == "Pending")
                                 {
                                     <button class="btn btn-primary approve-btn" data-enrollment-id="@item.EnrollmentID">Approve</button>
-                                    <button class="btn btn-danger reject-btn" data-enrollment-id="@item.EnrollmentID" disabled>Reject</button>
+                                    <button class="btn btn-danger reject-btn" data-enrollment-id="@item.EnrollmentID">Reject</button>
                                 }
-                                else
+                                else if (item.EnrollmentStatus == "Approved")
                                 {
                                     <button class="btn btn-primary approve-btn" data-enrollment-id="@item.EnrollmentID" disabled>Approve</button>
                                     <button class="btn btn-danger reject-btn" data-enrollment-id="@item.EnrollmentID">Reject</button>
                                 }
-
+                                else if (item.EnrollmentStatus == "Rejected")
+                                {
+                                    <button class="btn btn-primary approve-btn" data-enrollment-id="@item.EnrollmentID">Approve</button>
+                                    <button class="btn btn-danger reject-btn" data-enrollment-id="@item.EnrollmentID" disabled>Reject</button>
+                                }
                             </td>
                             <td>
                                 <button type="button" class="btn btn-info view-attachments-btn" data-toggle="modal" data-target="#attachmentModal" onclick="showAttachments(@item.EnrollmentID)">View Attachments</button>
@@ -142,6 +168,28 @@
     </div>
 </div>
 
+<div class="modal fade" id="rejectionModal" tabindex="-1" role="dialog" aria-labelledby="rejectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectionModalLabel">Rejection Reason</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="rejectionForm">
+                    <div class="form-group">
+                        <label for="rejectionReason">Reason for Rejection:</label>
+                        <textarea class="form-control" id="rejectionReason" name="rejectionReason" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -151,6 +199,23 @@
 
 @section scripts {
     <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
 
 
         $(".approve-btn").click(function () {
@@ -170,6 +235,7 @@
 
                         button.prop('disabled', true);
                         $(".reject-btn").prop('disabled', false);
+                        toastr.success("Enrollment Approved Successfully.");
                     } else {
 
                         alert('Error approving enrollment: ' + result.message);
@@ -185,31 +251,70 @@
         $(".reject-btn").click(function () {
             var button = $(this);
             var enrollmentId = button.data("enrollment-id");
-            console.log(enrollmentId)
 
-            $.ajax({
-                url: '/Enrollment/RejectEnrollment',
-                type: 'POST',
-                data: { enrollmentId: enrollmentId },
-                success: function (result) {
-                    if (result.success) {
+            var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
-                        //button.closest('tr').find('td:last-child').html('<span>Approved</span>');
-                        button.closest('tr').find('td:eq(7)').html('Rejected');
+            // Show rejection modal
+            $('#rejectionModal').modal('show');
 
-                        button.prop('disabled', true);
-                        $(".approve-btn").prop('disabled', false);
-                    } else {
+            // Submit rejection reason when the form is submitted
+            $('#rejectionForm').submit(function (event) {
+                event.preventDefault();
 
-                        alert('Error rejecting enrollment: ' + result.message);
+                var rejectionReason = $('#rejectionReason').val();
+                console.log(userId)
+                $.ajax({
+                    url: '/Enrollment/RejectEnrollment',
+                    type: 'POST',
+                    data: { enrollmentId: enrollmentId, rejectionReason: rejectionReason, declinedByUserId: userId },
+                    success: function (result) {
+                        if (result.success) {
+                            button.closest('tr').find('td:eq(7)').html('Rejected');
+                            button.prop('disabled', true);
+                            $(".approve-btn").prop('disabled', false);
+                            $('#rejectionModal').modal('hide');
+                            toastr.success("Enrollment Rejected Successfully.");
+                        } else {
+                            alert('Error rejecting enrollment: ' + result.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error rejecting enrollment.');
                     }
-                },
-                error: function () {
-
-                    alert('Error rejecting enrollment.');
-                }
+                });
             });
+
         });
+        //$(".reject-btn").click(function () {
+        //    var button = $(this);
+        //    var enrollmentId = button.data("enrollment-id");
+        //    console.log(enrollmentId)
+
+        //    $('#rejectionModal').modal('show');
+
+        //    $.ajax({
+        //        url: '/Enrollment/RejectEnrollment',
+        //        type: 'POST',
+        //        data: { enrollmentId: enrollmentId },
+        //        success: function (result) {
+        //            if (result.success) {
+
+        //                //button.closest('tr').find('td:last-child').html('<span>Approved</span>');
+        //                button.closest('tr').find('td:eq(7)').html('Rejected');
+
+        //                button.prop('disabled', true);
+        //                $(".approve-btn").prop('disabled', false);
+        //            } else {
+
+        //                alert('Error rejecting enrollment: ' + result.message);
+        //            }
+        //        },
+        //        error: function () {
+
+        //            alert('Error rejecting enrollment.');
+        //        }
+        //    });
+        //});
 
         function showAttachments(enrollmentId) {
 
@@ -264,12 +369,12 @@
 
 @*@model IEnumerable<Common.SkillsForce.ViewModel.EnrollmentViewModel>
 
-@{
-    ViewBag.Title = "Index";
-}
+    @{
+        ViewBag.Title = "Index";
+    }
 
-<style>
-</style>*@
+    <style>
+    </style>*@
 
 
 

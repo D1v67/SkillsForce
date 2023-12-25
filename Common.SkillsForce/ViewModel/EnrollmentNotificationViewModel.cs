@@ -18,5 +18,6 @@ namespace Common.SkillsForce.ViewModel
         public string ManagerEmail { get; set; }
         public string ManagerFirstName { get; set; }
         public string ManagerLastName { get; set; }
+        public string DeclineReason { get; set;}
     }
 }

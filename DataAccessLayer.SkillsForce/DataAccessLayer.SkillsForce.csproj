@@ -48,6 +48,8 @@
     <Compile Include="DAL\Common\DBCommand.cs" />
     <Compile Include="DAL\DepartmentDAL.cs" />
     <Compile Include="DAL\EnrollmentDAL.cs" />
+    <Compile Include="DAL\UserAuthorizationDAL.cs" />
+    <Compile Include="Interface\IUserAuthorizationDAL.cs" />
     <Compile Include="Interface\IUserRoleDAL.cs" />
     <Compile Include="DAL\UserRoleDAL.cs" />
     <Compile Include="Interface\IAttachmentDAL.cs" />

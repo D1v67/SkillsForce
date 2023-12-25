@@ -2,6 +2,7 @@ using BusinessLayer.SkillsForce.Interface;
 using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.AppLogger;
 
+
 //using Common.SkillsForce.AppLogger;//using Common.SkillsForce.AppLogger;
 using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
@@ -22,6 +23,10 @@ namespace MVC.SkillsForce
             container.RegisterType<IDBCommand, DBCommand>();
 
             container.RegisterType<ISessionService, SessionService>();
+
+            container.RegisterType<IUserAuthorizationDAL, UserAuthorizationDAL>();
+            container.RegisterType<IUserAuthorizationService, UserAuthorizationService>();
+          
 
             container.RegisterType<ITrainingDAL, TrainingDAL>();
             container.RegisterType<ITrainingService, TrainingService>();

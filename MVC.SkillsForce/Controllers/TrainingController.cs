@@ -22,7 +22,6 @@ namespace MVC.SkillsForce.Controllers
             _prerequisiteService = prerequisiteService;
         }
         //GET ALL TRAINING
-        [CustomAuthorization(RolesEnum.Admin)]
         public ActionResult Index()
         {
             IEnumerable<TrainingModel> trainings = new List<TrainingModel>();

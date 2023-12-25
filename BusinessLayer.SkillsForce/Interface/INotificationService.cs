@@ -4,6 +4,7 @@ namespace BusinessLayer.SkillsForce.Interface
 {
     public interface INotificationService
     {
-        string SendNotification(EnrollmentNotificationViewModel enrollment);
+        string SendApprovalNotification(EnrollmentNotificationViewModel enrollment);
+        string SendRejectionNotification(EnrollmentNotificationViewModel enrollment);
     }
 }

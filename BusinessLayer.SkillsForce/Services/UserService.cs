@@ -43,31 +43,19 @@ namespace BusinessLayer.SkillsForce.Services
             _userDAL.Update(user);
         }
 
-        public bool ApproveRequest(UserModel user, TrainingModel traning)
+        public bool IsEmailAlreadyExists(string email)
         {
-            throw new NotImplementedException();
+            return _userDAL.IsEmailAlreadyExists(email);
         }
 
-        public bool DeclineRequest(UserModel user, TrainingModel traning)
+        public bool IsNICExists(string nic)
         {
-            throw new NotImplementedException();
+            return _userDAL.IsNICExists(nic);
         }
 
-        public bool Login(UserModel user)
+        public bool IsMobileNumberExists(string mobileNumber)
         {
-            throw new NotImplementedException();
+            return _userDAL.IsMobileNumberExists(mobileNumber);
         }
-
-        public bool Logout(UserModel user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Register(UserModel user)
-        {
-            throw new NotImplementedException();
-        }
-
-
     }
 }

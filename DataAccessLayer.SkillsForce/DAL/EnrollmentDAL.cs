@@ -136,11 +136,23 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand.InsertUpdateData(UPDATE_STATUS_APPROVED_QUERY, parameters);
         }
 
-        public void RejectEnrollment(int enrollmentId)
+        public void RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId)
         {
-            const string UPDATE_STATUS_REJECTED_QUERY = @"UPDATE Enrollment SET EnrollmentStatus = 'Rejected' WHERE EnrollmentID = @EnrollmentID";
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@EnrollmentID", enrollmentId));
+            const string UPDATE_STATUS_REJECTED_QUERY = @"
+                UPDATE Enrollment
+                SET EnrollmentStatus = 'Rejected',
+                    DeclineReason = @DeclineReason,
+                    DeclinedByUserId = @DeclinedByUserId,
+                    LastModifiedTimestamp = GETDATE(),
+                    LastModifiedUserId = @LastModifiedUserId
+                WHERE EnrollmentID = @EnrollmentID";
+            List<SqlParameter> parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@EnrollmentID", enrollmentId),
+                new SqlParameter("@DeclineReason", (object)rejectionReason ?? DBNull.Value),
+                new SqlParameter("@DeclinedByUserId", (object)declinedByUserId ?? DBNull.Value),
+                new SqlParameter("@LastModifiedUserId", declinedByUserId)
+            };
 
             _dbCommand.InsertUpdateData(UPDATE_STATUS_REJECTED_QUERY, parameters);
         }
@@ -148,11 +160,28 @@ namespace DataAccessLayer.SkillsForce.DAL
         public EnrollmentNotificationViewModel GetEnrollmentNotificationDetailsByID(int id)
         {
             const string GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID =
-                @"SELECT E.EnrollmentID, U.UserID AS AppUserID,U.FirstName AS AppUserFirstName,U.LastName AS AppUserLastName, U.Email AS AppUserEmail, U.RoleID AS AppUserRoleID, 
-                  T.TrainingID,T.TrainingName,D.DepartmentName,E.EnrollmentDate, E.EnrollmentStatus, U.ManagerID,M.Email AS ManagerEmail, M.FirstName AS ManagerFirstName,
-                  M.LastName AS ManagerLastName, M.UserID AS ManagerID
-                  FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
-                  LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
+                @"SELECT
+                    E.EnrollmentID,
+                    U.UserID AS AppUserID,
+                    U.FirstName AS AppUserFirstName,
+                    U.LastName AS AppUserLastName,
+                    U.Email AS AppUserEmail,
+                    E.TrainingID,
+                    T.TrainingName,
+                    D.DepartmentName,
+                    E.EnrollmentDate,
+                    E.EnrollmentStatus,
+                    E.DeclineReason,
+                    U.ManagerID,
+                    M.Email AS ManagerEmail,
+                    M.FirstName AS ManagerFirstName,
+                    M.LastName AS ManagerLastName
+                FROM
+                    Enrollment E
+                INNER JOIN [User] U ON E.UserID = U.UserID
+                INNER JOIN Training T ON E.TrainingID = T.TrainingID
+                LEFT JOIN Department D ON U.DepartmentID = D.DepartmentID
+                LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
             var dt = _dbCommand.GetDataWithConditions(GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID, parameters);
@@ -176,6 +205,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                     ManagerEmail = row["ManagerEmail"].ToString(),
                     ManagerFirstName = row["ManagerFirstName"].ToString(),
                     ManagerLastName = row["ManagerLastName"].ToString(),
+                    DeclineReason = row["DeclineReason"].ToString(),
                 };
                 return enrollment;
             }

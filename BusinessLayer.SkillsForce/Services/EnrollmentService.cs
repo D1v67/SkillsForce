@@ -57,9 +57,9 @@ namespace BusinessLayer.SkillsForce.Services
             return _enrollmentDAL.GetEnrollmentNotificationDetailsByID(id);
         }
 
-        public void RejectEnrollment(int enrollmentId)
+        public void RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId)
         {
-            _enrollmentDAL.RejectEnrollment(enrollmentId);
+            _enrollmentDAL.RejectEnrollment( enrollmentId,  rejectionReason, declinedByUserId);
         }
 
         public void Update(EnrollmentViewModel enrollment)

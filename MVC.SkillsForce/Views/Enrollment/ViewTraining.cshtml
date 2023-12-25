@@ -153,6 +153,24 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
         const searchInput = $("#searchInput");
         loadData(true, searchInput.val());
 
+        // Attach change event to each file input
+        //$('.fileUploader').on('change', function () {
+        //    var maxFileSize = 1* 1024; // 10 MB (adjust this value as needed)
+        //    var fileInput = $(this);
+        //    var files = fileInput[0].files;
+
+        //    for (var i = 0; i < files.length; i++) {
+        //        var fileSize = files[i].size;
+
+        //        if (fileSize > maxFileSize) {
+        //            alert('File size exceeds the limit (max: 10 MB). Please choose a smaller file.');
+        //            // Clear the file input to prevent uploading the large file
+        //            fileInput.val('');
+        //            return;
+        //        }
+        //    }
+        //});
+
 
         $("#changeViewBtn").data("view", "grid");
         $("#changeViewBtn").click(function () {

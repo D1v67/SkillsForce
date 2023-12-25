@@ -4,6 +4,7 @@ using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Policy;
 using System.Web.Mvc;
 
@@ -23,6 +24,7 @@ namespace MVC.SkillsForce.Controllers
         }
         public ActionResult Index()
         {
+           // var exist = _userService.IsMobileNumberExists("51111111");
             return View();
         }
 
@@ -58,20 +60,49 @@ namespace MVC.SkillsForce.Controllers
 
         public ActionResult Register()
         {
-            IEnumerable<DepartmentModel> departments = _departmentService.GetAll();
-            IEnumerable<UserModel> managers = _userService.GetAllManager();
+            //IEnumerable<DepartmentModel> departments = _departmentService.GetAll();
+            //IEnumerable<UserModel> managers = _userService.GetAllManager();
 
-            RegisterViewModel registerViewModel = new RegisterViewModel() { ListOfDepartments = departments, ListOfManagers = managers };
-            return View(departments);
+            //RegisterViewModel registerViewModel = new RegisterViewModel() { ListOfDepartments = departments, ListOfManagers = managers };
+            return View();
         }
 
         [HttpPost]
-        public JsonResult Register(RegisterViewModel model)
+        public JsonResult Register(RegisterViewModel registerViewModel)
         {
-            RegisterViewModel registerViewModel = model;
-            _loginService.RegisterUser(registerViewModel);
+            //RegisterViewModel registerViewModel = model;
+            // Check if the email is unique
+            if (_userService.IsEmailAlreadyExists(registerViewModel.Email))
+            {
+                ModelState.AddModelError("Email", "Email is already in use.");
+            }
 
-            return Json(new { url = Url.Action("Index", "Account") });
+            // Check if the NIC is unique
+            if (_userService.IsNICExists(registerViewModel.NIC))
+            {
+                ModelState.AddModelError("NIC", "NIC is already in use.");
+            }
+
+            // Check if the Mobile Number is unique
+            if (_userService.IsMobileNumberExists(registerViewModel.MobileNumber))
+            {
+                ModelState.AddModelError("MobileNumber", "Mobile Number is already in use.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                // If all validations pass, proceed with registration
+                _loginService.RegisterUser(registerViewModel);
+
+                return Json(new { url = Url.Action("Index", "Account") });
+            }
+
+            // If there are validation errors, return them to the client
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                          .Select(e => e.ErrorMessage)
+                                          .ToList();
+
+            return Json(new { errors });
         }
 
         [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]

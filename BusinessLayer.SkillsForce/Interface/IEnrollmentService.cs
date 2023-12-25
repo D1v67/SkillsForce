@@ -14,7 +14,7 @@ namespace BusinessLayer.SkillsForce.Interface
         IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails();
         IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId);
         void ApproveEnrollment(int enrollmentId);
-        void RejectEnrollment(int enrollmentId);
+        void RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId);
         EnrollmentNotificationViewModel GetEnrollmentNotificationDetailsByID(int id);
 
     }

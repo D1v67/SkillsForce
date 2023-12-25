@@ -33,7 +33,7 @@ namespace MVC.SkillsForce.Controllers
             _attachmentService = attachmentService;
         }
 
-        [CustomAuthorization(RolesEnum.Admin)]
+        [AuthorizePermission("GetAllEnrollment")]
         public ActionResult Index()
         {
             IEnumerable<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
@@ -48,7 +48,7 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
+        [AuthorizePermission("GetAllEnrollment")]
         public ActionResult GetEnrollments()
         {
             try
@@ -73,7 +73,6 @@ namespace MVC.SkillsForce.Controllers
             }
         }
 
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
         public ActionResult GetEnrollmentsForManager(int managerId)
         {
             IEnumerable<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
@@ -88,7 +87,6 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         public ActionResult ViewTraining()
         {
             return View();
@@ -111,7 +109,6 @@ namespace MVC.SkillsForce.Controllers
 
 
 
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         [HttpPost]
         public ActionResult SaveEnrollment(EnrollmentViewModel model)
         {
@@ -127,7 +124,6 @@ namespace MVC.SkillsForce.Controllers
             }
         }
 
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         public ActionResult GetPrerequisiteByTrainingID(int TrainigID)
         {
             IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
@@ -143,7 +139,6 @@ namespace MVC.SkillsForce.Controllers
 
         }
 
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
         [HttpPost]
         public ActionResult ApproveEnrollment(int enrollmentId)
         {
@@ -152,7 +147,7 @@ namespace MVC.SkillsForce.Controllers
                 _enrollmentService.ApproveEnrollment(enrollmentId);
                 EnrollmentNotificationViewModel enrollment= _enrollmentService.GetEnrollmentNotificationDetailsByID(enrollmentId);
 
-                _notificationService.SendNotification(enrollment);
+                _notificationService.SendApprovalNotification(enrollment);
          
                 return Json(new { success = true });
             }
@@ -163,13 +158,14 @@ namespace MVC.SkillsForce.Controllers
         }
 
 
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
         [HttpPost]
-        public ActionResult RejectEnrollment(int enrollmentId)
+        public ActionResult RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId)
         {
             try
             {
-                _enrollmentService.RejectEnrollment(enrollmentId);
+                _enrollmentService.RejectEnrollment( enrollmentId,  rejectionReason, declinedByUserId);
+                EnrollmentNotificationViewModel enrollment = _enrollmentService.GetEnrollmentNotificationDetailsByID(enrollmentId);
+                _notificationService.SendRejectionNotification(enrollment);
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -177,8 +173,6 @@ namespace MVC.SkillsForce.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
-        //[CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
         [HttpPost]
         public ActionResult UploadFiles(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
         {

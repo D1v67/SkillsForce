@@ -21,7 +21,6 @@ namespace MVC.SkillsForce.Controllers
             _attachmentService = attachmentService;
         }
 
-        [CustomAuthorization(RolesEnum.Admin)]
         public ActionResult Index()
         {
             IEnumerable<AttachmentModel> attachments = new List<AttachmentModel>();
@@ -36,7 +35,6 @@ namespace MVC.SkillsForce.Controllers
             return View(attachments);
         }
 
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
         [HttpGet]
         public JsonResult GetAllAttachmentByEnrollmentID(int enrollmentID)
         {         
@@ -53,7 +51,6 @@ namespace MVC.SkillsForce.Controllers
             return Json(new { result = attachments }, JsonRequestBehavior.AllowGet);
         }
 
-        [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager)]
         public ActionResult DownloadAttachmentByAttachmentID(int id)
         {
             var result = _attachmentService.GetByAttachmentID(id);

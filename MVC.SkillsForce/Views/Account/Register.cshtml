@@ -34,9 +34,39 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+        <script type="text/javascript" src="
+    https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        @*
+            https://codeseven.github.io/toastr/*@
+        <script type="text/javascript" src="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <link rel="stylesheet" href="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
-    <script type="text/javascript">
+        <script type="text/javascript">
         $(document).ready(function () {
+
+
+            toastr.options.timeOut = 1000;
+            function validateFieldOnBlur(field, regex) {
+                var value = field.val();
+                if (!regex.test(value)) {
+                    field.addClass('is-invalid');
+                    var fieldName = field.attr('id');
+                    toastr.error("Invalid input for " + fieldName + ". Please check again.");
+                } else {
+                    field.removeClass('is-invalid');
+                }
+            }
+
+            $('#MobileNumber').on('blur', function () {
+                validateFieldOnBlur($(this), /^5[0-9]{7}$/);
+            });
+
+            $('#NIC').on('blur', function () {
+                validateFieldOnBlur($(this), /^[A-Za-z0-9]{14}$/);
+            });
+
 
             function loadManagers() {
 
@@ -45,7 +75,7 @@
                     url: "/Account/GetManagers",
                     dataType: "json",
                     success: function (response) {
-                    
+
                         var departmentDropdown = $("#manager");
                         departmentDropdown.empty();
 
@@ -66,13 +96,13 @@
 
 
             function loadDepartments() {
-              
+
                 $.ajax({
                     type: "GET",
-                    url: "/Account/GetDepartments", 
+                    url: "/Account/GetDepartments",
                     dataType: "json",
                     success: function (response) {
-                     
+
                         var departmentDropdown = $("#department");
                         departmentDropdown.empty();
 
@@ -100,18 +130,19 @@
 
 
             console.log('heremanagers');
-       
+
             $("#registrationForm").submit(function (event) {
-                
+
                 event.preventDefault();
 
 
                 var password = $('#Password').val();
-
                 var confirmPassword = $('#ConfirmPassword').val();
-        
+                    console.log('d');
                 if (validateForm()) {
-         
+
+     
+
                     $('#Password, #ConfirmPassword').removeClass('is-valid is-invalid');
 
                     if (password === '') {
@@ -142,13 +173,15 @@
                         Password: password
                     };
 
+
+
                     console.log(formData);
                     console.log('here2');
 
-  
+
                     $.ajax({
                         type: "POST",
-                        url: "/Account/Register", 
+                        url: "/Account/Register",
                         data: {
                             FirstName: $('#FirstName').val(),
                             LastName: $('#LastName').val(),
@@ -160,21 +193,45 @@
                             Password: password
                         },
                         success: function (response) {
-                  
-                            console.log(response);
-                           // toastr.success("Authentication succeeded. Redirecting to relevant page...");
-                            setTimeout(function () {
-                                window.location= response.url;
-                            }, 500);
-                            $("#registrationSuccessDiv").show();
+                            console.log( response);
+                            console.log('respone ');
+
+
+                            if (response.url) {
+                                //toastr.success("Registration succeeded. Redirecting to the relevant page...");
+                                setTimeout(function () {
+                                    window.location = response.url;
+                                }, 500);
+                                $("#registrationSuccessDiv").show();
+                            }
+
+                            console.log('respone 2');
                         },
                         error: function (error) {
-             
+                            console.log('in error');
                             console.error("Error submitting form:", error);
+
+                            if (error.responseJSON && error.responseJSON.errors) {
+                                //var errors = error.responseJSON.errors;
+                                //handleValidationErrors(errors);
+                                console.log('errors found');
+                            }
                         }
                     });
                 }
             });
+
+            function handleValidationErrors(errors) {
+                // Clear existing validation messages
+                $('.is-invalid').removeClass('is-invalid');
+
+                // Display validation errors in toastr and mark corresponding fields as invalid
+                errors.forEach(function (error) {
+                    toastr.error(error);
+                    $('#' + error.field).addClass('is-invalid');
+                });
+            }
+
 
             function validateForm() {
                 var form = document.getElementById('registrationForm');
@@ -189,7 +246,7 @@
         });
 
 
-    </script>
+        </script>
 
 </head>
 <body style="background-color: #024476;">
@@ -245,7 +302,7 @@
 
                             <div class="mb-3">
                                 <label for="MobileNumber" class="form-label">Mobile Number</label>
-                                <input type="text" class="form-control" id="MobileNumber" pattern="^[0-9]{8}$" required>
+                                <input type="text" class="form-control" id="MobileNumber"  required>
                                 <div class="invalid-feedback">
                                     Please enter your Mobile Number
                                 </div>
