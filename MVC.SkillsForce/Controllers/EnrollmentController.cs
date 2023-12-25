@@ -87,6 +87,12 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
+        public ActionResult GetAllApprovedEnrollments()
+        {
+            var approvedEnrollments = _enrollmentService.GetAllApprovedEnrollments();
+            return View(approvedEnrollments);
+        }
+
         public ActionResult ViewTraining()
         {
             return View();

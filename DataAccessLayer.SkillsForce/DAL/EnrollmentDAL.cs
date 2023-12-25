@@ -211,5 +211,57 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
             return null;
         }
+
+        public IEnumerable<EnrollmentViewModel> GetAllApprovedEnrollments()
+        {
+            const string GET_ALL_APPROVED_ENROLLMENT_WITH_DETAILS_QUERY =
+            @"
+                SELECT
+                    E.EnrollmentID,
+                    U.UserID,
+                    U.FirstName,
+                    U.LastName,
+                    T.TrainingID,
+                    T.TrainingName,
+                    U.DepartmentID AS UserDepartmentID,
+                    UD.DepartmentName AS UserDepartmentName,
+                    T.DepartmentID AS TrainingDepartmentID,
+                    TD.DepartmentName AS TrainingDepartmentName,
+                    E.EnrollmentDate,
+                    E.EnrollmentStatus
+                FROM
+                    Enrollment E
+                JOIN
+                    [User] U ON E.UserID = U.UserID
+                JOIN
+                    Training T ON E.TrainingID = T.TrainingID
+                JOIN
+                    Department UD ON U.DepartmentID = UD.DepartmentID -- User's department
+                JOIN
+                    Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
+                WHERE
+                    E.IsSelected = 0 AND E.EnrollmentStatus = 'Approved'";
+
+            List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
+
+            EnrollmentViewModel enrollment;
+            var dt = _dbCommand.GetData(GET_ALL_APPROVED_ENROLLMENT_WITH_DETAILS_QUERY);
+            foreach (DataRow row in dt.Rows)
+            {
+                enrollment = new EnrollmentViewModel();
+                enrollment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
+                enrollment.UserID = int.Parse(row["UserID"].ToString());
+                enrollment.FirstName = row["FirstName"].ToString();
+                enrollment.LastName = row["LastName"].ToString();
+                enrollment.TrainingID = int.Parse(row["TrainingID"].ToString());
+                enrollment.TrainingName = row["TrainingName"].ToString();
+                enrollment.DepartmentName = row["UserDepartmentName"].ToString();
+                enrollment.EnrollmentDate = (DateTime)row["EnrollmentDate"];
+                enrollment.EnrollmentStatus = row["EnrollmentStatus"].ToString();
+                enrollment.TrainingDepartmentName = row["TrainingDepartmentName"].ToString();
+                enrollments.Add(enrollment);
+            }
+            return enrollments;
+        }
     }
 }

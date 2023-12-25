@@ -47,6 +47,11 @@ namespace BusinessLayer.SkillsForce.Services
             return _enrollmentDAL.GetAllEnrollmentsWithDetailsByManager(managerId);
         }
 
+        public IEnumerable<EnrollmentViewModel> GetAllApprovedEnrollments()
+        {
+            return _enrollmentDAL.GetAllApprovedEnrollments();
+        }
+
         public EnrollmentViewModel GetByID(int id)
         {
             throw new NotImplementedException();

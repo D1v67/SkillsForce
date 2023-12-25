@@ -1,0 +1,136 @@
+﻿@model IEnumerable<Common.SkillsForce.ViewModel.EnrollmentViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+</style>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+<div class="container-fluid mt-4">
+    <p>
+        @Html.ActionLink("Automatic Selection", "Create", null, new { @class = "btn btn-primary" })
+    </p>
+
+    <div class="table-bordered table-hover table-responsive">
+        @foreach (var group in Model.GroupBy(m => m.TrainingName))
+        {
+            <h3>@group.Key  <span id="@group.First().TrainingID" class="capacity"></span> </h3> <!-- Display the TrainingName as a heading for the group -->
+
+    <script>
+        var trainingId = @group.First().TrainingID;
+
+        console.log(trainingId)
+                    // Make AJAX call to retrieve capacity
+                    $(document).ready(function () {
+                        $.ajax({
+                            url: '/Training/GetCapacityById?id=' + '@group.First().TrainingID',
+                            type: 'GET',
+                            success: function (data) {
+                                if (data.success) {
+                                   // toastr.success(data.capacity);
+                                    $('#@group.First().TrainingID').text(' - Capacity: ' + data.capacity);
+                                   console.log('trainingHeader_@group.Key')
+                                } else {
+                                    toastr.error(data.message);
+                                }
+                            },
+                            error: function () {
+                                toastr.error('Error retrieving capacity for ' + '@group.Key');
+                            }
+                        });
+                    });
+    </script>
+
+            <table class="table table-striped mx-auto ">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EnrollmentID)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.UserID)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.LastName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.TrainingID)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.TrainingName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DepartmentName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EnrollmentDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EnrollmentStatus)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.TrainingDepartmentName)
+                        </th>
+                        <th>
+                            Select
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in group)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EnrollmentID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TrainingID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TrainingName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DepartmentName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EnrollmentDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EnrollmentStatus)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TrainingDepartmentName)
+                            </td>
+                            <td>
+                                <button class="btn btn-success" onclick="confirmSelection('@item.EnrollmentID')">Confirm Selection</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+
+    <script>
+        function confirmSelection(EnrollmentID) {
+            // Add your logic here to handle the confirmation for the selected training
+            alert('Confirming selection for ' + EnrollmentID);
+        }
+    </script>
