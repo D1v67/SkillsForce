@@ -71,5 +71,10 @@ namespace BusinessLayer.SkillsForce.Services
         {
             throw new NotImplementedException();
         }
+
+        public void ConfirmEnrollmentsByTrainingID(int trainingID)
+        {
+            _enrollmentDAL.ConfirmEnrollmentsByTrainingID(trainingID);
+        }
     }
 }

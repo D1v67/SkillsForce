@@ -79,6 +79,9 @@
                             @Html.DisplayNameFor(model => model.TrainingDepartmentName)
                         </th>
                         <th>
+                            Selection Status
+                        </th>
+                        <th>
                             Select
                         </th>
                     </tr>
@@ -116,6 +119,16 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.TrainingDepartmentName)
+                            </td>
+                            <td>
+                                @if (item.IsSelected)
+                                {
+                                    <span class="text-success">Selected</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">Not Selected</span>
+                                }
                             </td>
                             <td>
                                 <button class="btn btn-success" onclick="confirmSelection('@item.EnrollmentID')">Confirm Selection</button>

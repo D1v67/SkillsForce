@@ -180,8 +180,51 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
             return -1;
         }
+
+        public IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline)
+        {
+            const string GET_TRAININGS_BY_DEADLINE_QUERY = @"
+        SELECT
+            TrainingID,
+            TrainingName,
+            TrainingDescription,
+            RegistrationDeadline,
+            StartDate,
+            Capacity,
+            DepartmentID
+        FROM
+            [dbo].[Training]
+        WHERE
+            RegistrationDeadline = @RegistrationDeadline";
+
+            var parameters = new List<SqlParameter> { new SqlParameter("@RegistrationDeadline", registrationDeadline) };
+            var dt = _dbCommand.GetDataWithConditions(GET_TRAININGS_BY_DEADLINE_QUERY, parameters);
+
+            List<TrainingModel> trainings = new List<TrainingModel>();
+
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    var training = new TrainingModel
+                    {
+                        TrainingID = int.Parse(row["TrainingID"].ToString()),
+                        TrainingName = (row["TrainingName"].ToString()),
+                        TrainingDescription = row["TrainingDescription"].ToString(),
+                        RegistrationDeadline = (DateTime)row["RegistrationDeadline"],
+                        Capacity = int.Parse(row["Capacity"].ToString()),
+                        DepartmentID = int.Parse(row["DepartmentID"].ToString())
+                    };
+
+                    trainings.Add(training);
+                }
+                return trainings;
+            }
+            return null;
+        }
     }
 }
+
 
 //const string GET_TRAINING_BY_MANAGER_ID = @"SELECT T.TrainingID, T.TrainingName, T.RegistrationDeadline,T.TrainingDescription, T.Capacity,D.DepartmentName, U.FirstName, U.LastName, E.EnrollmentDate, E.EnrollmentStatus
 //                                                            FROM Training T JOIN Department D ON T.DepartmentID = D.DepartmentID JOIN Enrollment E ON T.TrainingID = E.TrainingID JOIN [User] U ON E.UserID = U.UserID

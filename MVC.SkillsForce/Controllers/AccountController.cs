@@ -102,7 +102,7 @@ namespace MVC.SkillsForce.Controllers
                                           .Select(e => e.ErrorMessage)
                                           .ToList();
 
-            return Json(new { errors });
+            return Json(new { errorMessage = errors });
         }
 
         [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]

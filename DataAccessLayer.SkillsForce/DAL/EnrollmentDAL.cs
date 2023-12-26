@@ -228,7 +228,8 @@ namespace DataAccessLayer.SkillsForce.DAL
                     T.DepartmentID AS TrainingDepartmentID,
                     TD.DepartmentName AS TrainingDepartmentName,
                     E.EnrollmentDate,
-                    E.EnrollmentStatus
+                    E.EnrollmentStatus,
+                    E.IsSelected
                 FROM
                     Enrollment E
                 JOIN
@@ -259,9 +260,48 @@ namespace DataAccessLayer.SkillsForce.DAL
                 enrollment.EnrollmentDate = (DateTime)row["EnrollmentDate"];
                 enrollment.EnrollmentStatus = row["EnrollmentStatus"].ToString();
                 enrollment.TrainingDepartmentName = row["TrainingDepartmentName"].ToString();
+                enrollment.IsSelected = (bool)row["IsSelected"];
+
                 enrollments.Add(enrollment);
             }
             return enrollments;
+        }
+
+        public void ConfirmEnrollmentsByTrainingID(int trainingID)
+        {
+            const string CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY = @"WITH OrderedEnrollments AS (
+                SELECT
+                    E.EnrollmentID,
+                    E.UserID,
+                    E.TrainingID,
+                    E.EnrollmentDate,
+                    E.EnrollmentStatus,
+                    U.DepartmentID,
+                    U.FirstName,
+                    U.LastName,
+                    E.IsSelected,
+                    ROW_NUMBER() OVER (ORDER BY IIF(U.DepartmentID = (SELECT T.DepartmentID FROM Training T WHERE T.TrainingID = E.TrainingID), 0, 1), E.EnrollmentDate) AS RowNum
+                FROM
+                    Enrollment E
+                JOIN
+                    [User] U ON E.UserID = U.UserID
+                WHERE
+                    E.TrainingID = @TrainingID
+            )
+            UPDATE
+                OrderedEnrollments
+            SET
+                IsSelected = 1
+            WHERE
+                RowNum <= (SELECT Capacity FROM Training WHERE TrainingID = @TrainingID)";
+
+            List<SqlParameter> parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@TrainingID", trainingID),
+
+            };
+
+            _dbCommand.InsertUpdateData(CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY, parameters);
         }
     }
 }

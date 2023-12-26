@@ -14,6 +14,6 @@ namespace Common.SkillsForce.ViewModel
         public DateTime EnrollmentDate { get; set; }
         public string EnrollmentStatus { get; set; }
         public string TrainingDepartmentName { get; set; }//Training Department}
-
+        public bool IsSelected { get; set; }
     }
 }

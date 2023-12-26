@@ -100,7 +100,12 @@
                 <ul class="navbar-nav ml-auto">
                     @if (Session["UserId"] != null)
                     {
-                        <li>@Html.ActionLink("Dashboard", "Index", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
+                        if (Session["CurrentRole"].ToString() == "Admin")
+                        {
+                            <li>@Html.ActionLink("Dashboard", "Index", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
+                        }
+
+
                         <li>@Html.ActionLink("Logout", "Logout", "Account", new { area = "" }, new { @class = "nav-link" })</li>
                         <li class="ml-2"></li>
                         <li class="ml-2"></li>

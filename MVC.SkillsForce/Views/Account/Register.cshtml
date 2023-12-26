@@ -204,18 +204,21 @@
                                 }, 500);
                                 $("#registrationSuccessDiv").show();
                             }
-
+                            else {
+                                console.log(response.errorMessage)
+                                handleValidationErrors(response.errorMessage)
+                            }
                             console.log('respone 2');
                         },
                         error: function (error) {
                             console.log('in error');
                             console.error("Error submitting form:", error);
 
-                            if (error.responseJSON && error.responseJSON.errors) {
-                                //var errors = error.responseJSON.errors;
-                                //handleValidationErrors(errors);
-                                console.log('errors found');
-                            }
+                            //if (error.responseJSON && error.responseJSON.errors) {
+                            //    //var errors = error.responseJSON.errors;
+                            //    //handleValidationErrors(errors);
+                            //    console.log('errors found');
+                            //}
                         }
                     });
                 }
@@ -229,6 +232,7 @@
                 errors.forEach(function (error) {
                     toastr.error(error);
                     $('#' + error.field).addClass('is-invalid');
+                    console.log(error.field)
                 });
             }
 

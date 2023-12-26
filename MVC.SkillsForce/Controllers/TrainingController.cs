@@ -24,6 +24,10 @@ namespace MVC.SkillsForce.Controllers
         //GET ALL TRAINING
         public ActionResult Index()
         {
+            //DateTime currentDate = DateTime.Today;
+            //DateTime registrationDeadline = new DateTime(2024, 2, 15);
+            //IEnumerable<TrainingModel> trainings = _trainingService.GetAllTrainingsByRegistrationDeadline(registrationDeadline);
+
             IEnumerable<TrainingModel> trainings = new List<TrainingModel>();
             try
             {

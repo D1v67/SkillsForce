@@ -902,3 +902,23 @@ Stack Trace:    at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
    at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultWithFilters(ControllerContext controllerContext, IList`1 filters, ActionResult actionResult)
    at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
 "---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 12/26/2023 8:06:35 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: The view 'Create' or its master was not found or no view engine supports the searched locations. The following locations were searched:
+~/Views/Enrollment/Create.aspx
+~/Views/Enrollment/Create.ascx
+~/Views/Shared/Create.aspx
+~/Views/Shared/Create.ascx
+~/Views/Enrollment/Create.cshtml
+~/Views/Enrollment/Create.vbhtml
+~/Views/Shared/Create.cshtml
+~/Views/Shared/Create.vbhtml
+Inner Exception: 
+Stack Trace:    at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
+   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilterRecursive(IList`1 filters, Int32 filterIndex, ResultExecutingContext preContext, ControllerContext controllerContext, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilterRecursive(IList`1 filters, Int32 filterIndex, ResultExecutingContext preContext, ControllerContext controllerContext, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultWithFilters(ControllerContext controllerContext, IList`1 filters, ActionResult actionResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+"---------------------------------------------------------";

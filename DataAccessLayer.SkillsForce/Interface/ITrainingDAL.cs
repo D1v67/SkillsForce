@@ -17,5 +17,6 @@ namespace DataAccessLayer.SkillsForce.Interface
         void Update(TrainingModel training);
         IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites();
         int GetCapacityID(int id);
+        IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline);
     }
 }

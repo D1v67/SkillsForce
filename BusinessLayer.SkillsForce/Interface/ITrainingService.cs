@@ -1,5 +1,6 @@
 ﻿using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
+using System;
 using System.Collections.Generic;
 
 namespace BusinessLayer.SkillsForce.Interface
@@ -13,5 +14,6 @@ namespace BusinessLayer.SkillsForce.Interface
         void Update(TrainingModel training);
         IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites();
         int GetCapacityID(int id);
+        IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline);
     }
 }

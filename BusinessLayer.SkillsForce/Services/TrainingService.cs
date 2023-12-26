@@ -31,6 +31,11 @@ namespace BusinessLayer.SkillsForce.Services
             return _trainingDAL.GetAll();
         }
 
+        public IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline)
+        {
+            return _trainingDAL.GetAllTrainingsByRegistrationDeadline(registrationDeadline);
+        }
+
         public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites()
         {
             return _trainingDAL.GetAllTrainingWithPrerequsiites();
