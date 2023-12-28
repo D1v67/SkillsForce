@@ -16,5 +16,6 @@ namespace BusinessLayer.SkillsForce.Interface
         int GetCapacityID(int id);
         int GetRemainingCapacityID(int trainingID);
         IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline, bool isCronJob);
+        IEnumerable<TrainingModel> GetAllTrainingsEnrolledByUser(int id);
     }
 }

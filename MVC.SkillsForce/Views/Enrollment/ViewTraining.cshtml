@@ -57,88 +57,128 @@
 </style>
 
 
-@*<h2>Index</h2>
-    <h2>@Session["Firstname"]</h2>
-    <h2>@Session["Email"]</h2>*@
-
-@*<p>
-        @Html.ActionLink("Create New", "Create")
-    </p>*@
-
-@*<div class="header-container">
-        <h1>Trainings On Offer</h1>
-    </div>*@
-
 <div class="table-responsive container-fluid mt-5 mb-5">
 
-    <div class="modal fade" id="enrollModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registrationModalLabel">Training Registration</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+    <ul class="nav nav-tabs mb-5">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#AllTrainingsTab">Trainings</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#myTrainingsTab">My Trainings</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- All Trainings Tab -->
+        <div class="tab-pane fade show active" id="AllTrainingsTab">
+
+            <!-- Enroll Modal -->
+            <div class="modal fade" id="enrollModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="registrationModalLabel">Training Registration</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <form id="enrollForm" onsubmit="saveEnrollment(); return false;" enctype="multipart/form-data">
+                            <div class="modal-body" id="modalBody">
+                                <h3>Enroll in Training</h3>
+                                <p>Your User ID: <span id="userIdInfo"></span></p>
+                                <p id="trainingInfo"></p>
+
+                                <label>You must meet all the following prerequisites:</label>
+                                <div id="coursesCheckboxList"></div>
+
+                                <input type="hidden" id="currentEnrollmentId" value="" />
+
+                                <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                            </div>
+                        </form>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and View Buttons -->
+            <!--<div class="row mb-3">
+                <div class="col-md-10 d-flex align-items-center">
+                    <div class="input-group">
+                        <span class="input-group-text" id="searchIcon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                            </svg>
+                        </span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search trainings...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-secondary" id="changeViewBtn" data-view="grid">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x2" viewBox="0 0 16 16">
+                            <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5zM1.5 3a.5.5 0 0 0-.5.5V7h4V3zM5 8H1v3.5a.5.5 0 0 0 .5.5H5zm1 0v4h4V8zm4-1V3H6v4zm1 1v4h3.5a.5.5 0 0 0 .5-.5V8zm0-1h4V3.5a.5.5 0 0 0-.5-.5H11z" />
+                        </svg>
+                        Change View
                     </button>
                 </div>
+            </div>-->
 
+            <!-- Training Cards and Table -->
+            <div id="trainingCardContainer" class="card-deck mt-5"></div>
+            <table id="trainingTable" class="table mt-3">
+                <thead>
+                    <!-- ... your existing table head ... -->
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 
-                <form id="enrollForm" onsubmit="saveEnrollment(); return false;" enctype="multipart/form-data">
-                    <div class="modal-body" id="modalBody">
-                        <h3>Enroll in Training</h3>
-                        <p>Your User ID: <span id="userIdInfo"></span></p>
-                        <p id="trainingInfo"></p>
+        <!-- My Trainings Tab -->
+        <div class="tab-pane fade" id="myTrainingsTab">
 
-                        <label>You must meet all the following prerequisites:</label>
-                        <div id="coursesCheckboxList"></div>
+            <!-- ... your content for My Trainings ... -->
 
-                        <input type="hidden" id="currentEnrollmentId" value="" />
-
-                        <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+            <div class="row mb-3">
+                <div class="col-md-10 d-flex align-items-center">
+                    <div class="input-group">
+                        <span class="input-group-text" id="searchIcon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                            </svg>
+                        </span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search trainings...">
                     </div>
-                </form>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-secondary" id="changeViewBtn" data-view="grid">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x2" viewBox="0 0 16 16">
+                            <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5zM1.5 3a.5.5 0 0 0-.5.5V7h4V3zM5 8H1v3.5a.5.5 0 0 0 .5.5H5zm1 0v4h4V8zm4-1V3H6v4zm1 1v4h3.5a.5.5 0 0 0 .5-.5V8zm0-1h4V3.5a.5.5 0 0 0-.5-.5H11z" />
+                        </svg>
+                        Change View
+                    </button>
                 </div>
             </div>
+
+            <!-- Training Cards and Table -->
+            <div id="trainingCardContainerAlreadyEnrolled" class="card-deck mt-5"></div>
+
+            <table id="trainingTableAlreadyEnrolled" class="table mt-3">
+                <thead>
+                    <!-- ... your existing table head ... -->
+                </thead>
+                <tbody></tbody>
+            </table>
+
         </div>
     </div>
-
-
-    <div class="row mb-3">
-        <div class="col-md-10 d-flex align-items-center">
-            <div class="input-group">
-                <span class="input-group-text" id="searchIcon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                    </svg>
-                </span>
-                <input type="text" class="form-control" id="searchInput" placeholder="Search trainings...">
-            </div>
-        </div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-secondary " id="changeViewBtn" data-view="grid">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x2" viewBox="0 0 16 16">
-                    <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5zM1.5 3a.5.5 0 0 0-.5.5V7h4V3zM5 8H1v3.5a.5.5 0 0 0 .5.5H5zm1 0v4h4V8zm4-1V3H6v4zm1 1v4h3.5a.5.5 0 0 0 .5-.5V8zm0-1h4V3.5a.5.5 0 0 0-.5-.5H11z" />
-                </svg>
-                Change View
-            </button>
-        </div>
-    </div>
-
-
-    <div id="trainingCardContainer" class="card-deck mt-5"></div>
-
-    <table id="trainingTable" class="table mt-3">
-        <thead>
-
-        </thead>
-        <tbody></tbody>
-    </table>
-
-
 
 </div>
+
+
 
 
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
@@ -153,7 +193,12 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
 
     document.addEventListener("DOMContentLoaded", function () {
         const searchInput = $("#searchInput");
+
         loadData(true, searchInput.val());
+
+        $('a[data-bs-toggle="tab"][href="#myTrainingsTab"]').on('shown.bs.tab', function (e) {
+            GetAllEnrolledTrainings();
+        });
 
         // Attach change event to each file input
         //$('.fileUploader').on('change', function () {
@@ -176,38 +221,37 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
 
         $("#changeViewBtn").data("view", "grid");
         $("#changeViewBtn").click(function () {
-         
+
             var currentValue = $(this).data("view");
 
-           
             var newValue = currentValue === "grid" ? "list" : "grid";
 
-           
             $(this).data("view", newValue);
 
-        
             console.log("View changed to:", newValue);
 
-           
             $(this).text(newValue === "grid" ? "Grid View" : "List View");
 
-           
             if (newValue === "grid") {
                 $("#trainingCardContainer").show();
                 $("#trainingTable").hide();
                 loadData(true, searchInput.val());
+                //GetAllEnrolledTrainings(true, $(this).val());
             } else {
                 $("#trainingCardContainer").hide();
                 $("#trainingTable").show();
                 loadData(false, searchInput.val());
+
+                //GetAllEnrolledTrainings(false, $(this).val());
             }
         });
 
         searchInput.on("input", function () {
-       
-            loadData(true, $(this).val());
-        });
 
+            loadData(true, $(this).val());
+
+            GetAllEnrolledTrainings(true, $(this).val());
+        });
 
 
         function loadData(isCard, searchTerm) {
@@ -243,8 +287,70 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
         }
 
 
+        function GetAllEnrolledTrainings() {
+            //console.log('in load all' + isCard);
+            var userId = parseInt("@HttpContext.Current.Session["UserID"]");
+            // Retrieve user ID from the session or wherever it's stored
+            //var userId = getUserIdFromSession(); // Update this based on how you store the user ID
+            console.log(userId);
+            fetch('/Enrollment/GetTrainingsAlreadyEnrolledByUser', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: userId })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        console.log(response.status);
+                    }
+                })
+                .then(data => {
+                        updateTableAlreadyEnrolled(data);
+             
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
         function updateTable(data) {
             var cardContainer = document.querySelector('#trainingCardContainer');
+            cardContainer.innerHTML = '';
+
+            data.forEach(function (item) {
+                let currentDate = new Date().toJSON().slice(0, 10);
+                var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
+                var isEnrollmentOpen = registrationDeadlineDate >= new Date();
+
+                var col = document.createElement('div');
+                col.className = 'col-md-4 mb-3';
+
+                var card = document.createElement('div');
+                card.className = 'card shadow';
+
+                card.innerHTML = `
+                        <div class="card-header">
+                            <h5 class="card-title"><strong>${item.TrainingName}</strong> </h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">${item.TrainingDescription}</p>
+                            <p class="card-text"><strong>Registration Deadline:</strong> ${formatDate(registrationDeadlineDate)}</p>
+
+                            ${isEnrollmentOpen ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${item.TrainingID}" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
+                        </div>
+                     `;
+                // ...
+
+                col.appendChild(card);
+                cardContainer.appendChild(col);
+            });
+        }
+
+
+        function updateTableAlreadyEnrolled(data) {
+            var cardContainer = document.querySelector('#trainingCardContainerAlreadyEnrolled');
             cardContainer.innerHTML = '';
 
             data.forEach(function (item) {
@@ -283,7 +389,7 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
             tableBody.innerHTML = '';
             tableHead.innerHTML = '';
 
-        
+
             var headerRow = document.createElement('tr');
             var headers = ['ID', 'Training Name', 'Description', 'Registration Deadline', 'Capacity', 'Department ID', 'Action'];
             headers.forEach(function (header) {
@@ -293,7 +399,7 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
             });
             tableHead.appendChild(headerRow);
 
-           
+
             data.forEach(function (item) {
                 var currentDate = new Date().toJSON().slice(0, 10);
                 var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
@@ -314,9 +420,43 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
             });
         }
 
+      //  function updateTableGridAlreadyEnrolled(data) {
+      //      var tableBody = document.querySelector('#trainingTableAlreadyEnrolled tbody');
+      //      var tableHead = document.querySelector('#trainingTableAlreadyEnrolled thead');
+      //      tableBody.innerHTML = '';
+      //      tableHead.innerHTML = '';
 
-        //        <p class="card-text"><strong>Capacity:</strong> ${item.Capacity}</p>
-        //<p class="card-text"><strong>Department ID:</strong> ${item.DepartmentID}</p>
+
+      //      var headerRow = document.createElement('tr');
+      //      var headers = ['ID', 'Training Name', 'Description', 'Registration Deadline', 'Capacity', 'Department ID', 'Action'];
+      //      headers.forEach(function (header) {
+      //          var th = document.createElement('th');
+      //          th.textContent = header;
+      //          headerRow.appendChild(th);
+      //      });
+      //      tableHead.appendChild(headerRow);
+
+
+      //      data.forEach(function (item) {
+      //          var currentDate = new Date().toJSON().slice(0, 10);
+      //          var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
+      //          var isEnrollmentOpen = registrationDeadlineDate >= new Date();
+
+      //          var row = document.createElement('tr');
+      //          row.innerHTML = `
+      //    <td>${item.TrainingID}</td>
+      //    <td>${item.TrainingName}</td>
+      //    <td>${item.TrainingDescription}</td>
+      //    <td>${formatDate(registrationDeadlineDate)}</td>
+      //    <td>${item.Capacity}</td>
+      //    <td>${item.DepartmentID}</td>
+      //    <td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${item.TrainingID}" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
+      //`;
+
+      //          tableBody.appendChild(row);
+      //      });
+      //  }
+
 
         // format date in 'YYYY-MM-DD'
         function formatDate(date) {
@@ -326,10 +466,8 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
             return year + '-' + month + '-' + day;
         }
 
-
     });
 </script>
-
 
 
 <script>
@@ -480,3 +618,71 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
 
 </script>
 
+
+@*<div class="table-responsive container-fluid mt-5 mb-5">
+
+        <div class="modal fade" id="enrollModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="registrationModalLabel">Training Registration</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+
+                    <form id="enrollForm" onsubmit="saveEnrollment(); return false;" enctype="multipart/form-data">
+                        <div class="modal-body" id="modalBody">
+                            <h3>Enroll in Training</h3>
+                            <p>Your User ID: <span id="userIdInfo"></span></p>
+                            <p id="trainingInfo"></p>
+
+                            <label>You must meet all the following prerequisites:</label>
+                            <div id="coursesCheckboxList"></div>
+
+                            <input type="hidden" id="currentEnrollmentId" value="" />
+
+                            <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row mb-3">
+            <div class="col-md-10 d-flex align-items-center">
+                <div class="input-group">
+                    <span class="input-group-text" id="searchIcon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                        </svg>
+                    </span>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search trainings...">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-secondary " id="changeViewBtn" data-view="grid">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x2" viewBox="0 0 16 16">
+                        <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5zM1.5 3a.5.5 0 0 0-.5.5V7h4V3zM5 8H1v3.5a.5.5 0 0 0 .5.5H5zm1 0v4h4V8zm4-1V3H6v4zm1 1v4h3.5a.5.5 0 0 0 .5-.5V8zm0-1h4V3.5a.5.5 0 0 0-.5-.5H11z" />
+                    </svg>
+                    Change View
+                </button>
+            </div>
+        </div>
+
+
+        <div id="trainingCardContainer" class="card-deck mt-5"></div>
+
+        <table id="trainingTable" class="table mt-3">
+            <thead>
+
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>*@

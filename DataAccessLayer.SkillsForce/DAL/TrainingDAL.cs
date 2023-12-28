@@ -243,47 +243,80 @@ namespace DataAccessLayer.SkillsForce.DAL
             return null;
         }
 
-    //    public IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline)
-    //    {
-    //        const string GET_TRAININGS_BY_DEADLINE_QUERY = @"
-    //    SELECT
-    //        TrainingID,
-    //        TrainingName,
-    //        TrainingDescription,
-    //        RegistrationDeadline,
-    //        StartDate,
-    //        Capacity,
-    //        DepartmentID
-    //    FROM
-    //        [dbo].[Training]
-    //    WHERE
-    //        RegistrationDeadline = @RegistrationDeadline";
+        public IEnumerable<TrainingModel> GetAllTrainingsEnrolledByUser(int id)
+        {
+            const string GET_ENROLLED_TRAININGS_QUERY = @"SELECT T.*
+                                                            FROM Training T
+                                                            WHERE  EXISTS (
+                                                                SELECT 1
+                                                                FROM Enrollment E
+                                                                WHERE E.TrainingID = T.TrainingID
+                                                                  AND E.UserID = @UserID);";
+            List<TrainingModel> trainings = new List<TrainingModel>();
+            var parameters = new List<SqlParameter> { new SqlParameter("@UserID", id) };
+            var dt = _dbCommand.GetDataWithConditions(GET_ENROLLED_TRAININGS_QUERY, parameters);
+            TrainingModel training;
 
-    //        var parameters = new List<SqlParameter> { new SqlParameter("@RegistrationDeadline", registrationDeadline) };
-    //        var dt = _dbCommand.GetDataWithConditions(GET_TRAININGS_BY_DEADLINE_QUERY, parameters);
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    training = new TrainingModel();
+                    training.TrainingID = int.Parse(row["TrainingID"].ToString());
+                    training.TrainingName = row["TrainingName"].ToString();
+                    training.TrainingDescription = row["TrainingDescription"].ToString();
+                    training.RegistrationDeadline = (DateTime)row["RegistrationDeadline"];
+                    training.Capacity = int.Parse(row["Capacity"].ToString());
+                    training.DepartmentID = int.Parse(row["DepartmentID"].ToString());
 
-    //        List<TrainingModel> trainings = new List<TrainingModel>();
+                    trainings.Add(training);
+                }
+                return trainings;
+            }
+            return null;
+        }
 
-    //        if (dt.Rows.Count > 0)
-    //        {
-    //            foreach (DataRow row in dt.Rows)
-    //            {
-    //                var training = new TrainingModel
-    //                {
-    //                    TrainingID = int.Parse(row["TrainingID"].ToString()),
-    //                    TrainingName = (row["TrainingName"].ToString()),
-    //                    TrainingDescription = row["TrainingDescription"].ToString(),
-    //                    RegistrationDeadline = (DateTime)row["RegistrationDeadline"],
-    //                    Capacity = int.Parse(row["Capacity"].ToString()),
-    //                    DepartmentID = int.Parse(row["DepartmentID"].ToString())
-    //                };
+        //    public IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline)
+        //    {
+        //        const string GET_TRAININGS_BY_DEADLINE_QUERY = @"
+        //    SELECT
+        //        TrainingID,
+        //        TrainingName,
+        //        TrainingDescription,
+        //        RegistrationDeadline,
+        //        StartDate,
+        //        Capacity,
+        //        DepartmentID
+        //    FROM
+        //        [dbo].[Training]
+        //    WHERE
+        //        RegistrationDeadline = @RegistrationDeadline";
 
-    //                trainings.Add(training);
-    //            }
-    //            return trainings;
-    //        }
-    //        return null;
-    //    }
+        //        var parameters = new List<SqlParameter> { new SqlParameter("@RegistrationDeadline", registrationDeadline) };
+        //        var dt = _dbCommand.GetDataWithConditions(GET_TRAININGS_BY_DEADLINE_QUERY, parameters);
+
+        //        List<TrainingModel> trainings = new List<TrainingModel>();
+
+        //        if (dt.Rows.Count > 0)
+        //        {
+        //            foreach (DataRow row in dt.Rows)
+        //            {
+        //                var training = new TrainingModel
+        //                {
+        //                    TrainingID = int.Parse(row["TrainingID"].ToString()),
+        //                    TrainingName = (row["TrainingName"].ToString()),
+        //                    TrainingDescription = row["TrainingDescription"].ToString(),
+        //                    RegistrationDeadline = (DateTime)row["RegistrationDeadline"],
+        //                    Capacity = int.Parse(row["Capacity"].ToString()),
+        //                    DepartmentID = int.Parse(row["DepartmentID"].ToString())
+        //                };
+
+        //                trainings.Add(training);
+        //            }
+        //            return trainings;
+        //        }
+        //        return null;
+        //    }
     }
 }
 

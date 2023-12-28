@@ -122,6 +122,20 @@ namespace MVC.SkillsForce.Controllers
             return Json(trainings, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult GetTrainingsAlreadyEnrolledByUser(int id)
+        {
+            IEnumerable<TrainingModel> trainings = new List<TrainingModel>();
+            try
+            {
+                trainings = _trainingService.GetAllTrainingsEnrolledByUser(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return Json(trainings, JsonRequestBehavior.AllowGet);
+        }
 
 
         [HttpPost]

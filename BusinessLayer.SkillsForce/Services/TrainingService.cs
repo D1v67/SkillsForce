@@ -36,6 +36,11 @@ namespace BusinessLayer.SkillsForce.Services
             return _trainingDAL.GetAllTrainingsByRegistrationDeadline(registrationDeadline, isCronJob);
         }
 
+        public IEnumerable<TrainingModel> GetAllTrainingsEnrolledByUser(int id)
+        {
+            return _trainingDAL.GetAllTrainingsEnrolledByUser(id);
+        }
+
         public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites()
         {
             return _trainingDAL.GetAllTrainingWithPrerequsiites();
