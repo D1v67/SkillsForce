@@ -55,6 +55,34 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         }
 
+        public List<int> ExecuteQueryWithOutput(string query, List<SqlParameter> parameters, string outputColumnName)
+        {
+            List<int> affectedIds = new List<int>();
+            DataAccessLayer dataAccess = new DataAccessLayer();
+
+            using (SqlCommand command = new SqlCommand(query, dataAccess._databaseConnection))
+            {
+                command.CommandType = CommandType.Text;
+
+                if (parameters != null)
+                {
+                    command.Parameters.AddRange(parameters.ToArray());
+                }
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int affectedId = Convert.ToInt32(reader[outputColumnName]);
+                        affectedIds.Add(affectedId);
+                    }
+                }
+            }
+
+            dataAccess.CloseConnection();
+            return affectedIds;
+        }
+
 
 
         public int InsertDataAndReturnIdentity(string query, List<SqlParameter> parameters)

@@ -21,7 +21,7 @@ namespace DataAccessLayer.SkillsForce.Interface
         void RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId);
         EnrollmentNotificationViewModel GetEnrollmentNotificationDetailsByID(int id);
         IEnumerable<EnrollmentViewModel> GetAllApprovedEnrollments();
-        void ConfirmEnrollmentsByTrainingID(int trainingID);
+        List<int> ConfirmEnrollmentsByTrainingID(int trainingID);
 
     }
 }

@@ -24,6 +24,16 @@ namespace BusinessLayer.SkillsForce.Services
             }
         }
 
+        public string SendConfirmationNotification(EnrollmentNotificationViewModel enrollment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string SendEnrollNotification(EnrollmentNotificationViewModel enrollment)
+        {
+            throw new NotImplementedException();
+        }
+
         public string SendRejectionNotification(EnrollmentNotificationViewModel enrollment)
         {
             try

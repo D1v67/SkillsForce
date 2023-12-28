@@ -922,3 +922,61 @@ Stack Trace:    at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
    at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultWithFilters(ControllerContext controllerContext, IList`1 filters, ActionResult actionResult)
    at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
 "---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 12/27/2023 9:37:06 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: The view 'Create' or its master was not found or no view engine supports the searched locations. The following locations were searched:
+~/Views/Enrollment/Create.aspx
+~/Views/Enrollment/Create.ascx
+~/Views/Shared/Create.aspx
+~/Views/Shared/Create.ascx
+~/Views/Enrollment/Create.cshtml
+~/Views/Enrollment/Create.vbhtml
+~/Views/Shared/Create.cshtml
+~/Views/Shared/Create.vbhtml
+Inner Exception: 
+Stack Trace:    at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
+   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilterRecursive(IList`1 filters, Int32 filterIndex, ResultExecutingContext preContext, ControllerContext controllerContext, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilterRecursive(IList`1 filters, Int32 filterIndex, ResultExecutingContext preContext, ControllerContext controllerContext, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultWithFilters(ControllerContext controllerContext, IList`1 filters, ActionResult actionResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+"---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 12/27/2023 9:53:09 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: The view 'RunAutomaticSelectionOfApprovedEnrollments' or its master was not found or no view engine supports the searched locations. The following locations were searched:
+~/Views/Enrollment/RunAutomaticSelectionOfApprovedEnrollments.aspx
+~/Views/Enrollment/RunAutomaticSelectionOfApprovedEnrollments.ascx
+~/Views/Shared/RunAutomaticSelectionOfApprovedEnrollments.aspx
+~/Views/Shared/RunAutomaticSelectionOfApprovedEnrollments.ascx
+~/Views/Enrollment/RunAutomaticSelectionOfApprovedEnrollments.cshtml
+~/Views/Enrollment/RunAutomaticSelectionOfApprovedEnrollments.vbhtml
+~/Views/Shared/RunAutomaticSelectionOfApprovedEnrollments.cshtml
+~/Views/Shared/RunAutomaticSelectionOfApprovedEnrollments.vbhtml
+Inner Exception: 
+Stack Trace:    at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
+   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilterRecursive(IList`1 filters, Int32 filterIndex, ResultExecutingContext preContext, ControllerContext controllerContext, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilterRecursive(IList`1 filters, Int32 filterIndex, ResultExecutingContext preContext, ControllerContext controllerContext, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultWithFilters(ControllerContext controllerContext, IList`1 filters, ActionResult actionResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+"---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 12/27/2023 7:08:26 PM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: The parameters dictionary contains a null entry for parameter 'EnrollmentID' of non-nullable type 'System.Int32' for method 'System.Web.Mvc.ActionResult UploadFiles(System.Collections.Generic.List`1[System.Web.HttpPostedFileBase], Int32, System.String)' in 'MVC.SkillsForce.Controllers.EnrollmentController'. An optional parameter must be a reference type, a nullable type, or be declared as an optional parameter.
+Parameter name: parameters
+Inner Exception: 
+Stack Trace:    at System.Web.Mvc.ActionDescriptor.ExtractParameterFromDictionary(ParameterInfo parameterInfo, IDictionary`2 parameters, MethodInfo methodInfo)
+   at System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c.<BeginInvokeSynchronousActionMethod>b__9_0(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_0.<InvokeActionMethodFilterAsynchronouslyRecursive>b__0()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_2.<InvokeActionMethodFilterAsynchronouslyRecursive>b__2()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_6.<BeginInvokeAction>b__4()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+"---------------------------------------------------------";

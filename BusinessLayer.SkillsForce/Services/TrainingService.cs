@@ -31,9 +31,9 @@ namespace BusinessLayer.SkillsForce.Services
             return _trainingDAL.GetAll();
         }
 
-        public IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline)
+        public IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline, bool isCronJob)
         {
-            return _trainingDAL.GetAllTrainingsByRegistrationDeadline(registrationDeadline);
+            return _trainingDAL.GetAllTrainingsByRegistrationDeadline(registrationDeadline, isCronJob);
         }
 
         public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites()
@@ -49,6 +49,11 @@ namespace BusinessLayer.SkillsForce.Services
         public int GetCapacityID(int id)
         {
             return _trainingDAL.GetCapacityID(id);
+        }
+
+        public int GetRemainingCapacityID(int trainingID)
+        {
+            return _trainingDAL.GetRemainingCapacityID(trainingID);
         }
 
         public void Update(TrainingModel training)

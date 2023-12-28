@@ -91,6 +91,8 @@
                         <label>You must meet all the following prerequisites:</label>
                         <div id="coursesCheckboxList"></div>
 
+                        <input type="hidden" id="currentEnrollmentId" value="" />
+
                         <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
                     </div>
                 </form>
@@ -264,7 +266,7 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
                             <p class="card-text">${item.TrainingDescription}</p>
                             <p class="card-text"><strong>Registration Deadline:</strong> ${formatDate(registrationDeadlineDate)}</p>
 
-                            ${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#enrollModal" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
+                            ${isEnrollmentOpen ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${item.TrainingID}" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
                         </div>
                      `;
                 // ...
@@ -305,7 +307,7 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
             <td>${formatDate(registrationDeadlineDate)}</td>
             <td>${item.Capacity}</td>
             <td>${item.DepartmentID}</td>
-            <td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#enrollModal" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
+            <td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${item.TrainingID}" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
         `;
 
                 tableBody.appendChild(row);
@@ -457,11 +459,18 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
                 uploadFiles(parseInt(generatedEnrollmentId));
 
                 alert("Enrollment successful!");
-                saveButton.prop('disabled', true);
+                //saveButton.prop('disabled', true);
 
-                //
+                var uniqueSaveBtnId = "saveBtn_" + generatedEnrollmentId;
+                saveButton.prop('disabled', true).attr('id', uniqueSaveBtnId);
+
+                ////
+                //$("#enrollModal").modal("hide");
+                // Disable the specific "Enroll" button
+                $(".enroll-btn").prop("disabled", false); // Enable all buttons before disabling the specific one
+                $(`.enroll-btn[data-training-id="${trainingId}"]`).prop("disabled", true); // Disable the clicked button
+
                 $("#enrollModal").modal("hide");
-
             },
             error: function () {
                 alert("Enrollment failed!");

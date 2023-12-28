@@ -4,7 +4,7 @@ using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace BusinessLayer.SkillsForce.Services
 {
@@ -12,10 +12,14 @@ namespace BusinessLayer.SkillsForce.Services
     {
 
         private readonly IEnrollmentDAL _enrollmentDAL;
+        private readonly ITrainingService _trainingService;
+        private readonly INotificationService _notificationService;
 
-        public EnrollmentService(IEnrollmentDAL enrollmentDAL)
+        public EnrollmentService(IEnrollmentDAL enrollmentDAL, ITrainingService trainingService, INotificationService notificationService)
         {
             _enrollmentDAL = enrollmentDAL;
+            _trainingService = trainingService;
+            _notificationService = notificationService;
         }
         public int Add(EnrollmentViewModel enrollment)
         {
@@ -72,9 +76,45 @@ namespace BusinessLayer.SkillsForce.Services
             throw new NotImplementedException();
         }
 
-        public void ConfirmEnrollmentsByTrainingID(int trainingID)
+        public List<int> ConfirmEnrollmentsByTrainingID(int trainingID)
         {
-            _enrollmentDAL.ConfirmEnrollmentsByTrainingID(trainingID);
+            return _enrollmentDAL.ConfirmEnrollmentsByTrainingID(trainingID);
+        }
+
+        public void RunAutomaticSelectionOfApprovedEnrollments(bool isCronjob)
+        {
+            DateTime registrationDeadline = new DateTime(2024,03,01);
+            //DateTime registrationDeadline = DateTime.Now;
+            var trainings = _trainingService.GetAllTrainingsByRegistrationDeadline(registrationDeadline, isCronjob);
+
+            foreach (var training in trainings)
+            {
+                var enrollmentIds = _enrollmentDAL.ConfirmEnrollmentsByTrainingID(training.TrainingID);
+
+                if (enrollmentIds != null && enrollmentIds.Any())
+                {
+                    foreach (var enrollmentId in enrollmentIds)
+                    {
+                        EnrollmentNotificationViewModel enrollment = GetEnrollmentNotificationDetailsByID(enrollmentId);
+                        //_notificationService.SendConfirmationNotification(enrollment);
+                    }
+                }
+            }
+        }
+
+
+        
+
+
+        public bool RunAutomaticSelectionOfApprovedEnrollmentsByAdmin(bool isCronjob)
+        {
+            var trainings = _trainingService.GetAllTrainingsByRegistrationDeadline(DateTime.Now, isCronjob);
+
+            return trainings?.Any() == true && trainings.All(training =>
+            {
+                _enrollmentDAL.ConfirmEnrollmentsByTrainingID(training.TrainingID);
+                return true;
+            });
         }
     }
 }

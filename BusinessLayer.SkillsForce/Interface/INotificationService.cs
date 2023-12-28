@@ -6,5 +6,7 @@ namespace BusinessLayer.SkillsForce.Interface
     {
         string SendApprovalNotification(EnrollmentNotificationViewModel enrollment);
         string SendRejectionNotification(EnrollmentNotificationViewModel enrollment);
+        string SendConfirmationNotification(EnrollmentNotificationViewModel enrollment);
+        string SendEnrollNotification(EnrollmentNotificationViewModel enrollment);
     }
 }

@@ -48,6 +48,14 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
+        public ActionResult RunAutomaticSelectionOfApprovedEnrollments()
+        {
+            bool isCronJob = true;
+            _enrollmentService.RunAutomaticSelectionOfApprovedEnrollments(isCronJob);
+
+            return RedirectToAction("/GetAllApprovedEnrollments");
+        }
+
         [AuthorizePermission("GetAllEnrollment")]
         public ActionResult GetEnrollments()
         {
@@ -89,7 +97,8 @@ namespace MVC.SkillsForce.Controllers
 
         public ActionResult GetAllApprovedEnrollments()
         {
-            var approvedEnrollments = _enrollmentService.GetAllApprovedEnrollments();
+             var approvedEnrollments = _enrollmentService.GetAllApprovedEnrollments();
+            //var approvedEnrollments = new List<EnrollmentViewModel>();
             return View(approvedEnrollments);
         }
 

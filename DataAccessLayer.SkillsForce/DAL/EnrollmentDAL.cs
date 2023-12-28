@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common.SkillsForce.ViewModel;
+using System.Collections;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
@@ -241,7 +242,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                 JOIN
                     Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
                 WHERE
-                    E.IsSelected = 0 AND E.EnrollmentStatus = 'Approved'";
+                    E.EnrollmentStatus = 'Approved'";
 
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
 
@@ -267,33 +268,44 @@ namespace DataAccessLayer.SkillsForce.DAL
             return enrollments;
         }
 
-        public void ConfirmEnrollmentsByTrainingID(int trainingID)
+        public List<int> ConfirmEnrollmentsByTrainingID(int trainingID)
         {
-            const string CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY = @"WITH OrderedEnrollments AS (
-                SELECT
-                    E.EnrollmentID,
-                    E.UserID,
-                    E.TrainingID,
-                    E.EnrollmentDate,
-                    E.EnrollmentStatus,
-                    U.DepartmentID,
-                    U.FirstName,
-                    U.LastName,
-                    E.IsSelected,
-                    ROW_NUMBER() OVER (ORDER BY IIF(U.DepartmentID = (SELECT T.DepartmentID FROM Training T WHERE T.TrainingID = E.TrainingID), 0, 1), E.EnrollmentDate) AS RowNum
-                FROM
-                    Enrollment E
-                JOIN
-                    [User] U ON E.UserID = U.UserID
-                WHERE
-                    E.TrainingID = @TrainingID
-            )
-            UPDATE
-                OrderedEnrollments
-            SET
-                IsSelected = 1
-            WHERE
-                RowNum <= (SELECT Capacity FROM Training WHERE TrainingID = @TrainingID)";
+            const string CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY = @"DECLARE @EnrollmentIDs TABLE (EnrollmentID INT);
+
+                    WITH OrderedEnrollments AS (
+                        SELECT
+                            E.EnrollmentID,
+                            E.UserID,
+                            E.TrainingID,
+                            E.EnrollmentDate,
+                            E.EnrollmentStatus,
+                            U.DepartmentID,
+                            U.FirstName,
+                            U.LastName,
+                            E.IsSelected,
+                            ROW_NUMBER() OVER (ORDER BY IIF(U.DepartmentID = (SELECT T.DepartmentID FROM Training T WHERE T.TrainingID = E.TrainingID), 0, 1), E.EnrollmentDate) AS RowNum
+                        FROM
+                            Enrollment E
+                        JOIN
+                            [User] U ON E.UserID = U.UserID
+                        WHERE
+                            E.TrainingID = 2
+                    )
+
+                    UPDATE
+                        OrderedEnrollments
+                    SET
+                        IsSelected = 1
+                    OUTPUT
+                        INSERTED.EnrollmentID
+                    INTO
+                        @EnrollmentIDs
+                    WHERE
+                        RowNum <= (SELECT Capacity FROM Training WHERE TrainingID = 2);
+
+                    -- Get the Enrollment IDs
+                    SELECT EnrollmentID FROM @EnrollmentIDs AS AffectedEnrollments;
+                    ";
 
             List<SqlParameter> parameters = new List<SqlParameter>
             {
@@ -301,7 +313,51 @@ namespace DataAccessLayer.SkillsForce.DAL
 
             };
 
-            _dbCommand.InsertUpdateData(CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY, parameters);
+            string outputColumnName = "EnrollmentID";
+
+            return _dbCommand.ExecuteQueryWithOutput(CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY, parameters, outputColumnName);
+
         }
+
+
+
     }
 }
+
+
+//public void ConfirmEnrollmentsByTrainingID(int trainingID)
+//{
+//    const string CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY = @"WITH OrderedEnrollments AS (
+//        SELECT
+//            E.EnrollmentID,
+//            E.UserID,
+//            E.TrainingID,
+//            E.EnrollmentDate,
+//            E.EnrollmentStatus,
+//            U.DepartmentID,
+//            U.FirstName,
+//            U.LastName,
+//            E.IsSelected,
+//            ROW_NUMBER() OVER (ORDER BY IIF(U.DepartmentID = (SELECT T.DepartmentID FROM Training T WHERE T.TrainingID = E.TrainingID), 0, 1), E.EnrollmentDate) AS RowNum
+//        FROM
+//            Enrollment E
+//        JOIN
+//            [User] U ON E.UserID = U.UserID
+//        WHERE
+//            E.TrainingID = @TrainingID
+//    )
+//    UPDATE
+//        OrderedEnrollments
+//    SET
+//        IsSelected = 1
+//    WHERE
+//        RowNum <= (SELECT Capacity FROM Training WHERE TrainingID = @TrainingID)";
+
+//    List<SqlParameter> parameters = new List<SqlParameter>
+//    {
+//        new SqlParameter("@TrainingID", trainingID),
+
+//    };
+
+//   int results =  _dbCommand.InsertUpdateData(CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY, parameters);
+//}

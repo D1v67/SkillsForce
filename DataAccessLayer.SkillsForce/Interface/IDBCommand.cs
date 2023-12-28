@@ -18,5 +18,7 @@ namespace DataAccessLayer.SkillsForce.Interface
 
         SqlDataReader GetDataReader(string query);
         SqlDataReader GetDataWithConditionsReader(string query, List<SqlParameter> parameters);
+
+        List<int> ExecuteQueryWithOutput(string query, List<SqlParameter> parameters, string outputColumnName);
     }
 }

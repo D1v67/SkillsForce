@@ -14,42 +14,43 @@ namespace MVC.SkillsForce
 {
     public static class UnityConfig
     {
+        public static IUnityContainer Container { get; internal set; }
         public static void RegisterComponents()
         {
-			var container = new UnityContainer();
+		    Container = new UnityContainer();
 
-            container.RegisterType<ILogger, Logger>();
+            Container.RegisterType<ILogger, Logger>();
 
-            container.RegisterType<IDBCommand, DBCommand>();
+            Container.RegisterType<IDBCommand, DBCommand>();
 
-            container.RegisterType<ISessionService, SessionService>();
+            Container.RegisterType<ISessionService, SessionService>();
 
-            container.RegisterType<IUserAuthorizationDAL, UserAuthorizationDAL>();
-            container.RegisterType<IUserAuthorizationService, UserAuthorizationService>();
+            Container.RegisterType<IUserAuthorizationDAL, UserAuthorizationDAL>();
+            Container.RegisterType<IUserAuthorizationService, UserAuthorizationService>();
           
 
-            container.RegisterType<ITrainingDAL, TrainingDAL>();
-            container.RegisterType<ITrainingService, TrainingService>();
+            Container.RegisterType<ITrainingDAL, TrainingDAL>();
+            Container.RegisterType<ITrainingService, TrainingService>();
             //container.RegisterType<IDataAccessLayer, DataAccessLayer>();
-            container.RegisterType<IUserDAL, UserDAL>();
-            container.RegisterType<IUserService, UserService>();
+            Container.RegisterType<IUserDAL, UserDAL>();
+            Container.RegisterType<IUserService, UserService>();
 
-            container.RegisterType<IAccountService, AccountService>();
-            container.RegisterType<IAccountDAL, AccountDAL>();
+            Container.RegisterType<IAccountService, AccountService>();
+            Container.RegisterType<IAccountDAL, AccountDAL>();
 
-            container.RegisterType<IEnrollmentService, EnrollmentService>();
-            container.RegisterType<IEnrollmentDAL, EnrollmentDAL>();
+            Container.RegisterType<IEnrollmentService, EnrollmentService>();
+            Container.RegisterType<IEnrollmentDAL, EnrollmentDAL>();
 
-            container.RegisterType<IDepartmentService, DepartmentService>();
-            container.RegisterType<IDepartmentDAL, DepartmentDAL>();
+            Container.RegisterType<IDepartmentService, DepartmentService>();
+            Container.RegisterType<IDepartmentDAL, DepartmentDAL>();
 
-            container.RegisterType<IPrerequisiteService, PrerequisiteService>();
-            container.RegisterType<IPrerequisiteDAL, PrerequisiteDAL>();
+            Container.RegisterType<IPrerequisiteService, PrerequisiteService>();
+            Container.RegisterType<IPrerequisiteDAL, PrerequisiteDAL>();
 
-            container.RegisterType<INotificationService, NotificationService>();
+            Container.RegisterType<INotificationService, NotificationService>();
 
-            container.RegisterType<IAttachmentService, AttachmentService>();
-            container.RegisterType<IAttachmentDAL, AttachmentDAL>();
+            Container.RegisterType<IAttachmentService, AttachmentService>();
+            Container.RegisterType<IAttachmentDAL, AttachmentDAL>();
 
             // register all your components with the container here
             // it is NOT necessary to register your controllers
@@ -65,7 +66,7 @@ namespace MVC.SkillsForce
             
             //container.RegisterType<IDataAccessLayer, DataAccessLayer>();
 
-            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+            DependencyResolver.SetResolver(new UnityDependencyResolver(Container));
         }
     }
 }

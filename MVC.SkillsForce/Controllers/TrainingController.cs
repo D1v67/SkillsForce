@@ -69,6 +69,20 @@ namespace MVC.SkillsForce.Controllers
                 return Json(new { success = false, message = $"No capacity found for Training ID {id}" }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        public JsonResult GetRemainingCapacityById(int id)
+        {
+            int capacity = _trainingService.GetRemainingCapacityID(id);
+
+            if (capacity != -1)
+            {
+                return Json(new { success = true, capacity = capacity }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = false, message = $"No capacity found for Training ID {id}" }, JsonRequestBehavior.AllowGet);
+            }
+        }
         // GET: Training/Details/5
 
         // GET: Training/Create
