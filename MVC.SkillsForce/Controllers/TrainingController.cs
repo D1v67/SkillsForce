@@ -83,27 +83,35 @@ namespace MVC.SkillsForce.Controllers
                 return Json(new { success = false, message = $"No capacity found for Training ID {id}" }, JsonRequestBehavior.AllowGet);
             }
         }
-        // GET: Training/Details/5
-
-        // GET: Training/Create
-        public ActionResult Create()
+     
+       
+        public ActionResult CreateTraining()
         {
-            return View();
-        }
-        // POST: Training/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
                 return View();
+        }
+
+        [HttpPost]
+        public JsonResult CreateTraining(TrainingViewModel model)
+        {
+            if (_trainingService.IsTrainingNameAlreadyExists(model.TrainingName))
+            {
+                ModelState.AddModelError("Email", "TrainingName  already exists.");
             }
+
+            if (ModelState.IsValid)
+            {
+                // If all validations pass, proceed with registration
+                _trainingService.Add(model);
+
+                return Json(new { url = Url.Action("Index", "Training") });
+            }
+
+            // If there are validation errors, return them to the client
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                          .Select(e => e.ErrorMessage)
+                                          .ToList();
+
+            return Json(new { errorMessage = errors });
         }
 
         // GET: Training/Edit/5

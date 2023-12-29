@@ -1,0 +1,360 @@
+﻿@{
+    ViewBag.Title = "Create Training";
+
+}
+
+
+<style>
+    label {
+        font-weight: bold;
+        font-size: 16px; /* Adjust the font size as needed */
+    }
+</style>
+
+<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>-->
+@*<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>*@
+
+@*<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">*@
+@*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">*@
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="text/javascript" src="
+    https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+@*
+    https://codeseven.github.io/toastr/*@
+<script type="text/javascript" src="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link rel="stylesheet" href="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+
+<body style="background-color: #c6c6c6;">
+
+    <div class="container">
+        <div class="card mx-auto mt-5" style="max-width: 600px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <div class="card-body">
+                <div class="bg-primary text-white p-3 mb-3 rounded">
+                    <h2 class="card-title text-center mb-0">Add Training</h2>
+                </div>
+                <h2 class="card-title text-center mb-4">Create a new Training below</h2>
+
+                <div id="registrationSuccessDiv" style="display: none;">
+                    <div class="alert alert-success" role="alert">
+                        Training Added successfully
+                    </div>
+                </div>
+
+                <form id="trainingForm" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="TrainingName" class="form-label">Training Name</label>
+                                <input type="text" class="form-control" id="TrainingName" required>
+                                <div class="invalid-feedback">
+                                    Please enter the Training Name
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="TrainingDescription" class="form-label">Training Description</label>
+                                <textarea class="form-control" id="TrainingDescription" required></textarea>
+                                <div class="invalid-feedback">
+                                    Please enter the Training Description
+                                </div>
+                            </div>
+
+
+
+                            <div class="mb-3">
+                                <label for="DepartmentID">Select Department:</label>
+                                <select class="form-control" id="DepartmentID" name="DepartmentID" required>
+                                    <option value="" selected disabled>Select Department</option>
+                                    <!-- Options will be populated using AJAX -->
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please select the Department
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="Prerequisites">Select Prerequisites:</label>
+                                <select class="form-control" id="Prerequisites" name="Prerequisites">
+                                    <option value="" selected disabled>Select Prerequisites</option>
+                                    <!-- Options will be populated using AJAX -->
+                                </select>
+                                @*<div class="invalid-feedback">
+                        Please select at least one Prerequisite
+                    </div>*@
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="mb-3">
+                                <label for="StartDate" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="StartDate" required>
+                                <div class="invalid-feedback">
+                                    Please enter the Start Date
+                                </div>
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="RegistrationDeadline" class="form-label">Registration Deadline</label>
+                                <input type="date" class="form-control" id="RegistrationDeadline" required>
+                                <div class="invalid-feedback">
+                                    Please enter the Registration Deadline
+                                </div>
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="Capacity" class="form-label">Capacity</label>
+                                <input type="text" class="form-control" id="Capacity" required>
+                                <div class="invalid-feedback">
+                                    Please enter the Capacity
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <!-- Table to display selected prerequisites -->
+                    <!-- Table to display selected prerequisites -->
+                    <div id="selectedPrerequisitesDiv" style="display: none;">
+                        <h4>Selected Prerequisites</h4>
+                        <table class="table" id="selectedPrerequisitesTable">
+                            <thead>
+                                <tr>
+                                    <th>Prerequisite ID</th>
+                                    <th>Prerequisite Name</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Selected prerequisites will be displayed here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary" id="btnRegister">Save</button>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script>
+    // Function to set the minimum date for date inputs to today
+    function setMinDate() {
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById('StartDate').min = today;
+        document.getElementById('RegistrationDeadline').min = today;
+        console.log('date')
+    }
+
+    // Execute the function when the page is loaded
+    window.onload = setMinDate;
+
+
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+
+        // Validate Training Name on blur
+        $('#TrainingName').blur(function () {
+            validateFieldOnBlur($(this), /^[A-Z][a-z]*( [A-Z][a-z]*)*$/);
+        });
+
+        // Validate Capacity on blur
+        $('#Capacity').blur(function () {
+            validateFieldOnBlur($(this), /^[1-9][0-9]*$/);
+        });
+
+
+        toastr.options.timeOut = 2000;
+        function validateFieldOnBlur(field, regex) {
+            var value = field.val();
+            if (!regex.test(value)) {
+                field.addClass('is-invalid');
+                var fieldName = field.attr('id');
+                toastr.error("Invalid input for " + fieldName + ". Please check again.");
+            } else {
+                field.removeClass('is-invalid');
+            }
+        }
+
+        // Fetch Departments
+        $.ajax({
+            url: '/Department/GetListOfDepartments', // Replace with your actual endpoint for departments
+            type: 'GET',
+            success: function (data) {
+                var departmentDropdown = $('#DepartmentID');
+                departmentDropdown.empty();
+                $.each(data, function (index, item) {
+                    departmentDropdown.append($('<option>', {
+                        value: item.DepartmentID,
+                        text: item.DepartmentName
+
+                    }));
+
+                    console.log(item.DepartmentID)
+                });
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+
+        // Fetch Prerequisites
+        $.ajax({
+            url: '/Prerequisite/GetListOfPrerequisites', // Replace with your actual endpoint for prerequisites
+            type: 'GET',
+            success: function (data) {
+                var prerequisitesDropdown = $('#Prerequisites');
+                prerequisitesDropdown.empty();
+                prerequisitesDropdown.append('<option value="" selected disabled>Select Prerequisite</option>');
+                $.each(data, function (index, item) {
+                    prerequisitesDropdown.append($('<option>', {
+                        value: item.PrerequisiteID,
+                        text: item.PrerequisiteName
+
+                    }));
+                });
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+
+
+        // Update the table when a prerequisite is selected
+        $('#Prerequisites').change(function () {
+            var selectedPrerequisiteID = $('#Prerequisites option:selected').val();
+            var selectedPrerequisiteName = $('#Prerequisites option:selected').text();
+            var tableBody = $('#selectedPrerequisitesTable tbody');
+            var divSelectedPrerequisites = $('#selectedPrerequisitesDiv');
+
+            // Add a delete button to each row
+            tableBody.append('<tr><td>' + selectedPrerequisiteID + '</td><td>' + selectedPrerequisiteName +
+                '</td><td><button class="btn btn-danger btn-sm deleteRow">Delete</button></td></tr>');
+
+            // Show the div when a prerequisite is added
+            divSelectedPrerequisites.show();
+        });
+
+        // Handle delete button click
+        $('#selectedPrerequisitesTable').on('click', '.deleteRow', function () {
+            $(this).closest('tr').remove();
+        });
+
+
+        $("#trainingForm").submit(function (event) {
+            event.preventDefault();
+
+            // Validate form fields
+            if (!validateForm()) {
+                return;
+            }
+
+            var selectedPrerequisites = [];
+            $('#selectedPrerequisitesTable tbody tr').each(function () {
+                var prerequisiteID = parseInt($(this).find('td:first').text());
+                var prerequisiteName = $(this).find('td:nth-child(2)').text();
+                selectedPrerequisites.push({ PrerequisiteID: prerequisiteID, PrerequisiteName: prerequisiteName });
+            });
+
+            console.log('slecp' + selectedPrerequisites)
+
+            var formData = {
+                TrainingName: $('#TrainingName').val(),
+                TrainingDescription: $('#TrainingDescription').val(),
+                RegistrationDeadline: $('#RegistrationDeadline').val(),
+                StartDate: $('#StartDate').val(),
+                Capacity: $('#Capacity').val(),
+                DepartmentID: parseInt($("#DepartmentID").val()),
+                Prerequisites: selectedPrerequisites,
+                // Add other fields as needed
+            };
+
+
+            console.log(formData)
+
+            // Add your AJAX call to submit the form data
+            $.ajax({
+                type: "POST",
+                url: "/Training/CreateTraining", // Replace with your actual controller and action
+                data: formData,
+                success: function (response) {
+                    console.log(response);
+                    if (response.url) {
+                        // Redirect to a relevant page on success
+                        setTimeout(function () {
+                            window.location = response.url;
+                        }, 500);
+                        $("#registrationSuccessDiv").show();
+                    } else {
+                        console.log(response.errorMessage);
+                        handleValidationErrors(response.errorMessage);
+                    }
+                },
+                error: function (error) {
+                    console.error("Error submitting form:", error);
+                    // Handle errors as needed
+                }
+            });
+        });
+
+        function handleValidationErrors(errors) {
+            // Clear existing validation messages
+            $('.is-invalid').removeClass('is-invalid');
+
+            // Display validation errors in toastr and mark corresponding fields as invalid
+            errors.forEach(function (error) {
+                toastr.error(error);
+                $('#' + error.field).addClass('is-invalid');
+                console.log(error.field)
+            });
+        }
+
+
+        function validateForm() {
+            var form = document.getElementById('trainingForm');
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return false;
+            }
+            return true;
+
+        }
+
+
+    });
+</script>

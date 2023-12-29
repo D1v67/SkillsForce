@@ -30,7 +30,7 @@ namespace BusinessLayer.SkillsForce.Services
 
         public IEnumerable<PrerequisiteModel> GetAll()
         {
-            throw new NotImplementedException();
+           return _prerequisiteDAL.GetAll();
         }
 
         public PrerequisiteModel GetByID(int id)

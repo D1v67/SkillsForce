@@ -4,19 +4,24 @@ using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BusinessLayer.SkillsForce.Services
 {
     public class TrainingService : ITrainingService
     {
         private readonly ITrainingDAL _trainingDAL;
+        private readonly IDepartmentDAL  _departmentDAL;
+        private readonly IPrerequisiteDAL _prerequisiteDAL;
 
-        public TrainingService(ITrainingDAL trainingDAL)
+        public TrainingService(ITrainingDAL trainingDAL, IDepartmentDAL departmentDAL, IPrerequisiteDAL prerequisiteDAL)
         {
             _trainingDAL = trainingDAL;
+            _departmentDAL = departmentDAL;
+            _prerequisiteDAL = prerequisiteDAL;
         }
 
-        public void Add(TrainingModel training)
+        public void Add(TrainingViewModel training)
         {
             _trainingDAL.Add(training);
         }
@@ -41,6 +46,11 @@ namespace BusinessLayer.SkillsForce.Services
             return _trainingDAL.GetAllTrainingsEnrolledByUser(id);
         }
 
+        public IEnumerable<TrainingModel> GetAllTrainingsNotEnrolledByUser(int id)
+        {
+            return _trainingDAL.GetAllTrainingsNotEnrolledByUser(id);
+        }
+
         public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites()
         {
             return _trainingDAL.GetAllTrainingWithPrerequsiites();
@@ -59,6 +69,25 @@ namespace BusinessLayer.SkillsForce.Services
         public int GetRemainingCapacityID(int trainingID)
         {
             return _trainingDAL.GetRemainingCapacityID(trainingID);
+        }
+
+        public TrainingViewModel GetTrainingViewModelDetailsWithDepartmentsAndPrerequsites()
+        {
+            var departments = _departmentDAL.GetAll();
+            var prerequisites = _prerequisiteDAL.GetAll();
+
+            var trainingViewModel = new TrainingViewModel
+            {   
+                Prerequisites = prerequisites.ToList(),
+                Departments = departments.ToList(),      
+            };
+
+            return trainingViewModel;
+        }
+
+        public bool IsTrainingNameAlreadyExists(string trainingName)
+        {
+            return _trainingDAL.IsTrainingNameAlreadyExists(trainingName);
         }
 
         public void Update(TrainingModel training)

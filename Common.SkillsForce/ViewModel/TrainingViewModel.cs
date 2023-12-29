@@ -12,8 +12,10 @@ namespace Common.SkillsForce.ViewModel
         public string TrainingName { get; set; }
         public string TrainingDescription { get; set; }
         public DateTime RegistrationDeadline { get; set; }
+        public DateTime StartDate { get; set; }
         public int Capacity { get; set; }
         public int DepartmentID { get; set; }
         public List<PrerequisiteModel> Prerequisites { get; set; }
+        public List<DepartmentModel> Departments { get; set; }
     }
 }

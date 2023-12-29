@@ -49,27 +49,32 @@
                     </p>
                     @if (Session["UserId"] != null)
                     {
-        
+
                         <a class="btn btn-primary" href="@Url.Action("ViewTraining", "Enrollment", new { area = "" })">Enroll &raquo;</a>
                     }
                     else
                     {
-             
+
                         <a class="btn btn-primary" href="@Url.Action("Index", "Account", new { area = "" })">Enroll &raquo;</a>
                     }
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h2 class="card-title" id="librariesTitle">Get More Libraries</h2>
-                    <p class="card-text">Discover a vast library of tools and .</p>
-                    <a class="btn btn-outline-primary" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a>
+        @if (Session["UserId"] != null)
+        {
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="card-title" id="librariesTitle">My Trainings</h2>
+                        <p class="card-text">View your Selected Trainings</p>
+                       <a class="btn btn-primary" href="@Url.Action("ViewTraining", "Enrollment", new { area = "" })">View &raquo;</a>
+                    </div>
                 </div>
             </div>
-        </div>
+
+        }
+
 
         <div class="col-md-4">
             <div class="card shadow">

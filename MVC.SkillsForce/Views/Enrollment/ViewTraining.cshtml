@@ -94,7 +94,7 @@
 
                                 <input type="hidden" id="currentEnrollmentId" value="" />
 
-                                <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                                @*<button type="submit" class="btn btn-primary" id="saveBtn">Save</button>*@
                             </div>
                         </form>
 
@@ -106,42 +106,6 @@
             </div>
 
             <!-- Search and View Buttons -->
-            <!--<div class="row mb-3">
-                <div class="col-md-10 d-flex align-items-center">
-                    <div class="input-group">
-                        <span class="input-group-text" id="searchIcon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                            </svg>
-                        </span>
-                        <input type="text" class="form-control" id="searchInput" placeholder="Search trainings...">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-secondary" id="changeViewBtn" data-view="grid">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x2" viewBox="0 0 16 16">
-                            <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5zM1.5 3a.5.5 0 0 0-.5.5V7h4V3zM5 8H1v3.5a.5.5 0 0 0 .5.5H5zm1 0v4h4V8zm4-1V3H6v4zm1 1v4h3.5a.5.5 0 0 0 .5-.5V8zm0-1h4V3.5a.5.5 0 0 0-.5-.5H11z" />
-                        </svg>
-                        Change View
-                    </button>
-                </div>
-            </div>-->
-
-            <!-- Training Cards and Table -->
-            <div id="trainingCardContainer" class="card-deck mt-5"></div>
-            <table id="trainingTable" class="table mt-3">
-                <thead>
-                    <!-- ... your existing table head ... -->
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <!-- My Trainings Tab -->
-        <div class="tab-pane fade" id="myTrainingsTab">
-
-            <!-- ... your content for My Trainings ... -->
-
             <div class="row mb-3">
                 <div class="col-md-10 d-flex align-items-center">
                     <div class="input-group">
@@ -162,6 +126,42 @@
                     </button>
                 </div>
             </div>
+
+            <!-- Training Cards and Table -->
+            <div id="trainingCardContainer" class="card-deck mt-5"></div>
+            <table id="trainingTable" class="table mt-3">
+                <thead>
+                    <!-- ... your existing table head ... -->
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- My Trainings Tab -->
+        <div class="tab-pane fade" id="myTrainingsTab">
+
+            <!-- ... your content for My Trainings ... -->
+
+            @*<div class="row mb-3">
+                <div class="col-md-10 d-flex align-items-center">
+                    <div class="input-group">
+                        <span class="input-group-text" id="searchIcon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                            </svg>
+                        </span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search trainings...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-secondary" id="changeViewBtn" data-view="grid">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid-3x2" viewBox="0 0 16 16">
+                            <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5zM1.5 3a.5.5 0 0 0-.5.5V7h4V3zM5 8H1v3.5a.5.5 0 0 0 .5.5H5zm1 0v4h4V8zm4-1V3H6v4zm1 1v4h3.5a.5.5 0 0 0 .5-.5V8zm0-1h4V3.5a.5.5 0 0 0-.5-.5H11z" />
+                        </svg>
+                        Change View
+                    </button>
+                </div>
+            </div>*@
 
             <!-- Training Cards and Table -->
             <div id="trainingCardContainerAlreadyEnrolled" class="card-deck mt-5"></div>
@@ -256,12 +256,16 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
 
         function loadData(isCard, searchTerm) {
             console.log('in load' + isCard)
+
+            var userId = parseInt("@HttpContext.Current.Session["UserID"]");
+
             fetch('/Enrollment/ViewTrainingData', {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({ id: userId })
             })
                 .then(response => {
                     if (response.ok) {
@@ -310,7 +314,7 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
                 })
                 .then(data => {
                         updateTableAlreadyEnrolled(data);
-             
+
                 })
                 .catch(error => console.error('Error:', error));
         }
@@ -370,9 +374,7 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
                         </div>
                         <div class="card-body">
                             <p class="card-text">${item.TrainingDescription}</p>
-                            <p class="card-text"><strong>Registration Deadline:</strong> ${formatDate(registrationDeadlineDate)}</p>
-
-                            ${isEnrollmentOpen ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${item.TrainingID}" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
+                            <p class="card-text"><strong>Start Date :</strong> </p>
                         </div>
                      `;
                 // ...
@@ -499,7 +501,7 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
             data: { TrainigID: trainingId },
             success: function (prerequisites) {
                 console.log(prerequisites);
-                populateCoursesCheckboxList(prerequisites);
+                populateCoursesCheckboxList(prerequisites, trainingId);
             },
             error: function () {
                 alert("Failed to fetch prerequisites!");
@@ -507,7 +509,7 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
         });
     }
 
-    function populateCoursesCheckboxList(prerequisites) {
+    function populateCoursesCheckboxList(prerequisites, trainingId ) {
         var container = $("#coursesCheckboxList");
         container.empty();
 
@@ -527,6 +529,13 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
 
             container.append(row);
         }
+
+        // Set unique ID for the save button using the training ID
+        var saveButton = $('<button type="button" class="btn btn-primary save-button" id="saveBtn_' + trainingId + '">Save</button>');
+        saveButton.on('click', function () {
+            saveEnrollment(trainingId);
+        });
+        container.append(saveButton);
     }
 
         function uploadFiles(enrollmentId) {
@@ -573,15 +582,18 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
 
 
     function saveEnrollment() {
-        //var trainingId = $("#enrollModal").data("trainingId");
+
         var trainingId = parseInt($("#enrollModal").data("trainingId"));
-        var saveButton = $("#saveBtn");
-        //var trainingId = $("#trainingInfo").text().split(":")[1].trim();
-        //var departmentId = $("#departmentDropdown").val();
+
         console.log("Insave "+trainingId);
 
         var userId = parseInt("@HttpContext.Current.Session["UserID"]");
         console.log(userId)
+
+
+        var uniqueSaveBtnId = "saveBtn_" + trainingId;
+        var saveButton = $("#" + uniqueSaveBtnId);
+
 
         $.ajax({
             url: '/Enrollment/SaveEnrollment',
@@ -598,9 +610,7 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
 
                 alert("Enrollment successful!");
                 //saveButton.prop('disabled', true);
-
-                var uniqueSaveBtnId = "saveBtn_" + generatedEnrollmentId;
-                saveButton.prop('disabled', true).attr('id', uniqueSaveBtnId);
+                saveButton.prop('disabled', true);
 
                 ////
                 //$("#enrollModal").modal("hide");
@@ -609,6 +619,11 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
                 $(`.enroll-btn[data-training-id="${trainingId}"]`).prop("disabled", true); // Disable the clicked button
 
                 $("#enrollModal").modal("hide");
+
+                setTimeout(() => {
+                    window.location.reload(); 
+                }, 2000)
+                
             },
             error: function () {
                 alert("Enrollment failed!");

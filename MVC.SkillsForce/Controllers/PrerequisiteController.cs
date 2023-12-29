@@ -32,6 +32,12 @@ namespace MVC.SkillsForce.Controllers
             return View(prerequisites);
         }
 
+        public JsonResult GetListOfPrerequisites()
+        {
+            IEnumerable<PrerequisiteModel> prerequisites =  _prerequisiteService.GetAll();
+            return Json(prerequisites, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult GetPrerequisiteByTrainingID(int TrainigID)
         {
             IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();

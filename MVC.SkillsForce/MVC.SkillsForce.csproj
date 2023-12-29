@@ -415,6 +415,9 @@
     <Content Include="Views\Training\Create.cshtml" />
     <Content Include="Views\Account\RoleSelection.cshtml" />
     <Content Include="Views\Enrollment\GetAllApprovedEnrollments.cshtml" />
+    <Content Include="Views\Training\CreateTraining.cshtml" />
+    <Content Include="Views\Training\Index.cshtml" />
+    <Content Include="Views\Training\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -64,19 +64,45 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
             return null;
         }
-        public void Add(TrainingModel training)
+        public void Add(TrainingViewModel training)
         {
-            const string INSERT_TRAINING_QUERY = @"INSERT INTO [dbo].[Training] ([TrainingName],[RegistrationDeadline] ,[TrainingDescription],[Capacity],[DepartmentID])
-                                                     VALUES ( @TrainingName, @RegistrationDeadline, @TrainingDescription, @Capacity ,@DepartmentID)";
-            List<SqlParameter> parameters = new List<SqlParameter>();
+            const string INSERT_TRAINING_QUERY = @"
+            INSERT INTO [dbo].[Training] ([TrainingName],[RegistrationDeadline],[TrainingDescription],[StartDate],[Capacity],[DepartmentID])
+            VALUES (@TrainingName, @RegistrationDeadline, @TrainingDescription, @StartDate, @Capacity, @DepartmentID);";
 
-            parameters.Add(new SqlParameter("@TrainingName", training.TrainingName));
-            parameters.Add(new SqlParameter("@TrainingDescription", training.TrainingDescription));
-            parameters.Add(new SqlParameter("@RegistrationDeadline", training.RegistrationDeadline));
-            parameters.Add(new SqlParameter("@Capacity", training.Capacity));
-            parameters.Add(new SqlParameter("@DepartmentID", training.DepartmentID));
+                List<SqlParameter> parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@TrainingName", training.TrainingName),
+                    new SqlParameter("@TrainingDescription", training.TrainingDescription),
+                    new SqlParameter("@RegistrationDeadline", training.RegistrationDeadline),
+                    new SqlParameter("@StartDate", training.StartDate),
+                    new SqlParameter("@Capacity", training.Capacity),
+                    new SqlParameter("@DepartmentID", training.DepartmentID)
+                };
 
-            _dbCommand.InsertUpdateData(INSERT_TRAINING_QUERY, parameters);
+
+            // Retrieve the generated identity using your existing method
+            int trainingID = _dbCommand.InsertDataAndReturnIdentity(INSERT_TRAINING_QUERY, parameters);
+
+            // If TrainingID is obtained, add prerequisites to TrainingPrerequisite table
+            if (trainingID > 0)
+            {
+                foreach (PrerequisiteModel prerequisite in training.Prerequisites)
+                {
+                    const string INSERT_TRAINING_PREREQUISITE_QUERY = @"
+                INSERT INTO [dbo].[TrainingPrerequisite] (TrainingID, PrerequisiteID)
+                VALUES (@TrainingID, @PrerequisiteID);";
+
+                    List<SqlParameter> prerequisiteParameters = new List<SqlParameter>
+                    {
+                        new SqlParameter("@TrainingID", trainingID),
+                        new SqlParameter("@PrerequisiteID", prerequisite.PrerequisiteID)
+                    };
+
+                    // Execute the query to insert the Training-Prerequisite relationship
+                    _dbCommand.InsertUpdateData(INSERT_TRAINING_PREREQUISITE_QUERY, prerequisiteParameters);
+                }
+            }
         }
 
         public void Delete(int id)
@@ -246,12 +272,14 @@ namespace DataAccessLayer.SkillsForce.DAL
         public IEnumerable<TrainingModel> GetAllTrainingsEnrolledByUser(int id)
         {
             const string GET_ENROLLED_TRAININGS_QUERY = @"SELECT T.*
-                                                            FROM Training T
-                                                            WHERE  EXISTS (
-                                                                SELECT 1
-                                                                FROM Enrollment E
-                                                                WHERE E.TrainingID = T.TrainingID
-                                                                  AND E.UserID = @UserID);";
+                                                        FROM Training T
+                                                        WHERE  EXISTS (
+                                                            SELECT 1
+                                                            FROM Enrollment E
+                                                            WHERE E.TrainingID = T.TrainingID
+                                                              AND E.UserID = @UserID 	
+                                                        )
+                                                        Order by T.TrainingName";
             List<TrainingModel> trainings = new List<TrainingModel>();
             var parameters = new List<SqlParameter> { new SqlParameter("@UserID", id) };
             var dt = _dbCommand.GetDataWithConditions(GET_ENROLLED_TRAININGS_QUERY, parameters);
@@ -276,47 +304,52 @@ namespace DataAccessLayer.SkillsForce.DAL
             return null;
         }
 
-        //    public IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline)
-        //    {
-        //        const string GET_TRAININGS_BY_DEADLINE_QUERY = @"
-        //    SELECT
-        //        TrainingID,
-        //        TrainingName,
-        //        TrainingDescription,
-        //        RegistrationDeadline,
-        //        StartDate,
-        //        Capacity,
-        //        DepartmentID
-        //    FROM
-        //        [dbo].[Training]
-        //    WHERE
-        //        RegistrationDeadline = @RegistrationDeadline";
+        public IEnumerable<TrainingModel> GetAllTrainingsNotEnrolledByUser(int id)
+        {
+            const string GET_ENROLLED_TRAININGS_QUERY = @"SELECT T.*
+                                                        FROM Training T
+                                                        WHERE  NOT EXISTS (
+                                                            SELECT 1
+                                                            FROM Enrollment E
+                                                            WHERE E.TrainingID = T.TrainingID
+                                                              AND E.UserID = @UserID 	
+                                                        )
+                                                        Order by T.TrainingName";
+            List<TrainingModel> trainings = new List<TrainingModel>();
+            var parameters = new List<SqlParameter> { new SqlParameter("@UserID", id) };
+            var dt = _dbCommand.GetDataWithConditions(GET_ENROLLED_TRAININGS_QUERY, parameters);
+            TrainingModel training;
 
-        //        var parameters = new List<SqlParameter> { new SqlParameter("@RegistrationDeadline", registrationDeadline) };
-        //        var dt = _dbCommand.GetDataWithConditions(GET_TRAININGS_BY_DEADLINE_QUERY, parameters);
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    training = new TrainingModel();
+                    training.TrainingID = int.Parse(row["TrainingID"].ToString());
+                    training.TrainingName = row["TrainingName"].ToString();
+                    training.TrainingDescription = row["TrainingDescription"].ToString();
+                    training.RegistrationDeadline = (DateTime)row["RegistrationDeadline"];
+                    training.Capacity = int.Parse(row["Capacity"].ToString());
+                    training.DepartmentID = int.Parse(row["DepartmentID"].ToString());
 
-        //        List<TrainingModel> trainings = new List<TrainingModel>();
+                    trainings.Add(training);
+                }
+                return trainings;
+            }
+            return null;
+        }
 
-        //        if (dt.Rows.Count > 0)
-        //        {
-        //            foreach (DataRow row in dt.Rows)
-        //            {
-        //                var training = new TrainingModel
-        //                {
-        //                    TrainingID = int.Parse(row["TrainingID"].ToString()),
-        //                    TrainingName = (row["TrainingName"].ToString()),
-        //                    TrainingDescription = row["TrainingDescription"].ToString(),
-        //                    RegistrationDeadline = (DateTime)row["RegistrationDeadline"],
-        //                    Capacity = int.Parse(row["Capacity"].ToString()),
-        //                    DepartmentID = int.Parse(row["DepartmentID"].ToString())
-        //                };
 
-        //                trainings.Add(training);
-        //            }
-        //            return trainings;
-        //        }
-        //        return null;
-        //    }
+        public bool IsTrainingNameAlreadyExists(string trainingName)
+        {
+            const string IS_TRAINING_NAME_ALREADY_EXIST_QUERY = "SELECT 1 FROM [Training] WHERE TrainingName = @TrainingName";
+            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingName", trainingName) };
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(IS_TRAINING_NAME_ALREADY_EXIST_QUERY, parameters))
+            {
+                return reader.Read();
+            }
+        }
+   
     }
 }
 
@@ -329,3 +362,47 @@ namespace DataAccessLayer.SkillsForce.DAL
 //const string GET_TRAINING_BY_DEPARTMENT_ID = @"SELECT T.TrainingID,T.TrainingName, T.RegistrationDeadline,T.TrainingDescription,T.Capacity,D.DepartmentName
 //                                                            FROM Training T JOIN Department D ON T.DepartmentID = D.DepartmentID
 //                                                            WHERE T.DepartmentID = @DepartmentID";
+
+
+
+//    public IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline)
+//    {
+//        const string GET_TRAININGS_BY_DEADLINE_QUERY = @"
+//    SELECT
+//        TrainingID,
+//        TrainingName,
+//        TrainingDescription,
+//        RegistrationDeadline,
+//        StartDate,
+//        Capacity,
+//        DepartmentID
+//    FROM
+//        [dbo].[Training]
+//    WHERE
+//        RegistrationDeadline = @RegistrationDeadline";
+
+//        var parameters = new List<SqlParameter> { new SqlParameter("@RegistrationDeadline", registrationDeadline) };
+//        var dt = _dbCommand.GetDataWithConditions(GET_TRAININGS_BY_DEADLINE_QUERY, parameters);
+
+//        List<TrainingModel> trainings = new List<TrainingModel>();
+
+//        if (dt.Rows.Count > 0)
+//        {
+//            foreach (DataRow row in dt.Rows)
+//            {
+//                var training = new TrainingModel
+//                {
+//                    TrainingID = int.Parse(row["TrainingID"].ToString()),
+//                    TrainingName = (row["TrainingName"].ToString()),
+//                    TrainingDescription = row["TrainingDescription"].ToString(),
+//                    RegistrationDeadline = (DateTime)row["RegistrationDeadline"],
+//                    Capacity = int.Parse(row["Capacity"].ToString()),
+//                    DepartmentID = int.Parse(row["DepartmentID"].ToString())
+//                };
+
+//                trainings.Add(training);
+//            }
+//            return trainings;
+//        }
+//        return null;
+//    }

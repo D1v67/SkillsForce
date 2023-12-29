@@ -18,24 +18,24 @@ namespace MVC.SkillsForce.Controllers
             _departmentService = departmentService;
         }
 
-        public ActionResult Index()
+        public JsonResult GetListOfDepartments()
         {
-            IEnumerable<DepartmentModel> departments = GetListOfDepartments();
-            return View(departments);
+            IEnumerable<DepartmentModel> departments = _departmentService.GetAll();
+            return Json(departments, JsonRequestBehavior.AllowGet);
         }
 
-        private IEnumerable<DepartmentModel> GetListOfDepartments()
-        {
-            try
-            {
-                return _departmentService.GetAll();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return Enumerable.Empty<DepartmentModel>();
-            }
-        }
+        //private IEnumerable<DepartmentModel> GetListOfDepartments()
+        //{
+        //    try
+        //    {
+        //        return _departmentService.GetAll();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //        return Enumerable.Empty<DepartmentModel>();
+        //    }
+        //}
 
     }
 }

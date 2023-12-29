@@ -107,13 +107,14 @@ namespace MVC.SkillsForce.Controllers
             return View();
 
         }
-      ///  [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
-        public JsonResult ViewTrainingData()
+        //  [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
+        [HttpPost]
+        public JsonResult ViewTrainingData(int id)
         {
             IEnumerable<TrainingModel> trainings = new List<TrainingModel>();
             try
             {
-                trainings = _trainingService.GetAll();
+                trainings = _trainingService.GetAllTrainingsNotEnrolledByUser(id);
             }
             catch (Exception ex)
             {

@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
-    [UserSession]
+   // [UserSession]
     public class HomeController : Controller
     {
         public ActionResult Index()

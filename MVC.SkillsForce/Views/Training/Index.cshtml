@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Common.SkillsForce.Entity.TrainingModel>
+
+<div class=" container-fluid mt-3">
+    <p>
+        @Html.ActionLink("Create New", "CreateTraining", "Training", new { @class = "btn btn-primary" })
+    </p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.TrainingName)</th>
+                <th>@Html.DisplayNameFor(model => model.TrainingDescription)</th>
+                <th>@Html.DisplayNameFor(model => model.RegistrationDeadline)</th>
+                <th>@Html.DisplayNameFor(model => model.Capacity)</th>
+                <th>@Html.DisplayNameFor(model => model.DepartmentID)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.TrainingName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TrainingDescription)</td>
+                    <td>@Html.DisplayFor(modelItem => item.RegistrationDeadline)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
+                    <td>@Html.DisplayFor(modelItem => item.DepartmentID)</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.TrainingID }, new { @class = "btn btn-info btn-sm" })
+                        @Html.ActionLink("Details", "Details", new { id = item.TrainingID }, new { @class = "btn btn-secondary btn-sm" })
+                        @Html.ActionLink("Delete", "Delete", new { id = item.TrainingID }, new { @class = "btn btn-danger btn-sm" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -19,15 +19,14 @@
     <div class="row">
 
         <div class="col-md-4">
-            <div class="card action-card bg-primary text-white">
+            <div class="card action-card bg-info text-white">
                 <div class="card-body">
-                    <h5 class="card-title">Add Training</h5>
-                    <p class="card-text">Click here to add a new training</p>
-                    <a href="#" class="btn btn-light">Go</a>
+                    <h5 class="card-title">Manage Training</h5>
+                    <p class="card-text">Click here to manage trainings</p>
+                    <a href="@Url.Action("Index", "Training")" class="btn btn-light">Go</a>
                 </div>
             </div>
         </div>
-
 
         <div class="col-md-4">
             <div class="card action-card bg-success text-white">
@@ -44,7 +43,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Enrollments</h5>
                     <p class="card-text">Click here to view</p>
-                    @Html.ActionLink("Approved Enrollments", "GetAllApprovedEnrollments", "Enrollment")
+                    <a href="@Url.Action("GetAllApprovedEnrollments", "Enrollment")" class="btn btn-light">Approved Enrollments</a>
                 </div>
             </div>
         </div>
