@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
 using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
@@ -96,7 +97,7 @@ namespace BusinessLayer.SkillsForce.Services
                     foreach (var enrollmentId in enrollmentIds)
                     {
                         EnrollmentNotificationViewModel enrollment = GetEnrollmentNotificationDetailsByID(enrollmentId);
-                        //_notificationService.SendConfirmationNotification(enrollment);
+                        _notificationService.SendNotification(enrollment, NotificationType.Confirmation);
                     }
                 }
             }

@@ -177,7 +177,7 @@ namespace MVC.SkillsForce.Controllers
                 _enrollmentService.ApproveEnrollment(enrollmentId);
                 EnrollmentNotificationViewModel enrollment= _enrollmentService.GetEnrollmentNotificationDetailsByID(enrollmentId);
 
-                _notificationService.SendApprovalNotification(enrollment);
+                _notificationService.SendNotification(enrollment, NotificationType.Approval);
          
                 return Json(new { success = true });
             }
@@ -195,7 +195,7 @@ namespace MVC.SkillsForce.Controllers
             {
                 _enrollmentService.RejectEnrollment( enrollmentId,  rejectionReason, declinedByUserId);
                 EnrollmentNotificationViewModel enrollment = _enrollmentService.GetEnrollmentNotificationDetailsByID(enrollmentId);
-                _notificationService.SendRejectionNotification(enrollment);
+                _notificationService.SendNotification(enrollment, NotificationType.Rejection);
                 return Json(new { success = true });
             }
             catch (Exception ex)
