@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
+using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.AppLogger;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
@@ -70,38 +71,22 @@ namespace MVC.SkillsForce.Controllers
         [HttpPost]
         public JsonResult Register(RegisterViewModel registerViewModel)
         {
-            //RegisterViewModel registerViewModel = model;
-            // Check if the email is unique
-            if (_userService.IsEmailAlreadyExists(registerViewModel.Email))
-            {
-                ModelState.AddModelError("Email", "Email is already in use.");
-            }
+            List<string> validationErrors;
 
-            // Check if the NIC is unique
-            if (_userService.IsNICExists(registerViewModel.NIC))
+            if (_loginService.RegisterUser(registerViewModel, out validationErrors))
             {
-                ModelState.AddModelError("NIC", "NIC is already in use.");
-            }
-
-            // Check if the Mobile Number is unique
-            if (_userService.IsMobileNumberExists(registerViewModel.MobileNumber))
-            {
-                ModelState.AddModelError("MobileNumber", "Mobile Number is already in use.");
-            }
-
-            if (ModelState.IsValid)
-            {
-                // If all validations pass, proceed with registration
-                _loginService.RegisterUser(registerViewModel);
-
                 return Json(new { url = Url.Action("Index", "Account") });
             }
 
-            // If there are validation errors, return them to the client
+            // Registration failed due to validation errors
+            foreach (var error in validationErrors)
+            {
+                ModelState.AddModelError(string.Empty, error);
+            }
+
             var errors = ModelState.Values.SelectMany(v => v.Errors)
                                           .Select(e => e.ErrorMessage)
                                           .ToList();
-
             return Json(new { errorMessage = errors });
         }
 

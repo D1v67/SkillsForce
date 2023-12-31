@@ -1,5 +1,6 @@
 ﻿using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
+using System.Collections.Generic;
 
 namespace BusinessLayer.SkillsForce.Interface
 {
@@ -7,6 +8,6 @@ namespace BusinessLayer.SkillsForce.Interface
     {
         bool IsUserAuthenticated(AccountModel model);
         AccountModel GetUserDetailsWithRoles(AccountModel model);
-        void RegisterUser(RegisterViewModel model);
+        bool RegisterUser(RegisterViewModel model, out List<string> validationErrors);
     }
 }
