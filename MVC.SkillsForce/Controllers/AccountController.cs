@@ -68,25 +68,20 @@ namespace MVC.SkillsForce.Controllers
             return View();
         }
 
+
         [HttpPost]
         public JsonResult Register(RegisterViewModel registerViewModel)
         {
-            List<string> validationErrors;
+            var result = _loginService.RegisterUser(registerViewModel);
 
-            if (_loginService.RegisterUser(registerViewModel, out validationErrors))
+            if (result.IsSuccessful)
             {
                 return Json(new { url = Url.Action("Index", "Account") });
             }
 
-            // Registration failed due to validation errors
-            foreach (var error in validationErrors)
-            {
-                ModelState.AddModelError(string.Empty, error);
-            }
+            AddErrorsToModelState(result.Errors);
 
-            var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                          .Select(e => e.ErrorMessage)
-                                          .ToList();
+            var errors = GetModelStateErrors();
             return Json(new { errorMessage = errors });
         }
 
@@ -133,7 +128,20 @@ namespace MVC.SkillsForce.Controllers
 
 
 
+        private void AddErrorsToModelState(List<string> errors)
+        {
+            foreach (var error in errors)
+            {
+                ModelState.AddModelError(string.Empty, error);
+            }
+        }
 
+        private List<string> GetModelStateErrors()
+        {
+            return ModelState.Values.SelectMany(v => v.Errors)
+                                   .Select(e => e.ErrorMessage)
+                                   .ToList();
+        }
 
     }
 }

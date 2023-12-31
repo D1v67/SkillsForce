@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.SkillsForce.Helpers;
 using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Helpers;
 using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
 using System.Collections.Generic;
@@ -29,9 +30,9 @@ namespace BusinessLayer.SkillsForce.Services
             return _loginDAL.GetUserDetailsWithRoles(model);
         }
 
-        public bool RegisterUser(RegisterViewModel model, out List<string> validationErrors)
+        public ValidationResult RegisterUser(RegisterViewModel model)
         {
-            validationErrors = new List<string>();
+            var validationErrors = new List<string>();
 
             if ((_userService.IsEmailAlreadyExists(model.Email)))
             {
@@ -47,7 +48,6 @@ namespace BusinessLayer.SkillsForce.Services
             {
                 validationErrors.Add("Mobile Number is already in use.");
             }
-
             if (validationErrors.Count == 0)
             {
                 var hashedPassword = PasswordHasher.HashPassword(model.Password);
@@ -55,10 +55,10 @@ namespace BusinessLayer.SkillsForce.Services
                 model.SaltValue = hashedPassword.Item2;
 
                 _loginDAL.Register(model);
-                return true; // Registration successful
+                return new ValidationResult { IsSuccessful = true };
             }
 
-            return false; // Registration failed due to validation errors
+            return new ValidationResult { IsSuccessful = false, Errors = validationErrors };
         }
 
     }

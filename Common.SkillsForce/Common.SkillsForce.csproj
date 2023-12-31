@@ -57,6 +57,7 @@
     <Compile Include="Enums\NotificationType.cs" />
     <Compile Include="Enums\RolesEnum.cs" />
     <Compile Include="Helpers\PasswordHasher.cs" />
+    <Compile Include="Helpers\ValidationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\EnrollmentNotificationViewModel.cs" />
     <Compile Include="ViewModel\EnrollmentViewModel.cs" />
