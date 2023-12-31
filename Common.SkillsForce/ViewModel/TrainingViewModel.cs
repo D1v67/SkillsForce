@@ -1,5 +1,4 @@
 ﻿using Common.SkillsForce.Entity;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 

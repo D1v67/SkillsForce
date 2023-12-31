@@ -14,6 +14,5 @@ namespace BusinessLayer.SkillsForce.Interface
         bool IsEmailAlreadyExists(string email);
         bool IsNICExists(string nic);
         bool IsMobileNumberExists(string mobileNumber);
-
     }
 }

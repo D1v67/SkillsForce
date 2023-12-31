@@ -10,24 +10,22 @@ namespace BusinessLayer.SkillsForce.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly IUserDAL _userDAL;
-        private readonly IAccountDAL _loginDAL;
+        private readonly IAccountDAL _accountDAL;
         private readonly IUserService _userService;
 
-        public AccountService(IUserDAL userDAL, IAccountDAL loginDAL, IUserService userService)
+        public AccountService(IAccountDAL loginDAL, IUserService userService)
         {
-            _userDAL = userDAL;
-            _loginDAL = loginDAL;
+            _accountDAL = loginDAL;
             _userService = userService;
         }
         public bool IsUserAuthenticated(AccountModel model)
         {
-            return _loginDAL.IsUserAuthenticated(model);
+            return _accountDAL.IsUserAuthenticated(model);
         }
 
         public AccountModel GetUserDetailsWithRoles(AccountModel model)
         {
-            return _loginDAL.GetUserDetailsWithRoles(model);
+            return _accountDAL.GetUserDetailsWithRoles(model);
         }
 
         public ValidationResult RegisterUser(RegisterViewModel model)
@@ -54,7 +52,7 @@ namespace BusinessLayer.SkillsForce.Services
                 model.HashedPassword = hashedPassword.Item1;
                 model.SaltValue = hashedPassword.Item2;
 
-                _loginDAL.Register(model);
+                _accountDAL.Register(model);
                 return new ValidationResult { IsSuccessful = true };
             }
 

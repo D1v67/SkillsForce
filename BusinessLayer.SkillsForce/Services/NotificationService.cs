@@ -6,7 +6,6 @@ using System;
 
 namespace BusinessLayer.SkillsForce.Services
 {
-
     public class NotificationService : INotificationService
     {
         public string SendNotification(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)

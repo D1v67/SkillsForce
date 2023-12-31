@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.SkillsForce.Entity;
+﻿using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
 
 namespace DataAccessLayer.SkillsForce.Interface

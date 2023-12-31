@@ -1,13 +1,7 @@
-﻿using BusinessLayer.SkillsForce.Interface;
-using BusinessLayer.SkillsForce.Services;
+﻿using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
-using Common.SkillsForce.Enums;
-using Common.SkillsForce.ViewModel;
-using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
@@ -23,31 +17,14 @@ namespace MVC.SkillsForce.Controllers
 
         public ActionResult Index()
         {
-            IEnumerable<AttachmentModel> attachments = new List<AttachmentModel>();
-            try
-            {
-                attachments = _attachmentService.GetAll();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            IEnumerable<AttachmentModel> attachments =  _attachmentService.GetAll();
             return View(attachments);
         }
 
         [HttpGet]
         public JsonResult GetAllAttachmentByEnrollmentID(int enrollmentID)
         {         
-            IEnumerable<AttachmentModel> attachments = new List<AttachmentModel>();
-            try
-            {
-                attachments = _attachmentService.GetAllByEnrollmentID(enrollmentID);
-                //attachments = _uploaderService
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            IEnumerable<AttachmentModel> attachments = _attachmentService.GetAllByEnrollmentID(enrollmentID);  
             return Json(new { result = attachments }, JsonRequestBehavior.AllowGet);
         }
 

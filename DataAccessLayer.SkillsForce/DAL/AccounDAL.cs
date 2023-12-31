@@ -4,10 +4,6 @@ using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BusinessLayer.SkillsForce.Helpers;
 
 namespace DataAccessLayer.SkillsForce.DAL
@@ -21,66 +17,41 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
         public bool IsUserAuthenticated(AccountModel account)
         {
-            const string AUTHENTICATE_USER_QUERY = @"SELECT u.*, a.HashedPassword, a.SaltValue 
-                                             FROM [User] u 
-                                             INNER JOIN Account a ON u.UserID = a.UserID 
-                                             WHERE u.Email = @Email";
+            const string AUTHENTICATE_USER_QUERY = @"SELECT a.HashedPassword, a.SaltValue FROM [User] u INNER JOIN Account a ON u.UserID = a.UserID WHERE u.Email = @Email";
 
-            try
+            if (string.IsNullOrEmpty(account.Email) || string.IsNullOrEmpty(account.Password))
             {
-                if (string.IsNullOrEmpty(account.Email) || string.IsNullOrEmpty(account.Password))
-                {
-                    throw new ArgumentNullException("Email and Password cannot be null or empty.");
-                }
-
-                List<SqlParameter> parameters = new List<SqlParameter>
-                {
-                    new SqlParameter("@Email", account.Email)
-                };
-
-                using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(AUTHENTICATE_USER_QUERY, parameters))
-                {
-                    if (reader.Read())
-                    {
-                        byte[] storedHash = (byte[])reader["HashedPassword"];
-                        byte[] storedSalt = (byte[])reader["SaltValue"];
-
-                        return PasswordHasher.VerifyPassword(account.Password, storedHash, storedSalt);
-                    }
-                }
-
-                return false;
+                throw new ArgumentNullException("Email and Password cannot be null or empty.");
             }
-            catch (Exception ex)
+
+            List<SqlParameter> parameters = new List<SqlParameter>
             {
-                Console.WriteLine($"Exception: {ex.Message}");
-                return false;
+                new SqlParameter("@Email", account.Email)
+            };
+
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(AUTHENTICATE_USER_QUERY, parameters))
+            {
+                if (reader.Read())
+                {
+                    byte[] storedHash = (byte[])reader["HashedPassword"];
+                    byte[] storedSalt = (byte[])reader["SaltValue"];
+
+                    return PasswordHasher.VerifyPassword(account.Password, storedHash, storedSalt);
+                }
             }
+
+            return false;
         }
 
         public AccountModel GetUserDetailsWithRoles(AccountModel account)
         {
-            const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT
-                                                           u.UserID,
-                                                           u.FirstName,
-                                                           u.LastName,
-                                                           u.Email,
-                                                           u.NIC,
-                                                           u.MobileNumber,
-                                                           u.DepartmentID,
-                                                           d.DepartmentName,
-                                                           u.ManagerID,
-                                                           r.RoleName,
-                                                           r.RoleID
-                                                       FROM
-                                                           [User] u
-                                                       LEFT JOIN
-                                                           Department d ON u.DepartmentID = d.DepartmentID
-                                                       LEFT JOIN
-                                                           UserRole ur ON u.UserID = ur.UserID
-                                                       LEFT JOIN
-                                                           Role r ON ur.RoleID = r.RoleID
-                                                       WHERE u.Email = @Email";
+            const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.UserID, u.FirstName, u.LastName, u.Email, u.NIC, u.MobileNumber, 
+                                                                     u.DepartmentID, d.DepartmentName, u.ManagerID, r.RoleName, r.RoleID
+                                                                FROM [User] u
+                                                                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
+                                                                LEFT JOIN UserRole ur ON u.UserID = ur.UserID
+                                                                LEFT JOIN Role r ON ur.RoleID = r.RoleID
+                                                                WHERE u.Email = @Email";
             AccountModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@Email", account.Email));
@@ -95,12 +66,9 @@ namespace DataAccessLayer.SkillsForce.DAL
                         FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                         LastName = reader.GetString(reader.GetOrdinal("LastName")),
                         Email = reader.GetString(reader.GetOrdinal("Email")).Trim(),
-                        //RoleName = reader.GetString(reader.GetOrdinal("RoleName")),
-                        //RoleId = reader.GetInt32(reader.GetOrdinal("RoleID")),
                         listOfRoles = new List<UserRoleModel>()
                     };
 
-                    // Add roles to the listOfRoles property
                     do
                     {
                         UserRoleModel role = new UserRoleModel
@@ -117,73 +85,11 @@ namespace DataAccessLayer.SkillsForce.DAL
             return user;
 
         }
-        //public AccountModel GetUserDetailsWithRoles(AccountModel account)
-        //{
-        //    const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT
-        //                                                        u.UserID,
-        //                                                        u.FirstName,
-        //                                                        u.LastName,
-        //                                                        u.Email,
-        //                                                        u.NIC,
-        //                                                        u.MobileNumber,
-        //                                                        u.DepartmentID,
-        //                                                        d.DepartmentName,
-        //                                                        u.ManagerID,
-        //                                                        r.RoleName,
-        //                                                        r.RoleID
-        //                                                    FROM
-        //                                                        [User] u
-        //                                                    LEFT JOIN
-        //                                                        Department d ON u.DepartmentID = d.DepartmentID
-        //                                                    LEFT JOIN
-        //                                                        UserRole ur ON u.UserID = ur.UserID
-        //                                                    LEFT JOIN
-        //                                                        Role r ON ur.RoleID = r.RoleID
-        //                                                    WHERE u.Email = @Email";
-        //    AccountModel user = null;
-        //    List<SqlParameter> parameters = new List<SqlParameter>();
-        //    parameters.Add(new SqlParameter("@Email", account.Email));
 
-        //    using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_USER_DETAILS_WITH_ROLE_QUERY, parameters))
-        //    {
-        //        if (reader.Read())
-        //        {
-        //            user = new AccountModel
-        //            {
-        //                UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
-        //                RoleName = reader.GetString(reader.GetOrdinal("RoleName")),
-        //                Email = reader.GetString(reader.GetOrdinal("Email")).Trim(),
-        //                RoleId = reader.GetByte(reader.GetOrdinal("RoleId")),
-        //                FirstName = reader.GetString(reader.GetOrdinal("FirstName"))
-        //            };
-        //        }
-        //    }
-
-        //    return user;
-        //}
-
-
-        //public AccountModel GetUserDetailsWithRoles(AccountModel account)
-        //{
-        //    const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.*, r.* FROM [User] u  INNER JOIN Role r  ON u.RoleID = r.RoleID  WHERE u.Email = @Email";
-        //    AccountModel user = new AccountModel();
-        //    List<SqlParameter> parameters = new List<SqlParameter>();
-        //    parameters.Add(new SqlParameter("@Email", account.Email));
-
-        //    var dt = _dbCommand.GetDataWithConditions(GET_USER_DETAILS_WITH_ROLE_QUERY, parameters);
-        //    foreach (DataRow row in dt.Rows)
-        //    {
-        //        user.UserID = int.Parse(row["UserID"].ToString());
-        //        user.RoleName = row["RoleType"].ToString();
-        //        user.Email = row["Email"].ToString().Trim();
-        //        user.RoleId = int.Parse(row["RoleId"].ToString());
-        //        user.FirstName = row["FirstName"].ToString();
-        //    }
-        //    return user;
-        //}
         public void Register(RegisterViewModel registerViewModel)
         {
-            const string INSERT_INTO_USER_AND_ACCOUNT_REGISTER_QUERY = @"BEGIN TRANSACTION
+            const string INSERT_INTO_USER_AND_ACCOUNT_REGISTER_QUERY = @"
+                                                           BEGIN TRANSACTION
                                                            DECLARE @key INT
                                                            INSERT INTO [dbo].[User] ([FirstName], [LastName], [Email], [NIC], [MobileNumber], [ManagerID], [DepartmentID])
                                                            VALUES (@FirstName, @LastName, @Email, @NIC, @MobileNumber, @ManagerID, @DepartmentID)
@@ -192,12 +98,9 @@ namespace DataAccessLayer.SkillsForce.DAL
                                                            VALUES (@key, @HashedPassword, @SaltValue)
                                                            INSERT INTO [dbo].[UserRole] ([UserID])
                                                            VALUES (@key)
-                                                           COMMIT";
-
-          
+                                                           COMMIT";  
 
             List<SqlParameter> parameters = new List<SqlParameter>();
-
             parameters.Add(new SqlParameter("@FirstName", registerViewModel.FirstName));
             parameters.Add(new SqlParameter("@LastName", registerViewModel.LastName));
             parameters.Add(new SqlParameter("@NIC", registerViewModel.NIC));
@@ -211,19 +114,17 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand.InsertUpdateData(INSERT_INTO_USER_AND_ACCOUNT_REGISTER_QUERY, parameters);
         }
 
-        public void AddAccount(AccountModel account)
-        {
-            const string INSERT_ACCOUNT_QUERY = @"INSERT INTO [dbo].[Account]([UserID], [Password])  VALUES (@UserID, @Password)";
-            List<SqlParameter> parameters = new List<SqlParameter>();
-
-            parameters.Add(new SqlParameter("@UserID", account.UserID));
-            parameters.Add(new SqlParameter("@Password", account.Password));
-
-            _dbCommand.InsertUpdateData(INSERT_ACCOUNT_QUERY, parameters);
-        }
-
     }
 }
+
+
+
+
+
+
+
+
+
 
 
 //public void Register(RegisterViewModel registerViewModel)
@@ -346,4 +247,78 @@ namespace DataAccessLayer.SkillsForce.DAL
 //        return false;
 //    }
 
+//}
+//public AccountModel GetUserDetailsWithRoles(AccountModel account)
+//{
+//    const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT
+//                                                        u.UserID,
+//                                                        u.FirstName,
+//                                                        u.LastName,
+//                                                        u.Email,
+//                                                        u.NIC,
+//                                                        u.MobileNumber,
+//                                                        u.DepartmentID,
+//                                                        d.DepartmentName,
+//                                                        u.ManagerID,
+//                                                        r.RoleName,
+//                                                        r.RoleID
+//                                                    FROM
+//                                                        [User] u
+//                                                    LEFT JOIN
+//                                                        Department d ON u.DepartmentID = d.DepartmentID
+//                                                    LEFT JOIN
+//                                                        UserRole ur ON u.UserID = ur.UserID
+//                                                    LEFT JOIN
+//                                                        Role r ON ur.RoleID = r.RoleID
+//                                                    WHERE u.Email = @Email";
+//    AccountModel user = null;
+//    List<SqlParameter> parameters = new List<SqlParameter>();
+//    parameters.Add(new SqlParameter("@Email", account.Email));
+
+//    using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_USER_DETAILS_WITH_ROLE_QUERY, parameters))
+//    {
+//        if (reader.Read())
+//        {
+//            user = new AccountModel
+//            {
+//                UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
+//                RoleName = reader.GetString(reader.GetOrdinal("RoleName")),
+//                Email = reader.GetString(reader.GetOrdinal("Email")).Trim(),
+//                RoleId = reader.GetByte(reader.GetOrdinal("RoleId")),
+//                FirstName = reader.GetString(reader.GetOrdinal("FirstName"))
+//            };
+//        }
+//    }
+
+//    return user;
+//}
+
+
+//public AccountModel GetUserDetailsWithRoles(AccountModel account)
+//{
+//    const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.*, r.* FROM [User] u  INNER JOIN Role r  ON u.RoleID = r.RoleID  WHERE u.Email = @Email";
+//    AccountModel user = new AccountModel();
+//    List<SqlParameter> parameters = new List<SqlParameter>();
+//    parameters.Add(new SqlParameter("@Email", account.Email));
+
+//    var dt = _dbCommand.GetDataWithConditions(GET_USER_DETAILS_WITH_ROLE_QUERY, parameters);
+//    foreach (DataRow row in dt.Rows)
+//    {
+//        user.UserID = int.Parse(row["UserID"].ToString());
+//        user.RoleName = row["RoleType"].ToString();
+//        user.Email = row["Email"].ToString().Trim();
+//        user.RoleId = int.Parse(row["RoleId"].ToString());
+//        user.FirstName = row["FirstName"].ToString();
+//    }
+//    return user;
+//}
+
+//public void AddAccount(AccountModel account)
+//{
+//    const string INSERT_ACCOUNT_QUERY = @"INSERT INTO [dbo].[Account]([UserID], [Password])  VALUES (@UserID, @Password)";
+//    List<SqlParameter> parameters = new List<SqlParameter>();
+//    parameters.Add(new SqlParameter("@UserID", account.UserID));
+//    parameters.Add(new SqlParameter("@Password", account.Password));
+
+//    _dbCommand.InsertUpdateData(INSERT_ACCOUNT_QUERY, parameters);
 //}

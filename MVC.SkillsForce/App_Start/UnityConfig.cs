@@ -1,9 +1,6 @@
 using BusinessLayer.SkillsForce.Interface;
 using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.AppLogger;
-
-
-//using Common.SkillsForce.AppLogger;//using Common.SkillsForce.AppLogger;
 using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
 using System.Web.Mvc;
@@ -52,19 +49,6 @@ namespace MVC.SkillsForce
             Container.RegisterType<IAttachmentService, AttachmentService>();
             Container.RegisterType<IAttachmentDAL, AttachmentDAL>();
 
-            // register all your components with the container here
-            // it is NOT necessary to register your controllers
-
-            // e.g. container.RegisterType<ITestService, TestService>();
-
-            // register all your components with the container here
-            // it is NOT necessary to register your controllers
-
-            // e.g. container.RegisterType<ITestService, TestService>();
-            //container.RegisterType<Test_IDataAccessLayer, Test_DataAccessLayer>();
-            //container.RegisterType<Test_IDataAccessLayer, Test_DataAccessLayer>();
-            
-            //container.RegisterType<IDataAccessLayer, DataAccessLayer>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(Container));
         }

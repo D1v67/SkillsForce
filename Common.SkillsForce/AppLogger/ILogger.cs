@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace Common.SkillsForce.AppLogger
 {
     public interface ILogger

@@ -6,16 +6,12 @@ using Common.SkillsForce.ViewModel;
 using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Security.Policy;
 using System.Web;
 using System.Web.Mvc;
 
-
 namespace MVC.SkillsForce.Controllers
 {
-   // [UserSession]
+    [UserSession]
     public class EnrollmentController : Controller
     {
         private readonly IEnrollmentService _enrollmentService;
@@ -36,21 +32,13 @@ namespace MVC.SkillsForce.Controllers
         [AuthorizePermission("GetAllEnrollment")]
         public ActionResult Index()
         {
-            IEnumerable<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
-            try
-            {
-                enrollments = _enrollmentService.GetAllEnrollmentsWithDetails();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            IEnumerable<EnrollmentViewModel> enrollments = _enrollmentService.GetAllEnrollmentsWithDetails();
             return View(enrollments);
         }
 
         public ActionResult RunAutomaticSelectionOfApprovedEnrollments()
         {
-            bool isCronJob = true;
+            bool isCronJob = false;
             _enrollmentService.RunAutomaticSelectionOfApprovedEnrollments(isCronJob);
 
             return RedirectToAction("/GetAllApprovedEnrollments");
@@ -59,8 +47,6 @@ namespace MVC.SkillsForce.Controllers
         [AuthorizePermission("GetAllEnrollment")]
         public ActionResult GetEnrollments()
         {
-            try
-            {
                 if (Session == null || Session["UserID"] == null || Session["CurrentRole"] == null)
                 {
                     return RedirectToAction("/Index"); 
@@ -73,32 +59,17 @@ namespace MVC.SkillsForce.Controllers
                     : _enrollmentService.GetAllEnrollmentsWithDetails();
 
                 return View(enrollments);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return View("Error"); 
-            }
         }
 
         public ActionResult GetEnrollmentsForManager(int managerId)
         {
-            IEnumerable<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
-            try
-            {
-                enrollments = _enrollmentService.GetAllEnrollmentsWithDetailsByManager(managerId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            IEnumerable<EnrollmentViewModel> enrollments = _enrollmentService.GetAllEnrollmentsWithDetailsByManager(managerId);
             return View(enrollments);
         }
 
         public ActionResult GetAllApprovedEnrollments()
         {
-             var approvedEnrollments = _enrollmentService.GetAllApprovedEnrollments();
-            //var approvedEnrollments = new List<EnrollmentViewModel>();
+            var approvedEnrollments = _enrollmentService.GetAllApprovedEnrollments();
             return View(approvedEnrollments);
         }
 
@@ -107,37 +78,20 @@ namespace MVC.SkillsForce.Controllers
             return View();
 
         }
-        //  [CustomAuthorization(RolesEnum.Admin, RolesEnum.Manager, RolesEnum.Employee)]
+
         [HttpPost]
         public JsonResult ViewTrainingData(int id)
         {
-            IEnumerable<TrainingModel> trainings = new List<TrainingModel>();
-            try
-            {
-                trainings = _trainingService.GetAllTrainingsNotEnrolledByUser(id);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            IEnumerable<TrainingModel> trainings = _trainingService.GetAllTrainingsNotEnrolledByUser(id);
             return Json(trainings, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult GetTrainingsAlreadyEnrolledByUser(int id)
         {
-            IEnumerable<TrainingModel> trainings = new List<TrainingModel>();
-            try
-            {
-                trainings = _trainingService.GetAllTrainingsEnrolledByUser(id);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            IEnumerable<TrainingModel> trainings = _trainingService.GetAllTrainingsEnrolledByUser(id);
             return Json(trainings, JsonRequestBehavior.AllowGet);
         }
-
 
         [HttpPost]
         public ActionResult SaveEnrollment(EnrollmentViewModel model)

@@ -1,31 +1,27 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
-using BusinessLayer.SkillsForce.Services;
-using Common.SkillsForce.AppLogger;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Security.Policy;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
-{
-    
+{    
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
         private readonly IAccountService _loginService;
         private readonly IDepartmentService _departmentService;
+
         public AccountController(IUserService userService, IAccountService loginService, IDepartmentService departmentService)
         {
             _userService = userService;
             _loginService = loginService;
             _departmentService = departmentService;    
         }
+
         public ActionResult Index()
         {
-           // var exist = _userService.IsMobileNumberExists("51111111");
             return View();
         }
 
@@ -37,11 +33,8 @@ namespace MVC.SkillsForce.Controllers
             {
                 var userDetailsWithRoles = _loginService.GetUserDetailsWithRoles(account);
                 SetSessionVariables(userDetailsWithRoles);
-
                 var userRoles = userDetailsWithRoles.listOfRoles.Select(r => r.RoleName).ToList();
-
                 Session["UserRoles"] = userRoles;
-
                 var redirectController = userRoles.Count == 1 ? "Home" : "Account";
                 var redirectAction = userRoles.Count == 1 ? "Index" : "RoleSelection";
 
@@ -61,24 +54,17 @@ namespace MVC.SkillsForce.Controllers
 
         public ActionResult Register()
         {
-            //IEnumerable<DepartmentModel> departments = _departmentService.GetAll();
-            //IEnumerable<UserModel> managers = _userService.GetAllManager();
-
-            //RegisterViewModel registerViewModel = new RegisterViewModel() { ListOfDepartments = departments, ListOfManagers = managers };
             return View();
         }
-
 
         [HttpPost]
         public JsonResult Register(RegisterViewModel registerViewModel)
         {
             var result = _loginService.RegisterUser(registerViewModel);
-
             if (result.IsSuccessful)
             {
                 return Json(new { url = Url.Action("Index", "Account") });
             }
-
             AddErrorsToModelState(result.Errors);
 
             var errors = GetModelStateErrors();
@@ -91,15 +77,12 @@ namespace MVC.SkillsForce.Controllers
             Session.Clear();
             return RedirectToAction("Index", "Home");
         }
-
-       
-        [HttpGet]
+      
         public JsonResult GetDepartments()
         {
             IEnumerable<DepartmentModel> departments = _departmentService.GetAll();
             return Json(departments, JsonRequestBehavior.AllowGet);
         }
-
 
         public JsonResult GetManagers()
         {
@@ -109,24 +92,16 @@ namespace MVC.SkillsForce.Controllers
 
         public ActionResult RoleSelection()
         {
-            // IEnumerable<UserRoleModel> departments = _departmentService.GetAll();
             List<string> userRoles = (List<string>)Session["UserRoles"];
-
-            // Pass user roles to the view
             return View(userRoles);
         }
 
         [HttpPost]
         public ActionResult SetRole(string selectedRole)
         {
-            // Set the selected role in the session
             Session["CurrentRole"] = selectedRole;
-
-            // Redirect to the home page or any other desired page based on the selected role
             return RedirectToAction("Index", "Home");
         }
-
-
 
         private void AddErrorsToModelState(List<string> errors)
         {
@@ -138,9 +113,7 @@ namespace MVC.SkillsForce.Controllers
 
         private List<string> GetModelStateErrors()
         {
-            return ModelState.Values.SelectMany(v => v.Errors)
-                                   .Select(e => e.ErrorMessage)
-                                   .ToList();
+            return ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
         }
 
     }

@@ -32,7 +32,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                         Email = reader.GetString(reader.GetOrdinal("Email")),
                         NIC = reader.GetString(reader.GetOrdinal("NIC")),
                         MobileNumber = reader.GetString(reader.GetOrdinal("MobileNumber")),
-                        //RoleID = reader.GetByte(reader.GetOrdinal("RoleID")),
                         DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID")),
                        // ManagerID = reader.IsDBNull(reader.GetOrdinal("ManagerID")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("ManagerID"))
                     };
@@ -58,7 +57,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                         Email = reader.GetString(reader.GetOrdinal("Email")),
                         NIC = reader.GetString(reader.GetOrdinal("NIC")),
                         MobileNumber = reader.GetString(reader.GetOrdinal("MobileNumber")),
-                        //RoleID = reader.GetByte(reader.GetOrdinal("RoleID")),
                         DepartmentID =  reader.GetByte(reader.GetOrdinal("DepartmentID")),
                         //ManagerID =reader.GetInt32(reader.GetOrdinal("ManagerID"))
                     };
@@ -77,7 +75,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             parameters.Add(new SqlParameter("@Email", user.Email));
             parameters.Add(new SqlParameter("@NIC", user.NIC));
             parameters.Add(new SqlParameter("@MobileNumber", user.MobileNumber));
-           // parameters.Add(new SqlParameter("@RoleID", user.RoleID));
             parameters.Add(new SqlParameter("@DepartmentID", user.DepartmentID));
             parameters.Add(new SqlParameter("@ManagerID", user.ManagerID));
 
@@ -99,7 +96,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             parameters.Add(new SqlParameter("@Email", user.Email));
             parameters.Add(new SqlParameter("@NIC", user.NIC));
             parameters.Add(new SqlParameter("@MobileNumber", user.MobileNumber));
-           // parameters.Add(new SqlParameter("@RoleID", user.RoleID));
             parameters.Add(new SqlParameter("@DepartmentID", user.DepartmentID));
             parameters.Add(new SqlParameter("@ManagerID", user.ManagerID));
 

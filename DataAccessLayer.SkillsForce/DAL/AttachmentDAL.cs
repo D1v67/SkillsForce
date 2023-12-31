@@ -1,14 +1,8 @@
 ﻿using Common.SkillsForce.Entity;
-using Common.SkillsForce.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Net.Mail;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
@@ -90,9 +84,8 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public void Add(AttachmentModel attachment)
         {
-            const string INSERT_EVIDENCE_QUERY = @"
-            INSERT INTO Attachment (EnrollmentID, PrerequisiteID, FileName, FileData)
-            VALUES (@EnrollmentID, @PrerequisiteID, @FileName, @FileData)";
+            const string INSERT_EVIDENCE_QUERY = @"INSERT INTO Attachment (EnrollmentID, PrerequisiteID, FileName, FileData)
+                                                   VALUES (@EnrollmentID, @PrerequisiteID, @FileName, @FileData)";
 
             List<SqlParameter> parameters = new List<SqlParameter>
             {

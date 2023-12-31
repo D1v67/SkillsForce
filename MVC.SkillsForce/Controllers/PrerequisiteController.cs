@@ -1,11 +1,6 @@
 ﻿using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
-using Common.SkillsForce.Enums;
-using MVC.SkillsForce.Custom;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
@@ -20,15 +15,7 @@ namespace MVC.SkillsForce.Controllers
         }
         public ActionResult Index()
         {
-            IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
-            try
-            {
-                prerequisites = _prerequisiteService.GetAll();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            IEnumerable<PrerequisiteModel> prerequisites =  _prerequisiteService.GetAll();
             return View(prerequisites);
         }
 
@@ -40,17 +27,8 @@ namespace MVC.SkillsForce.Controllers
 
         public ActionResult GetPrerequisiteByTrainingID(int TrainigID)
         {
-            IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
-            try
-            {
-                prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID(TrainigID);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            IEnumerable<PrerequisiteModel> prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID(TrainigID);
             return View(prerequisites);
-
         }
     }
 }

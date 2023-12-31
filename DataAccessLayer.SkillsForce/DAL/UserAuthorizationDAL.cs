@@ -1,12 +1,7 @@
-﻿using BusinessLayer.SkillsForce.Helpers;
-using DataAccessLayer.SkillsForce.Interface;
+﻿using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {

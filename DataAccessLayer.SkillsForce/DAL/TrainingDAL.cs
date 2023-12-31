@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common.SkillsForce.ViewModel;
 
 namespace DataAccessLayer.SkillsForce.DAL
@@ -79,27 +77,21 @@ namespace DataAccessLayer.SkillsForce.DAL
                     new SqlParameter("@Capacity", training.Capacity),
                     new SqlParameter("@DepartmentID", training.DepartmentID)
                 };
-
-
-            // Retrieve the generated identity using your existing method
+            // Retrieve the generated 
             int trainingID = _dbCommand.InsertDataAndReturnIdentity(INSERT_TRAINING_QUERY, parameters);
-
             // If TrainingID is obtained, add prerequisites to TrainingPrerequisite table
             if (trainingID > 0)
             {
                 foreach (PrerequisiteModel prerequisite in training.Prerequisites)
                 {
-                    const string INSERT_TRAINING_PREREQUISITE_QUERY = @"
-                INSERT INTO [dbo].[TrainingPrerequisite] (TrainingID, PrerequisiteID)
-                VALUES (@TrainingID, @PrerequisiteID);";
+                    const string INSERT_TRAINING_PREREQUISITE_QUERY = @"INSERT INTO [dbo].[TrainingPrerequisite] (TrainingID, PrerequisiteID)
+                                                                        VALUES (@TrainingID, @PrerequisiteID);";
 
                     List<SqlParameter> prerequisiteParameters = new List<SqlParameter>
                     {
                         new SqlParameter("@TrainingID", trainingID),
                         new SqlParameter("@PrerequisiteID", prerequisite.PrerequisiteID)
                     };
-
-                    // Execute the query to insert the Training-Prerequisite relationship
                     _dbCommand.InsertUpdateData(INSERT_TRAINING_PREREQUISITE_QUERY, prerequisiteParameters);
                 }
             }
@@ -129,10 +121,8 @@ namespace DataAccessLayer.SkillsForce.DAL
             END";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", trainingId) };
-
-            // Execute the DELETE query and get the number of affected rows
+            //  get the number of affected rows
             int affectedRows = _dbCommand.InsertUpdateData(DELETE_TRAINING_QUERY, parameters);
-
             // If no rows were affected, it means there are enrollments
             return affectedRows > 0;
         }
@@ -167,9 +157,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             // Insert new prerequisites
             if (training.Prerequisites != null && training.Prerequisites.Any())
             {
-                const string INSERT_PREREQUISITE_QUERY = @"
-        INSERT INTO [dbo].[TrainingPrerequisite] ([TrainingID], [PrerequisiteID])
-        VALUES (@TrainingID, @PrerequisiteID);";
+                const string INSERT_PREREQUISITE_QUERY = @"INSERT INTO [dbo].[TrainingPrerequisite] ([TrainingID], [PrerequisiteID]) VALUES (@TrainingID, @PrerequisiteID);";
 
                 foreach (var prerequisite in training.Prerequisites)
                 {
@@ -181,9 +169,7 @@ namespace DataAccessLayer.SkillsForce.DAL
 
                     _dbCommand.InsertUpdateData(INSERT_PREREQUISITE_QUERY, prerequisiteParameters);
                 }
-            }
-            
-
+            }         
         }
 
         public TrainingViewModel GetTrainingWithPrerequisites(int trainingId)

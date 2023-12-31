@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.SkillsForce.Entity
 {
@@ -16,6 +12,5 @@ namespace Common.SkillsForce.Entity
         public DateTime RegistrationDeadline { get; set; }
         public int Capacity { get; set; }
         public int DepartmentID { get; set; }
-
     }
 }

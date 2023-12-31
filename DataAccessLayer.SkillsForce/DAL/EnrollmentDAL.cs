@@ -1,14 +1,9 @@
-﻿using Common.SkillsForce.Entity;
-using DataAccessLayer.SkillsForce.Interface;
+﻿using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common.SkillsForce.ViewModel;
-using System.Collections;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
@@ -312,15 +307,11 @@ namespace DataAccessLayer.SkillsForce.DAL
                 new SqlParameter("@TrainingID", trainingID),
 
             };
-
             string outputColumnName = "EnrollmentID";
 
             return _dbCommand.ExecuteQueryWithOutput(CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY, parameters, outputColumnName);
 
         }
-
-
-
     }
 }
 

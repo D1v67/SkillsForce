@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
-using Common.SkillsForce.Entity;
 using Common.SkillsForce.Enums;
 using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;

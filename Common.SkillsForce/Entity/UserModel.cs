@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-
 namespace Common.SkillsForce.Entity
 {
     public class UserModel

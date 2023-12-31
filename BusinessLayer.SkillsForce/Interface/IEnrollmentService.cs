@@ -1,7 +1,6 @@
 ﻿using Common.SkillsForce.ViewModel;
 using System.Collections.Generic;
 
-
 namespace BusinessLayer.SkillsForce.Interface
 {
     public interface IEnrollmentService
@@ -18,7 +17,6 @@ namespace BusinessLayer.SkillsForce.Interface
         EnrollmentNotificationViewModel GetEnrollmentNotificationDetailsByID(int id);
         IEnumerable<EnrollmentViewModel> GetAllApprovedEnrollments();
         List<int> ConfirmEnrollmentsByTrainingID(int trainingID);
-
         void RunAutomaticSelectionOfApprovedEnrollments(bool isCronjob);
     }
 }

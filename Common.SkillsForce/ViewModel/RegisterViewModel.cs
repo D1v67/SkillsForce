@@ -1,7 +1,5 @@
 ﻿using Common.SkillsForce.Entity;
-using System;
 using System.Collections.Generic;
-
 
 namespace Common.SkillsForce.ViewModel
 {
