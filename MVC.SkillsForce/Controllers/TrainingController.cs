@@ -117,29 +117,58 @@ namespace MVC.SkillsForce.Controllers
         // GET: Training/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var training = _trainingService.GetTrainingWithPrerequisites(id);
+            return View(training);
         }
 
+        public ActionResult GetTrainingDetails(int id)
+        {
+            var training = _trainingService.GetTrainingWithPrerequisites(id);
+            return Json(training, JsonRequestBehavior.AllowGet);
+
+        }
         // POST: Training/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public JsonResult Edit(TrainingViewModel model)
         {
-            try
+            if (_trainingService.IsTrainingNameAlreadyExistsOnUpdate(model.TrainingID, model.TrainingName))
             {
-                // TODO: Add update logic here
+                ModelState.AddModelError("Email", "Training already exists with same name.");
+            }
 
-                return RedirectToAction("Index");
-            }
-            catch
+            if (ModelState.IsValid)
             {
-                return View();
+                // If all validations pass, proceed with registration
+                _trainingService.Update(model);
+
+                return Json(new { url = Url.Action("Index", "Training") });
             }
+
+            // If there are validation errors, return them to the client
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                          .Select(e => e.ErrorMessage)
+                                          .ToList();
+
+            return Json(new { errorMessage = errors });
         }
 
         // GET: Training/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            bool isDeletionSuccessful = _trainingService.Delete(id);
+
+            if (isDeletionSuccessful)
+            {
+                TempData["SuccessMessage"] = "Training deleted successfully.";
+                // Redirect to the training list if deletion was successful
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                // Deletion was not successful due to enrollments; display an error message
+                TempData["ErrorMessage"] = $"Cannot delete the training because it has enrolled users: ";
+                return RedirectToAction("Index");
+            }
         }
 
         // POST: Training/Delete/5

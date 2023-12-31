@@ -26,9 +26,9 @@ namespace BusinessLayer.SkillsForce.Services
             _trainingDAL.Add(training);
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            _trainingDAL.Delete(id);
+            return _trainingDAL.Delete(id);
         }
 
         public IEnumerable<TrainingModel> GetAll()
@@ -85,12 +85,22 @@ namespace BusinessLayer.SkillsForce.Services
             return trainingViewModel;
         }
 
+        public TrainingViewModel GetTrainingWithPrerequisites(int trainingId)
+        {
+            return _trainingDAL.GetTrainingWithPrerequisites(trainingId);
+        }
+
         public bool IsTrainingNameAlreadyExists(string trainingName)
         {
             return _trainingDAL.IsTrainingNameAlreadyExists(trainingName);
         }
 
-        public void Update(TrainingModel training)
+        public bool IsTrainingNameAlreadyExistsOnUpdate(int trainingId, string newTrainingName)
+        {
+            return _trainingDAL.IsTrainingNameAlreadyExistsOnUpdate(trainingId, newTrainingName);
+        }
+
+        public void Update(TrainingViewModel training)
         {
             _trainingDAL.Update(training);
         }

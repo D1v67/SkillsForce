@@ -105,28 +105,152 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
         }
 
-        public void Delete(int id)
+        public bool Delete(int trainingId)
         {
-            const string DELETE_TRAINING_QUERY = @"DELETE FROM [dbo].[Training] WHERE [TrainingID] = @TrainingID";
-            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", id) };
-            _dbCommand.InsertUpdateData(DELETE_TRAINING_QUERY, parameters);
+            const string DELETE_TRAINING_QUERY = @"
+               BEGIN TRANSACTION;
+            IF NOT EXISTS (
+                SELECT 1
+                FROM Enrollment
+                WHERE TrainingID = @TrainingID
+            )
+            BEGIN
+                DELETE FROM TrainingPrerequisite
+                WHERE TrainingID = @TrainingID;
+
+                DELETE FROM Training
+                WHERE TrainingID = @TrainingID;
+
+                COMMIT;
+            END
+            ELSE
+            BEGIN
+                ROLLBACK; 
+            END";
+
+            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", trainingId) };
+
+            // Execute the DELETE query and get the number of affected rows
+            int affectedRows = _dbCommand.InsertUpdateData(DELETE_TRAINING_QUERY, parameters);
+
+            // If no rows were affected, it means there are enrollments
+            return affectedRows > 0;
         }
 
-        public void Update(TrainingModel training)
+
+        public void Update(TrainingViewModel training)
         {
-            const string UPDATE_TRAINING_QUERY = @"UPDATE [dbo].[Training] SET [TrainingName] = @TrainingName,[RegistrationDeadline] = @RegistrationDeadline,[TrainingDescription] = @TrainingDescription
-                                                     ,[Capacity] = @Capacity,[DepartmentID] = @DepartmentID
-                                                     WHERE [TrainingID] = @TrainingID";
+            const string UPDATE_TRAINING_QUERY = @"
+        UPDATE [dbo].[Training]
+        SET [TrainingName] = @TrainingName,
+            [RegistrationDeadline] = @RegistrationDeadline,
+            [StartDate] = @StartDate,
+            [TrainingDescription] = @TrainingDescription,
+            [Capacity] = @Capacity,
+            [DepartmentID] = @DepartmentID
+        WHERE [TrainingID] = @TrainingID;
+        
+        DELETE FROM [dbo].[TrainingPrerequisite] WHERE [TrainingID] = @TrainingID;";
+
             List<SqlParameter> parameters = new List<SqlParameter>();
 
+            parameters.Add(new SqlParameter("@TrainingID", training.TrainingID));
             parameters.Add(new SqlParameter("@TrainingName", training.TrainingName));
             parameters.Add(new SqlParameter("@TrainingDescription", training.TrainingDescription));
             parameters.Add(new SqlParameter("@RegistrationDeadline", training.RegistrationDeadline));
+            parameters.Add(new SqlParameter("@StartDate", training.StartDate));
             parameters.Add(new SqlParameter("@Capacity", training.Capacity));
             parameters.Add(new SqlParameter("@DepartmentID", training.DepartmentID));
 
             _dbCommand.InsertUpdateData(UPDATE_TRAINING_QUERY, parameters);
+
+            // Insert new prerequisites
+            if (training.Prerequisites != null && training.Prerequisites.Any())
+            {
+                const string INSERT_PREREQUISITE_QUERY = @"
+        INSERT INTO [dbo].[TrainingPrerequisite] ([TrainingID], [PrerequisiteID])
+        VALUES (@TrainingID, @PrerequisiteID);";
+
+                foreach (var prerequisite in training.Prerequisites)
+                {
+                    var prerequisiteParameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@TrainingID", training.TrainingID),
+                    new SqlParameter("@PrerequisiteID", prerequisite.PrerequisiteID)
+                };
+
+                    _dbCommand.InsertUpdateData(INSERT_PREREQUISITE_QUERY, prerequisiteParameters);
+                }
+            }
+            
+
         }
+
+        public TrainingViewModel GetTrainingWithPrerequisites(int trainingId)
+        {
+            const string GET_TRAINING_QUERY = @"
+                    SELECT
+                        T.TrainingID,
+                        T.TrainingName,
+                        T.RegistrationDeadline,
+                        T.TrainingDescription,
+                        T.Capacity,
+                        T.StartDate,
+                        T.DepartmentID,
+                        P.PrerequisiteID,
+                        P.PrerequisiteName
+                        
+                    FROM
+                        Training T
+                    LEFT JOIN
+                        TrainingPrerequisite TP ON T.TrainingID = TP.TrainingID
+                    LEFT JOIN
+                        Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID
+                    WHERE
+                        T.TrainingID = @TrainingID;
+                ";
+
+            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", trainingId) }; ;
+
+            var dt = _dbCommand.GetDataWithConditions(GET_TRAINING_QUERY, parameters);
+
+            TrainingViewModel training = null;
+
+            foreach (DataRow row in dt.Rows)
+            {
+                if (training == null)
+                {
+                    // Create a new TrainingViewModel for the first row
+                    training = new TrainingViewModel
+                    {
+                        TrainingID = trainingId,
+                        TrainingName = row["TrainingName"].ToString(),
+                        TrainingDescription = row["TrainingDescription"].ToString(),
+                        RegistrationDeadline = ((DateTime)row["RegistrationDeadline"]).ToString("MM/dd/yyyy"),
+                        Capacity = int.Parse(row["Capacity"].ToString()),
+                        DepartmentID = int.Parse(row["DepartmentID"].ToString()),
+                        Prerequisites = new List<PrerequisiteModel>(),
+                        StartDate = ((DateTime)row["StartDate"]).ToString("MM/dd/yyyy"),
+                    };
+                }
+
+                // Check if the prerequisite columns are not null (indicating a match in the JOIN)
+                if (row["PrerequisiteID"] != DBNull.Value)
+                {
+                    PrerequisiteModel prerequisite = new PrerequisiteModel
+                    {
+                        PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString()),
+                        PrerequisiteName = row["PrerequisiteName"].ToString()
+                    };
+
+                    // Add the prerequisite to the existing list in TrainingViewModel
+                    training.Prerequisites.Add(prerequisite);
+                }
+            }
+
+            return training;
+        }
+
 
         public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites()
         {
@@ -167,7 +291,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                         TrainingID = trainingId,
                         TrainingName = row["TrainingName"].ToString(),
                         TrainingDescription = row["TrainingDescription"].ToString(),
-                        RegistrationDeadline = (DateTime)row["RegistrationDeadline"],
+                        RegistrationDeadline = ((DateTime)row["RegistrationDeadline"]).ToString("MM/dd/yyyy"),
                         Capacity = int.Parse(row["Capacity"].ToString()),
                         DepartmentID = int.Parse(row["DepartmentID"].ToString()),
                         Prerequisites = new List<PrerequisiteModel>()
@@ -349,7 +473,16 @@ namespace DataAccessLayer.SkillsForce.DAL
                 return reader.Read();
             }
         }
-   
+
+        public bool IsTrainingNameAlreadyExistsOnUpdate(int trainingId, string newTrainingName)
+        {
+            const string IS_TRAINING_NAME_ALREADY_EXIST_QUERY = " SELECT 1 FROM [dbo].[Training] WHERE [TrainingName] = @TrainingName AND [TrainingID] != @TrainingID";
+            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingName", newTrainingName), new SqlParameter("@TrainingID", trainingId) };
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(IS_TRAINING_NAME_ALREADY_EXIST_QUERY, parameters))
+            {
+                return reader.Read();
+            }
+        }
     }
 }
 

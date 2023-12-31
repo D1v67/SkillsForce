@@ -1,5 +1,39 @@
 ﻿@model IEnumerable<Common.SkillsForce.Entity.TrainingModel>
 
+
+
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div id="error-alert" class="alert alert-danger">
+        <strong>Error:</strong> @TempData["ErrorMessage"]
+    </div>
+
+    <script>
+        // Display error message for 5 seconds (5000 milliseconds)
+        setTimeout(function () {
+            $("#error-alert").fadeOut("slow", function () {
+                $(this).remove();
+            });
+        }, 5000);
+    </script>
+}
+else if (TempData["SuccessMessage"] != null)
+{
+    <div id="success-alert" class="alert alert-success">
+        <strong>Success:</strong> @TempData["SuccessMessage"]
+    </div>
+
+    <script>
+        // Display success message for 5 seconds (5000 milliseconds)
+        setTimeout(function () {
+            $("#success-alert").fadeOut("slow", function () {
+                $(this).remove();
+            });
+        }, 5000);
+    </script>
+}
+
 <div class=" container-fluid mt-3">
     <p>
         @Html.ActionLink("Create New", "CreateTraining", "Training", new { @class = "btn btn-primary" })
@@ -34,3 +68,5 @@
         </tbody>
     </table>
 </div>
+
+

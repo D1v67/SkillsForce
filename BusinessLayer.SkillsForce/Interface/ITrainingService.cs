@@ -10,8 +10,8 @@ namespace BusinessLayer.SkillsForce.Interface
         IEnumerable<TrainingModel> GetAll();
         TrainingModel GetByID(int id);
         void Add(TrainingViewModel training);
-        void Delete(int id);
-        void Update(TrainingModel training);
+        bool Delete(int id);
+        void Update(TrainingViewModel training);
         IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites();
         int GetCapacityID(int id);
         int GetRemainingCapacityID(int trainingID);
@@ -20,5 +20,7 @@ namespace BusinessLayer.SkillsForce.Interface
         IEnumerable<TrainingModel> GetAllTrainingsNotEnrolledByUser(int id);
         TrainingViewModel GetTrainingViewModelDetailsWithDepartmentsAndPrerequsites();
         bool IsTrainingNameAlreadyExists(string trainingName);
+        TrainingViewModel GetTrainingWithPrerequisites(int trainingId);
+        bool IsTrainingNameAlreadyExistsOnUpdate(int trainingId, string newTrainingName);
     }
 }
