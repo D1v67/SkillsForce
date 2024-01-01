@@ -3,6 +3,7 @@ using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
@@ -26,12 +27,12 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
-        public JsonResult Authenticate(AccountModel account)
+        public async Task<JsonResult> Authenticate(AccountModel account)
         {
-            bool isUserValid = _loginService.IsUserAuthenticated(account);
+            bool isUserValid = await _loginService.IsUserAuthenticatedAsync(account);
             if (isUserValid)
             {
-                var userDetailsWithRoles = _loginService.GetUserDetailsWithRoles(account);
+                var userDetailsWithRoles = await _loginService.GetUserDetailsWithRolesAsync(account);
                 SetSessionVariables(userDetailsWithRoles);
                 var userRoles = userDetailsWithRoles.listOfRoles.Select(r => r.RoleName).ToList();
                 Session["UserRoles"] = userRoles;
@@ -58,9 +59,9 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
-        public JsonResult Register(RegisterViewModel registerViewModel)
+        public async Task<JsonResult> Register(RegisterViewModel registerViewModel)
         {
-            var result = _loginService.RegisterUser(registerViewModel);
+            var result = await _loginService.RegisterUserAsync(registerViewModel);
             if (result.IsSuccessful)
             {
                 return Json(new { url = Url.Action("Index", "Account") });
@@ -77,16 +78,16 @@ namespace MVC.SkillsForce.Controllers
             Session.Clear();
             return RedirectToAction("Index", "Home");
         }
-      
-        public JsonResult GetDepartments()
+
+        public async Task<JsonResult> GetDepartments()
         {
-            IEnumerable<DepartmentModel> departments = _departmentService.GetAll();
+            IEnumerable<DepartmentModel> departments = await _departmentService.GetAllAsync();
             return Json(departments, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetManagers()
+        public async Task<JsonResult> GetManagers()
         {
-            IEnumerable<UserModel> managers = _userService.GetAllManager();
+            IEnumerable<UserModel> managers = await _userService.GetAllManagerAsync();
             return Json(managers, JsonRequestBehavior.AllowGet);
         }
 

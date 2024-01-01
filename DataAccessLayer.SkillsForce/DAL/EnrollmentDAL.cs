@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using Common.SkillsForce.ViewModel;
+using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
@@ -16,7 +17,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand = dbCommand;
         }
 
-        public int Add(EnrollmentViewModel enrollment)
+        public async Task<int> AddAsync(EnrollmentViewModel enrollment)
         {
             const string INSERT_ENROLLMENT_QUERY = @"INSERT INTO [dbo].[Enrollment] ([UserID], [TrainingID]) OUTPUT INSERTED.EnrollmentID VALUES (@UserID, @TrainingID)";
 
@@ -25,22 +26,19 @@ namespace DataAccessLayer.SkillsForce.DAL
                 new SqlParameter("@UserID", enrollment.UserID),
                 new SqlParameter("@TrainingID", enrollment.TrainingID)
             };
-            int generatedEnrollmentId = _dbCommand.InsertDataAndReturnIdentity(INSERT_ENROLLMENT_QUERY, parameters);
+
+            int generatedEnrollmentId = await _dbCommand.InsertDataAndReturnIdentityAsync(INSERT_ENROLLMENT_QUERY, parameters);
             return generatedEnrollmentId;
         }
 
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<EnrollmentViewModel> GetAll()
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllAsync()
         {
             const string GET_ALL_ENROLLMENT_QUERY = @"SELECT * FROM [dbo].[Enrollment]";
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
-            using (SqlDataReader reader = _dbCommand.GetDataReader(GET_ALL_ENROLLMENT_QUERY))
+
+            using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_ALL_ENROLLMENT_QUERY))
             {
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     EnrollmentViewModel enrollment = new EnrollmentViewModel
                     {
@@ -56,16 +54,18 @@ namespace DataAccessLayer.SkillsForce.DAL
 
             return enrollments;
         }
-        public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails()
+
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllEnrollmentsWithDetailsAsync()
         {
             const string GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY =
                 @"SELECT E.EnrollmentID, U.UserID, U.FirstName, U.LastName, T.TrainingID, TrainingName, D.DepartmentName, E.EnrollmentDate, E.EnrollmentStatus
-          FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID";
+  FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID";
 
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
-            using (SqlDataReader reader = _dbCommand.GetDataReader(GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY))
+
+            using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY))
             {
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     EnrollmentViewModel enrollment = new EnrollmentViewModel
                     {
@@ -82,21 +82,24 @@ namespace DataAccessLayer.SkillsForce.DAL
                     enrollments.Add(enrollment);
                 }
             }
+
             return enrollments;
         }
-        public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId)
+
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllEnrollmentsWithDetailsByManagerAsync(int managerId)
         {
             const string GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY =
                 @"SELECT E.EnrollmentID, U.UserID, U.FirstName, U.LastName, T.TrainingID, T.TrainingName, D.DepartmentName, E.EnrollmentDate, E.EnrollmentStatus
-          FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
-          WHERE U.ManagerID = @ManagerID";
+  FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
+  WHERE U.ManagerID = @ManagerID";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@ManagerID", managerId) };
-            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY, parameters))
+
+            using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY, parameters))
             {
                 List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
 
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     EnrollmentViewModel enrollment = new EnrollmentViewModel
                     {
@@ -117,47 +120,41 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
         }
 
-        public EnrollmentViewModel GetByID(int id)
-        {
-            throw new NotImplementedException();
-        }
 
-        public void Update(EnrollmentViewModel enrollment)
-        {
-            throw new NotImplementedException();
-        }
 
-        public void ApproveEnrollment(int enrollmentId)
+
+        public async Task ApproveEnrollmentAsync(int enrollmentId)
         {
             const string UPDATE_STATUS_APPROVED_QUERY = @"UPDATE Enrollment SET EnrollmentStatus = 'Approved' WHERE EnrollmentID = @EnrollmentID";
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@EnrollmentID", enrollmentId));
-  
-            _dbCommand.InsertUpdateData(UPDATE_STATUS_APPROVED_QUERY, parameters);
+            List<SqlParameter> parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", enrollmentId) };
+
+            await _dbCommand.InsertUpdateDataAsync(UPDATE_STATUS_APPROVED_QUERY, parameters);
         }
 
-        public void RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId)
+
+        public async Task RejectEnrollmentAsync(int enrollmentId, string rejectionReason, int declinedByUserId)
         {
             const string UPDATE_STATUS_REJECTED_QUERY = @"
-                UPDATE Enrollment
-                SET EnrollmentStatus = 'Rejected',
-                    DeclineReason = @DeclineReason,
-                    DeclinedByUserId = @DeclinedByUserId,
-                    LastModifiedTimestamp = GETDATE(),
-                    LastModifiedUserId = @LastModifiedUserId
-                WHERE EnrollmentID = @EnrollmentID";
-            List<SqlParameter> parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@EnrollmentID", enrollmentId),
-                new SqlParameter("@DeclineReason", (object)rejectionReason ?? DBNull.Value),
-                new SqlParameter("@DeclinedByUserId", (object)declinedByUserId ?? DBNull.Value),
-                new SqlParameter("@LastModifiedUserId", declinedByUserId)
-            };
+        UPDATE Enrollment
+        SET EnrollmentStatus = 'Rejected',
+            DeclineReason = @DeclineReason,
+            DeclinedByUserId = @DeclinedByUserId,
+            LastModifiedTimestamp = GETDATE(),
+            LastModifiedUserId = @LastModifiedUserId
+        WHERE EnrollmentID = @EnrollmentID";
 
-            _dbCommand.InsertUpdateData(UPDATE_STATUS_REJECTED_QUERY, parameters);
+            List<SqlParameter> parameters = new List<SqlParameter>
+    {
+        new SqlParameter("@EnrollmentID", enrollmentId),
+        new SqlParameter("@DeclineReason", (object)rejectionReason ?? DBNull.Value),
+        new SqlParameter("@DeclinedByUserId", (object)declinedByUserId ?? DBNull.Value),
+        new SqlParameter("@LastModifiedUserId", declinedByUserId)
+    };
+
+            await _dbCommand.InsertUpdateDataAsync(UPDATE_STATUS_REJECTED_QUERY, parameters);
         }
 
-        public EnrollmentNotificationViewModel GetEnrollmentNotificationDetailsByID(int id)
+        public async Task<EnrollmentNotificationViewModel> GetEnrollmentNotificationDetailsByIDAsync(int id)
         {
             const string GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID =
                 @"SELECT
@@ -184,9 +181,10 @@ namespace DataAccessLayer.SkillsForce.DAL
         LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
-            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID, parameters))
+
+            using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID, parameters))
             {
-                if (reader.Read())
+                if (await reader.ReadAsync())
                 {
                     EnrollmentNotificationViewModel enrollment = new EnrollmentNotificationViewModel
                     {
@@ -214,42 +212,42 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
 
 
-        public IEnumerable<EnrollmentViewModel> GetAllApprovedEnrollments()
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllApprovedEnrollmentsAsync()
         {
             const string GET_ALL_APPROVED_ENROLLMENT_WITH_DETAILS_QUERY =
                 @"
-         SELECT
-             E.EnrollmentID,
-             U.UserID,
-             U.FirstName,
-             U.LastName,
-             T.TrainingID,
-             T.TrainingName,
-             U.DepartmentID AS UserDepartmentID,
-             UD.DepartmentName AS UserDepartmentName,
-             T.DepartmentID AS TrainingDepartmentID,
-             TD.DepartmentName AS TrainingDepartmentName,
-             E.EnrollmentDate,
-             E.EnrollmentStatus,
-             E.IsSelected
-         FROM
-             Enrollment E
-         JOIN
-             [User] U ON E.UserID = U.UserID
-         JOIN
-             Training T ON E.TrainingID = T.TrainingID
-         JOIN
-             Department UD ON U.DepartmentID = UD.DepartmentID -- User's department
-         JOIN
-             Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
-         WHERE
-             E.EnrollmentStatus = 'Approved'";
+        SELECT
+            E.EnrollmentID,
+            U.UserID,
+            U.FirstName,
+            U.LastName,
+            T.TrainingID,
+            T.TrainingName,
+            U.DepartmentID AS UserDepartmentID,
+            UD.DepartmentName AS UserDepartmentName,
+            T.DepartmentID AS TrainingDepartmentID,
+            TD.DepartmentName AS TrainingDepartmentName,
+            E.EnrollmentDate,
+            E.EnrollmentStatus,
+            E.IsSelected
+        FROM
+            Enrollment E
+        JOIN
+            [User] U ON E.UserID = U.UserID
+        JOIN
+            Training T ON E.TrainingID = T.TrainingID
+        JOIN
+            Department UD ON U.DepartmentID = UD.DepartmentID -- User's department
+        JOIN
+            Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
+        WHERE
+            E.EnrollmentStatus = 'Approved'";
 
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
 
-            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_ALL_APPROVED_ENROLLMENT_WITH_DETAILS_QUERY, null))
+            using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_ALL_APPROVED_ENROLLMENT_WITH_DETAILS_QUERY, null))
             {
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     EnrollmentViewModel enrollment = new EnrollmentViewModel
                     {
@@ -273,54 +271,53 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
 
 
-        public List<int> ConfirmEnrollmentsByTrainingID(int trainingID)
+        public async Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int trainingID)
         {
             const string CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY = @"DECLARE @EnrollmentIDs TABLE (EnrollmentID INT);
 
-                    WITH OrderedEnrollments AS (
-                        SELECT
-                            E.EnrollmentID,
-                            E.UserID,
-                            E.TrainingID,
-                            E.EnrollmentDate,
-                            E.EnrollmentStatus,
-                            U.DepartmentID,
-                            U.FirstName,
-                            U.LastName,
-                            E.IsSelected,
-                            ROW_NUMBER() OVER (ORDER BY IIF(U.DepartmentID = (SELECT T.DepartmentID FROM Training T WHERE T.TrainingID = E.TrainingID), 0, 1), E.EnrollmentDate) AS RowNum
-                        FROM
-                            Enrollment E
-                        JOIN
-                            [User] U ON E.UserID = U.UserID
-                        WHERE
-                            E.TrainingID = 2
-                    )
+               WITH OrderedEnrollments AS (
+                   SELECT
+                       E.EnrollmentID,
+                       E.UserID,
+                       E.TrainingID,
+                       E.EnrollmentDate,
+                       E.EnrollmentStatus,
+                       U.DepartmentID,
+                       U.FirstName,
+                       U.LastName,
+                       E.IsSelected,
+                       ROW_NUMBER() OVER (ORDER BY IIF(U.DepartmentID = (SELECT T.DepartmentID FROM Training T WHERE T.TrainingID = E.TrainingID), 0, 1), E.EnrollmentDate) AS RowNum
+                   FROM
+                       Enrollment E
+                   JOIN
+                       [User] U ON E.UserID = U.UserID
+                   WHERE
+                       E.TrainingID = 2
+               )
 
-                    UPDATE
-                        OrderedEnrollments
-                    SET
-                        IsSelected = 1
-                    OUTPUT
-                        INSERTED.EnrollmentID
-                    INTO
-                        @EnrollmentIDs
-                    WHERE
-                        RowNum <= (SELECT Capacity FROM Training WHERE TrainingID = 2);
+               UPDATE
+                   OrderedEnrollments
+               SET
+                   IsSelected = 1
+               OUTPUT
+                   INSERTED.EnrollmentID
+               INTO
+                   @EnrollmentIDs
+               WHERE
+                   RowNum <= (SELECT Capacity FROM Training WHERE TrainingID = 2);
 
-                    -- Get the Enrollment IDs
-                    SELECT EnrollmentID FROM @EnrollmentIDs AS AffectedEnrollments;
-                    ";
+               -- Get the Enrollment IDs
+               SELECT EnrollmentID FROM @EnrollmentIDs AS AffectedEnrollments;
+               ";
 
             List<SqlParameter> parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@TrainingID", trainingID),
+    {
+        new SqlParameter("@TrainingID", trainingID),
+    };
 
-            };
             string outputColumnName = "EnrollmentID";
 
-            return _dbCommand.ExecuteQueryWithOutput(CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY, parameters, outputColumnName);
-
+            return await _dbCommand.ExecuteQueryWithOutputAsync(CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY, parameters, outputColumnName);
         }
     }
 }

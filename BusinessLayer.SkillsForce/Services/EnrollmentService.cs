@@ -5,6 +5,7 @@ using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.SkillsForce.Services
 {
@@ -15,106 +16,71 @@ namespace BusinessLayer.SkillsForce.Services
         private readonly ITrainingService _trainingService;
         private readonly INotificationService _notificationService;
 
-        public EnrollmentService(IEnrollmentDAL enrollmentDAL, ITrainingService trainingService, INotificationService notificationService)
+        public async Task<int> AddAsync(EnrollmentViewModel enrollment)
         {
-            _enrollmentDAL = enrollmentDAL;
-            _trainingService = trainingService;
-            _notificationService = notificationService;
-        }
-        public int Add(EnrollmentViewModel enrollment)
-        {
-           return _enrollmentDAL.Add(enrollment);
+            return await _enrollmentDAL.AddAsync(enrollment);
         }
 
-        public void ApproveEnrollment(int enrollmentId)
+        public async Task ApproveEnrollmentAsync(int enrollmentId)
         {
-            _enrollmentDAL.ApproveEnrollment(enrollmentId);
+            await _enrollmentDAL.ApproveEnrollmentAsync(enrollmentId);
         }
 
-        public void Delete(int id)
+
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _enrollmentDAL.GetAllAsync();
         }
 
-        public IEnumerable<EnrollmentViewModel> GetAll()
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllEnrollmentsWithDetailsAsync()
         {
-            return _enrollmentDAL.GetAll();
+            return await _enrollmentDAL.GetAllEnrollmentsWithDetailsAsync();
         }
 
-        public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails()
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllEnrollmentsWithDetailsByManagerAsync(int managerId)
         {
-            return _enrollmentDAL.GetAllEnrollmentsWithDetails();
+            return await _enrollmentDAL.GetAllEnrollmentsWithDetailsByManagerAsync(managerId);
         }
 
-        public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId)
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllApprovedEnrollmentsAsync()
         {
-            return _enrollmentDAL.GetAllEnrollmentsWithDetailsByManager(managerId);
+            return await _enrollmentDAL.GetAllApprovedEnrollmentsAsync();
         }
 
-        public IEnumerable<EnrollmentViewModel> GetAllApprovedEnrollments()
+        public async Task<EnrollmentNotificationViewModel> GetEnrollmentNotificationDetailsByIDAsync(int id)
         {
-            return _enrollmentDAL.GetAllApprovedEnrollments();
+            return await _enrollmentDAL.GetEnrollmentNotificationDetailsByIDAsync(id);
         }
 
-        public EnrollmentViewModel GetByID(int id)
+        public async Task RejectEnrollmentAsync(int enrollmentId, string rejectionReason, int declinedByUserId)
         {
-            throw new NotImplementedException();
+            await _enrollmentDAL.RejectEnrollmentAsync(enrollmentId, rejectionReason, declinedByUserId);
         }
 
-        public EnrollmentNotificationViewModel GetEnrollmentNotificationDetailsByID(int id)
+
+        public async Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int trainingID)
         {
-            return _enrollmentDAL.GetEnrollmentNotificationDetailsByID(id);
+            return await _enrollmentDAL.ConfirmEnrollmentsByTrainingIDAsync(trainingID);
         }
 
-        public void RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId)
+        public async Task RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob)
         {
-            _enrollmentDAL.RejectEnrollment( enrollmentId,  rejectionReason, declinedByUserId);
-        }
-
-        public void Update(EnrollmentViewModel enrollment)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<int> ConfirmEnrollmentsByTrainingID(int trainingID)
-        {
-            return _enrollmentDAL.ConfirmEnrollmentsByTrainingID(trainingID);
-        }
-
-        public void RunAutomaticSelectionOfApprovedEnrollments(bool isCronjob)
-        {
-            DateTime registrationDeadline = new DateTime(2024,03,01);
-            //DateTime registrationDeadline = DateTime.Now;
-            var trainings = _trainingService.GetAllTrainingsByRegistrationDeadline(registrationDeadline, isCronjob);
+            DateTime registrationDeadline = new DateTime(2024, 03, 01);
+            var trainings = await _trainingService.GetAllTrainingsByRegistrationDeadlineAsync(registrationDeadline, isCronjob);
 
             foreach (var training in trainings)
             {
-                var enrollmentIds = _enrollmentDAL.ConfirmEnrollmentsByTrainingID(training.TrainingID);
+                var enrollmentIds = await _enrollmentDAL.ConfirmEnrollmentsByTrainingIDAsync(training.TrainingID);
 
                 if (enrollmentIds != null && enrollmentIds.Any())
                 {
                     foreach (var enrollmentId in enrollmentIds)
                     {
-                        EnrollmentNotificationViewModel enrollment = GetEnrollmentNotificationDetailsByID(enrollmentId);
-                        _notificationService.SendNotification(enrollment, NotificationType.Confirmation);
+                        EnrollmentNotificationViewModel enrollment = await GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
+                        await _notificationService.SendNotificationAsync(enrollment, NotificationType.Confirmation);
                     }
                 }
             }
-        }
-
-
-        
-
-
-        public bool RunAutomaticSelectionOfApprovedEnrollmentsByAdmin(bool isCronjob)
-        {
-            var trainings = _trainingService.GetAllTrainingsByRegistrationDeadline(DateTime.Now, isCronjob);
-
-            return trainings?.Any() == true && trainings.All(training =>
-            {
-                _enrollmentDAL.ConfirmEnrollmentsByTrainingID(training.TrainingID);
-                return true;
-            });
         }
     }
 }

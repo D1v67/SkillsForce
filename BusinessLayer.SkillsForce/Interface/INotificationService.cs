@@ -1,10 +1,11 @@
 ﻿using Common.SkillsForce.Enums;
 using Common.SkillsForce.ViewModel;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.SkillsForce.Interface
 {
     public interface INotificationService
     {
-        string SendNotification(EnrollmentNotificationViewModel enrollment, NotificationType notificationType);
+        Task<string> SendNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType);
     }
 }

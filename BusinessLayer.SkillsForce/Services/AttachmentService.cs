@@ -2,6 +2,7 @@
 using DataAccessLayer.SkillsForce.DAL;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace BusinessLayer.SkillsForce.Services
@@ -15,27 +16,27 @@ namespace BusinessLayer.SkillsForce.Services
             _attachmentDAL = attachmentDAL;
         }
 
-        public IEnumerable<AttachmentModel> GetAll()
+        public async Task<IEnumerable<AttachmentModel>> GetAllAsync()
         {
-            return _attachmentDAL.GetAll();
+            return await _attachmentDAL.GetAllAsync();
         }
 
-        public AttachmentModel GetByAttachmentID(int id)
+        public async Task<AttachmentModel> GetByAttachmentIDAsync(int id)
         {
-            return _attachmentDAL.GetByAttachmentID(id);
+            return await _attachmentDAL.GetByAttachmentIDAsync(id);
         }
 
-        public IEnumerable<AttachmentModel> GetAllByEnrollmentID(int id)
+        public async Task<IEnumerable<AttachmentModel>> GetAllByEnrollmentIDAsync(int id)
         {
-            return _attachmentDAL.GetAllByEnrollmentID(id);
+            return await _attachmentDAL.GetAllByEnrollmentIDAsync(id);
         }
 
-        public void UploadFile(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
+        public async Task UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
         {
             if (!string.IsNullOrEmpty(PrerequisiteIDs))
-            {             
+            {
                 var prerequisiteIdArray = PrerequisiteIDs.Split(',');
-               
+
                 for (int i = 0; i < files.Count; i++)
                 {
                     var item = files[i];
@@ -53,12 +54,11 @@ namespace BusinessLayer.SkillsForce.Services
                                 FileData = fileData,
                                 PrerequisiteID = prerequisiteId,
                             };
-                            _attachmentDAL.Add(attachment);
+                            await _attachmentDAL.AddAsync(attachment);
                         }
                     }
                 }
             }
-
         }
     }
 }

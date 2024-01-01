@@ -2,6 +2,7 @@
 using Common.SkillsForce.Entity;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
@@ -15,25 +16,25 @@ namespace MVC.SkillsForce.Controllers
             _attachmentService = attachmentService;
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            IEnumerable<AttachmentModel> attachments =  _attachmentService.GetAll();
+            IEnumerable<AttachmentModel> attachments = await _attachmentService.GetAllAsync();
             return View(attachments);
         }
 
         [HttpGet]
-        public JsonResult GetAllAttachmentByEnrollmentID(int enrollmentID)
-        {         
-            IEnumerable<AttachmentModel> attachments = _attachmentService.GetAllByEnrollmentID(enrollmentID);  
+        public async Task<JsonResult> GetAllAttachmentByEnrollmentID(int enrollmentID)
+        {
+            IEnumerable<AttachmentModel> attachments = await _attachmentService.GetAllByEnrollmentIDAsync(enrollmentID);
             return Json(new { result = attachments }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult DownloadAttachmentByAttachmentID(int id)
+        public async Task<ActionResult> DownloadAttachmentByAttachmentID(int id)
         {
-            var result = _attachmentService.GetByAttachmentID(id);
+            var result = await _attachmentService.GetByAttachmentIDAsync(id);
 
             byte[] binaryData = result.FileData;
-            string filename = result.AttachmentURL;
+            string filename = result.FileName;
             string contentType = "application/pdf";
 
             return File(binaryData, contentType, filename);

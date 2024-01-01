@@ -4,6 +4,7 @@ using Common.SkillsForce.Enums;
 using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
@@ -17,27 +18,41 @@ namespace MVC.SkillsForce.Controllers
             _userService = userService;
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            IEnumerable<UserModel> users = _userService.GetAll();
+            IEnumerable<UserModel> users = await _userService.GetAllAsync();
             return View(users);
         }
 
-        public JsonResult GetManagers()
+        public async Task<JsonResult> GetManagers()
         {
-            IEnumerable<UserModel> managers = _userService.GetAllManager();
+            IEnumerable<UserModel> managers = await _userService.GetAllManagerAsync();
             return Json(managers, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+            UserModel user = await _userService.GetByIDAsync(id);
+            return View(user);
         }
 
         public ActionResult Create()
         {
             return View();
         }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(UserModel user)
+        {
+            if (ModelState.IsValid)
+            {
+                await _userService.AddAsync(user);
+                return RedirectToAction("Index");
+            }
+
+            return View(user);
+        }
+
 
     }
 }

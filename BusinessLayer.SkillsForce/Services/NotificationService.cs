@@ -3,19 +3,20 @@ using Common.SkillsForce.EmailSender;
 using Common.SkillsForce.Enums;
 using Common.SkillsForce.ViewModel;
 using System;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.SkillsForce.Services
 {
     public class NotificationService : INotificationService
     {
-        public string SendNotification(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
+        public async Task<string> SendNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
             try
             {
                 string result = enrollment.EnrollmentStatus;
-                string htmlBody = GenerateHtmlBody(enrollment, notificationType);
+                string htmlBody =  GenerateHtmlBody(enrollment, notificationType);
                 string subject = $"Training Request - {result}";
-                string success = EmailSender.SendEmail(subject, htmlBody, enrollment.AppUserEmail);
+                string success = await EmailSender.SendEmailAsync(subject, htmlBody, enrollment.AppUserEmail);
                 return success;
             }
             catch (Exception ex)

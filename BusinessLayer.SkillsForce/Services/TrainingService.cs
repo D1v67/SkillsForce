@@ -5,6 +5,7 @@ using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.SkillsForce.Services
 {
@@ -20,6 +21,97 @@ namespace BusinessLayer.SkillsForce.Services
             _departmentDAL = departmentDAL;
             _prerequisiteDAL = prerequisiteDAL;
         }
+
+        public async Task AddAsync(TrainingViewModel training)
+        {
+            await _trainingDAL.AddAsync(training);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            return await _trainingDAL.DeleteAsync(id);
+        }
+
+        public async Task<IEnumerable<TrainingModel>> GetAllAsync()
+        {
+            return await _trainingDAL.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<TrainingModel>> GetAllTrainingsByRegistrationDeadlineAsync(DateTime registrationDeadline, bool isCronJob)
+        {
+            return await _trainingDAL.GetAllTrainingsByRegistrationDeadlineAsync(registrationDeadline, isCronJob);
+        }
+
+        public async Task<IEnumerable<TrainingModel>> GetAllTrainingsEnrolledByUserAsync(int id)
+        {
+            return await _trainingDAL.GetAllTrainingsEnrolledByUserAsync(id);
+        }
+
+        public async Task<IEnumerable<TrainingModel>> GetAllTrainingsNotEnrolledByUserAsync(int id)
+        {
+            return await _trainingDAL.GetAllTrainingsNotEnrolledByUserAsync(id);
+        }
+
+        public async Task<IEnumerable<TrainingViewModel>> GetAllTrainingWithPrerequisitesAsync()
+        {
+            return await _trainingDAL.GetAllTrainingWithPrerequisitesAsync();
+        }
+
+        public async Task<TrainingModel> GetByIDAsync(int id)
+        {
+            return await _trainingDAL.GetByIDAsync(id);
+        }
+
+        public async Task<int> GetCapacityIDAsync(int id)
+        {
+            return await _trainingDAL.GetCapacityIDAsync(id);
+        }
+
+        public async Task<int> GetRemainingCapacityIDAsync(int trainingID)
+        {
+            return await _trainingDAL.GetRemainingCapacityIDAsync(trainingID);
+        }
+
+        public async Task<TrainingViewModel> GetTrainingViewModelDetailsWithDepartmentsAndPrerequisitesAsync()
+        {
+            var departments = await _departmentDAL.GetAllAsync();
+            var prerequisites = await _prerequisiteDAL.GetAllAsync();
+
+            var trainingViewModel = new TrainingViewModel
+            {
+                Prerequisites = prerequisites.ToList(),
+                Departments = departments.ToList(),
+            };
+
+            return trainingViewModel;
+        }
+
+        public async Task<TrainingViewModel> GetTrainingWithPrerequisitesAsync(int trainingId)
+        {
+            return await _trainingDAL.GetTrainingWithPrerequisitesAsync(trainingId);
+        }
+
+        public async Task<bool> IsTrainingNameAlreadyExistsAsync(string trainingName)
+        {
+            return await _trainingDAL.IsTrainingNameAlreadyExistsAsync(trainingName);
+        }
+
+        public async Task<bool> IsTrainingNameAlreadyExistsOnUpdateAsync(int trainingId, string newTrainingName)
+        {
+            return await _trainingDAL.IsTrainingNameAlreadyExistsOnUpdateAsync(trainingId, newTrainingName);
+        }
+
+        public async Task UpdateAsync(TrainingViewModel training)
+        {
+            await _trainingDAL.UpdateAsync(training);
+        }
+
+
+
+
+
+
+
 
         public void Add(TrainingViewModel training)
         {

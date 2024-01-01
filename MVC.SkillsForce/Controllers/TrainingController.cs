@@ -4,6 +4,7 @@ using Common.SkillsForce.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
@@ -18,36 +19,21 @@ namespace MVC.SkillsForce.Controllers
             _prerequisiteService = prerequisiteService;
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            IEnumerable<TrainingModel> trainings = _trainingService.GetAll();
+            IEnumerable<TrainingModel> trainings = await _trainingService.GetAllAsync();
             return View(trainings);
         }
 
-        public ActionResult GetAllTrainingWithPrerequsiites()
+        public async Task<ActionResult> GetAllTrainingWithPrerequisites()
         {
-            IEnumerable<TrainingViewModel> trainings = _trainingService.GetAllTrainingWithPrerequsites();
+            IEnumerable<TrainingViewModel> trainings = await _trainingService.GetAllTrainingWithPrerequisitesAsync();
             return View(trainings);
         }
-        // 
 
-        public JsonResult GetCapacityById(int id)
+        public async Task<JsonResult> GetCapacityById(int id)
         {
-            int capacity = _trainingService.GetCapacityID(id);
-
-            if (capacity != -1) 
-            {
-                return Json(new { success = true, capacity = capacity }, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new { success = false, message = $"No capacity found for Training ID {id}" }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        public JsonResult GetRemainingCapacityById(int id)
-        {
-            int capacity = _trainingService.GetRemainingCapacityID(id);
+            int capacity = await _trainingService.GetCapacityIDAsync(id);
 
             if (capacity != -1)
             {
@@ -58,24 +44,37 @@ namespace MVC.SkillsForce.Controllers
                 return Json(new { success = false, message = $"No capacity found for Training ID {id}" }, JsonRequestBehavior.AllowGet);
             }
         }
-          
+
+        public async Task<JsonResult> GetRemainingCapacityById(int id)
+        {
+            int capacity = await _trainingService.GetRemainingCapacityIDAsync(id);
+
+            if (capacity != -1)
+            {
+                return Json(new { success = true, capacity = capacity }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = false, message = $"No capacity found for Training ID {id}" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult CreateTraining()
         {
-                return View();
+            return View();
         }
 
         [HttpPost]
-        public JsonResult CreateTraining(TrainingViewModel model)
+        public async Task<JsonResult> CreateTraining(TrainingViewModel model)
         {
-            if (_trainingService.IsTrainingNameAlreadyExists(model.TrainingName))
+            if (await _trainingService.IsTrainingNameAlreadyExistsAsync(model.TrainingName))
             {
-                ModelState.AddModelError("Email", "TrainingName  already exists.");
+                ModelState.AddModelError("Email", "TrainingName already exists.");
             }
 
             if (ModelState.IsValid)
             {
-                _trainingService.Add(model);
-
+                await _trainingService.AddAsync(model);
                 return Json(new { url = Url.Action("Index", "Training") });
             }
 
@@ -86,32 +85,29 @@ namespace MVC.SkillsForce.Controllers
             return Json(new { errorMessage = errors });
         }
 
-
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            var training = _trainingService.GetTrainingWithPrerequisites(id);
+            var training = await _trainingService.GetTrainingWithPrerequisitesAsync(id);
             return View(training);
         }
 
-        public ActionResult GetTrainingDetails(int id)
+        public async Task<JsonResult> GetTrainingDetails(int id)
         {
-            var training = _trainingService.GetTrainingWithPrerequisites(id);
+            var training = await _trainingService.GetTrainingWithPrerequisitesAsync(id);
             return Json(training, JsonRequestBehavior.AllowGet);
-
         }
-      
+
         [HttpPost]
-        public JsonResult Edit(TrainingViewModel model)
+        public async Task<JsonResult> Edit(TrainingViewModel model)
         {
-            if (_trainingService.IsTrainingNameAlreadyExistsOnUpdate(model.TrainingID, model.TrainingName))
+            if (await _trainingService.IsTrainingNameAlreadyExistsOnUpdateAsync(model.TrainingID, model.TrainingName))
             {
-                ModelState.AddModelError("Email", "Training already exists with same name.");
+                ModelState.AddModelError("Email", "Training already exists with the same name.");
             }
 
             if (ModelState.IsValid)
             {
-                _trainingService.Update(model);
-
+                await _trainingService.UpdateAsync(model);
                 return Json(new { url = Url.Action("Index", "Training") });
             }
 
@@ -122,10 +118,9 @@ namespace MVC.SkillsForce.Controllers
             return Json(new { errorMessage = errors });
         }
 
-
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            bool isDeletionSuccessful = _trainingService.Delete(id);
+            bool isDeletionSuccessful = await _trainingService.DeleteAsync(id);
 
             if (isDeletionSuccessful)
             {

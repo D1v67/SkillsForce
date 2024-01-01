@@ -6,6 +6,7 @@ using Common.SkillsForce.ViewModel;
 using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -30,46 +31,46 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [AuthorizePermission("GetAllEnrollment")]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            IEnumerable<EnrollmentViewModel> enrollments = _enrollmentService.GetAllEnrollmentsWithDetails();
+            IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllEnrollmentsWithDetailsAsync();
             return View(enrollments);
         }
 
-        public ActionResult RunAutomaticSelectionOfApprovedEnrollments()
+        public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments()
         {
             bool isCronJob = false;
-            _enrollmentService.RunAutomaticSelectionOfApprovedEnrollments(isCronJob);
+            await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(isCronJob);
 
             return RedirectToAction("/GetAllApprovedEnrollments");
         }
 
         [AuthorizePermission("GetAllEnrollment")]
-        public ActionResult GetEnrollments()
+        public async Task<ActionResult> GetEnrollments()
         {
-                if (Session == null || Session["UserID"] == null || Session["CurrentRole"] == null)
-                {
-                    return RedirectToAction("/Index"); 
-                }
-                var userId = Convert.ToInt32(Session["UserID"]);
-                var currentRole = Session["CurrentRole"].ToString();
+            if (Session == null || Session["UserID"] == null || Session["CurrentRole"] == null)
+            {
+                return RedirectToAction("/Index");
+            }
+            var userId = Convert.ToInt32(Session["UserID"]);
+            var currentRole = Session["CurrentRole"].ToString();
 
-                IEnumerable<EnrollmentViewModel> enrollments = currentRole == "Manager"
-                    ? _enrollmentService.GetAllEnrollmentsWithDetailsByManager(userId)
-                    : _enrollmentService.GetAllEnrollmentsWithDetails();
+            IEnumerable<EnrollmentViewModel> enrollments = currentRole == "Manager"
+                ? await _enrollmentService.GetAllEnrollmentsWithDetailsByManagerAsync(userId)
+                : await _enrollmentService.GetAllEnrollmentsWithDetailsAsync();
 
-                return View(enrollments);
-        }
-
-        public ActionResult GetEnrollmentsForManager(int managerId)
-        {
-            IEnumerable<EnrollmentViewModel> enrollments = _enrollmentService.GetAllEnrollmentsWithDetailsByManager(managerId);
             return View(enrollments);
         }
 
-        public ActionResult GetAllApprovedEnrollments()
+        public async Task<ActionResult> GetEnrollmentsForManager(int managerId)
         {
-            var approvedEnrollments = _enrollmentService.GetAllApprovedEnrollments();
+            IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllEnrollmentsWithDetailsByManagerAsync(managerId);
+            return View(enrollments);
+        }
+
+        public async Task<ActionResult> GetAllApprovedEnrollments()
+        {
+            var approvedEnrollments = await _enrollmentService.GetAllApprovedEnrollmentsAsync();
             return View(approvedEnrollments);
         }
 
@@ -80,67 +81,49 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
-        public JsonResult ViewTrainingData(int id)
+        public async Task<JsonResult> ViewTrainingData(int id)
         {
-            IEnumerable<TrainingModel> trainings = _trainingService.GetAllTrainingsNotEnrolledByUser(id);
+            IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingsNotEnrolledByUserAsync(id);
             return Json(trainings, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult GetTrainingsAlreadyEnrolledByUser(int id)
+        public async Task<JsonResult> GetTrainingsAlreadyEnrolledByUser(int id)
         {
-            IEnumerable<TrainingModel> trainings = _trainingService.GetAllTrainingsEnrolledByUser(id);
+            IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingsEnrolledByUserAsync(id);
             return Json(trainings, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult SaveEnrollment(EnrollmentViewModel model)
+        public async Task<ActionResult> SaveEnrollment(EnrollmentViewModel model)
         {
             try
             {
-                int generatedEnrollmentId = _enrollmentService.Add(model);
+                int generatedEnrollmentId = await _enrollmentService.AddAsync(model);
                 return Json(new { success = true, message = "Enrollment successful!", EnrollmentID = generatedEnrollmentId });
             }
             catch (Exception ex)
             {
-
                 return Json(new { success = false, error = ex.Message });
             }
         }
 
-        public ActionResult GetPrerequisiteByTrainingID(int TrainigID)
+        public async Task<JsonResult> GetPrerequisiteByTrainingID(int TrainigID)
         {
-            IEnumerable<PrerequisiteModel> prerequisites =  _prerequisiteService.GetPrerequisiteByTrainingID(TrainigID);   
+            IEnumerable<PrerequisiteModel> prerequisites = await _prerequisiteService.GetPrerequisiteByTrainingIDAsync(TrainigID);
             return Json(prerequisites, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult ApproveEnrollment(int enrollmentId)
+        public async Task<JsonResult> ApproveEnrollment(int enrollmentId)
         {
             try
             {
-                _enrollmentService.ApproveEnrollment(enrollmentId);
-                EnrollmentNotificationViewModel enrollment= _enrollmentService.GetEnrollmentNotificationDetailsByID(enrollmentId);
+                await _enrollmentService.ApproveEnrollmentAsync(enrollmentId);
+                EnrollmentNotificationViewModel enrollment = await _enrollmentService.GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
 
-                _notificationService.SendNotification(enrollment, NotificationType.Approval);
-         
-                return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
+                await _notificationService.SendNotificationAsync(enrollment, NotificationType.Approval);
 
-
-        [HttpPost]
-        public ActionResult RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId)
-        {
-            try
-            {
-                _enrollmentService.RejectEnrollment( enrollmentId,  rejectionReason, declinedByUserId);
-                EnrollmentNotificationViewModel enrollment = _enrollmentService.GetEnrollmentNotificationDetailsByID(enrollmentId);
-                _notificationService.SendNotification(enrollment, NotificationType.Rejection);
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -150,226 +133,27 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadFiles(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
+        public async Task<JsonResult> RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId)
         {
-            _attachmentService.UploadFile(files, EnrollmentID, PrerequisiteIDs);
+            try
+            {
+                await _enrollmentService.RejectEnrollmentAsync(enrollmentId, rejectionReason, declinedByUserId);
+                EnrollmentNotificationViewModel enrollment = await _enrollmentService.GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
+                await _notificationService.SendNotificationAsync(enrollment, NotificationType.Rejection);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> UploadFiles(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
+        {
+            await _attachmentService.UploadFileAsync(files, EnrollmentID, PrerequisiteIDs);
             return Json(new { success = true });
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //[HttpPost]
-        //public async Task<ActionResult> UploadFiles()
-        //{
-        //    try
-        //    {
-        //        if (Request.Files.Count > 0)
-        //        {
-        //            List<string> fileNames = new List<string>();
-
-        //            // Process each uploaded file
-        //            foreach (string fileKey in Request.Files)
-        //            {
-        //                HttpPostedFileBase file = Request.Files[fileKey];
-
-        //                // Do something with the file (e.g., save it to the server)
-        //                // For example: 
-        //                // file.SaveAs(Path.Combine(Server.MapPath("~/Uploads"), file.FileName));
-
-        //                fileNames.Add(file.FileName);
-        //            }
-
-        //            return Json(new { success = true, message = "Files uploaded successfully", files = fileNames });
-        //        }
-
-        //        return Json(new { success = false, error = "No files uploaded." });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, error = $"Error: {ex.Message}" });
-        //    }
-        //}
-
-
-
-        //[HttpPost]
-        //public ActionResult Upload(HttpPostedFileBase file)
-        //{
-        //    if (file != null && file.ContentLength > 0)
-        //        try
-        //        {
-        //            string path = Path.Combine(Server.MapPath("~/App_Data/Input"), Path.GetFileName(file.FileName));
-
-        //            //string[] lists = System.IO.File.ReadAllLines(Server.MapPath(path));
-
-        //            file.SaveAs(path);
-        //            ViewBag.Message = "File uploaded successfully";
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            ViewBag.Message = "ERROR:" + ex.Message.ToString();
-        //        }
-        //    else
-        //    {
-        //        ViewBag.Message = "You have not specified a file or file is empty.";
-        //    }
-
-        //    //var items = FileManipulation.GetFiles(Server.MapPath("~/App_Data/Input"));
-
-        //     return Json(new { success = true});
-        //}
-
-        //public ActionResult EnrollTraining(int? trainingID)
-        //{
-        //    //IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
-
-        //    //prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)trainingID);
-        //    //ViewBag.ListOfPrerequisiteByTrainingID = prerequisites;
-        //    //return View(prerequisites);
-
-        //    if (trainingID == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
-
-        //    prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)trainingID);
-        //    if (prerequisites == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(prerequisites);
-        //}
-
-
-        //[HttpPost]
-
-        //public ActionResult UploadFiles(List<HttpPostedFileBase> files)
-        //{
-        //    //var results = EvidenceBL.UploadFile(files).GetAddedRows();
-        //    return View();
-        //}
-
-        public ActionResult ModalView()
-        {
- 
-            return View();
-
-        }
-        //TODO
-        // GET: Enrollment/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Enrollment/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Enrollment/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Enrollment/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Enrollment/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Enrollment/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Enrollment/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }
 
-//public ActionResult TrainingTest()
-//{
-//    IEnumerable<TrainingModel> trainings = new List<TrainingModel>();
-
-//    trainings = _trainingService.GetAll();
-
-
-//    return View(trainings);
-
-
-//}
-
-
-//public ActionResult GetPrerequisiteByTrainingIDTest(int? id)
-//{
-//    if (id == null)
-//    {
-//        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-//    }
-//    IEnumerable<PrerequisiteModel> prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID((int)id);
-//    if (id == null)
-//    {
-//        return HttpNotFound();
-//    }
-//    ViewBag.list = prerequisites;
-//    // return View(prerequisites);
-//    // return Json(prerequisites, JsonRequestBehavior.AllowGet);
-//    return View(prerequisites);
-//}

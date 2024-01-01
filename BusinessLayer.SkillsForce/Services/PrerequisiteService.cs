@@ -3,6 +3,7 @@ using Common.SkillsForce.Entity;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.SkillsForce.Services
 {
@@ -13,19 +14,23 @@ namespace BusinessLayer.SkillsForce.Services
         {
             _prerequisiteDAL = prerequisiteDAL;
         }
+
+        public async Task<IEnumerable<PrerequisiteModel>> GetPrerequisiteByTrainingIDAsync(int TrainingID)
+        {
+            return await _prerequisiteDAL.GetPrerequisiteByTrainingIDAsync(TrainingID);
+        }
+
+        public async Task<IEnumerable<PrerequisiteModel>> GetAllAsync()
+        {
+            return await _prerequisiteDAL.GetAllAsync();
+        }
+
+
+
+
         public IEnumerable<PrerequisiteModel> GetPrerequisiteByTrainingID(int TrainingID)
         {
             return _prerequisiteDAL.GetPrerequisiteByTrainingID(TrainingID);
-        }
-
-        public void Add(PrerequisiteModel prerequisite)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
         }
 
         public IEnumerable<PrerequisiteModel> GetAll()
@@ -33,14 +38,5 @@ namespace BusinessLayer.SkillsForce.Services
            return _prerequisiteDAL.GetAll();
         }
 
-        public PrerequisiteModel GetByID(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(PrerequisiteModel prerequisite)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

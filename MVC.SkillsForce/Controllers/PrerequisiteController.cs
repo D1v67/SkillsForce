@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
@@ -13,21 +14,21 @@ namespace MVC.SkillsForce.Controllers
         {
             _prerequisiteService = prerequisiteService;
         }
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            IEnumerable<PrerequisiteModel> prerequisites =  _prerequisiteService.GetAll();
+            IEnumerable<PrerequisiteModel> prerequisites = await _prerequisiteService.GetAllAsync();
             return View(prerequisites);
         }
 
-        public JsonResult GetListOfPrerequisites()
+        public async Task<JsonResult> GetListOfPrerequisites()
         {
-            IEnumerable<PrerequisiteModel> prerequisites =  _prerequisiteService.GetAll();
+            IEnumerable<PrerequisiteModel> prerequisites = await _prerequisiteService.GetAllAsync();
             return Json(prerequisites, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetPrerequisiteByTrainingID(int TrainigID)
+        public async Task<ActionResult> GetPrerequisiteByTrainingID(int TrainigID)
         {
-            IEnumerable<PrerequisiteModel> prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID(TrainigID);
+            IEnumerable<PrerequisiteModel> prerequisites = await _prerequisiteService.GetPrerequisiteByTrainingIDAsync(TrainigID);
             return View(prerequisites);
         }
     }

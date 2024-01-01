@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace Common.SkillsForce.EmailSender
 {
     public static class EmailSender
     {
-        public static string SendEmail(string Subject, string Body, string recipientEmail)
+        public static async Task<string> SendEmailAsync(string Subject, string Body, string recipientEmail)
         {
             string senderEmail = "SkillsForceAdmin@ceridian.com";
             var smtpClent = new SmtpClient("relay.ceridian.com")
@@ -24,7 +25,7 @@ namespace Common.SkillsForce.EmailSender
 
             try
             {
-                smtpClent.Send(mailMessage);
+                await smtpClent.SendMailAsync(mailMessage);
                 return "Email Sent Successfully";
             }
             catch (Exception ex)

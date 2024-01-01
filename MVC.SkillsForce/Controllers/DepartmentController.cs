@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
@@ -14,9 +15,9 @@ namespace MVC.SkillsForce.Controllers
             _departmentService = departmentService;
         }
 
-        public JsonResult GetListOfDepartments()
+        public async Task<JsonResult> GetListOfDepartmentsAsync()
         {
-            IEnumerable<DepartmentModel> departments = _departmentService.GetAll();
+            IEnumerable<DepartmentModel> departments = await _departmentService.GetAllAsync();
             return Json(departments, JsonRequestBehavior.AllowGet);
         }
 

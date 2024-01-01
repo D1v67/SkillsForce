@@ -1,13 +1,14 @@
 ﻿using Common.SkillsForce.Entity;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
     public interface IAttachmentDAL
     {
-        void Add(AttachmentModel attachment);
-        IEnumerable<AttachmentModel> GetAll();
-        IEnumerable<AttachmentModel> GetAllByEnrollmentID(int id);
-        AttachmentModel GetByAttachmentID(int id);
+        Task AddAsync(AttachmentModel attachment);
+        Task<IEnumerable<AttachmentModel>> GetAllAsync();
+        Task<IEnumerable<AttachmentModel>> GetAllByEnrollmentIDAsync(int id);
+        Task<AttachmentModel> GetByAttachmentIDAsync(int id);
     }
 }

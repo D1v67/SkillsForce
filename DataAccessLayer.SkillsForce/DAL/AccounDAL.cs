@@ -5,17 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using BusinessLayer.SkillsForce.Helpers;
+using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
     public class AccountDAL : IAccountDAL
     {
         private readonly IDBCommand _dbCommand;
+
         public AccountDAL(IDBCommand dbCommand)
         {
             _dbCommand = dbCommand;
         }
-        public bool IsUserAuthenticated(AccountModel account)
+
+        public async Task<bool> IsUserAuthenticatedAsync(AccountModel account)
         {
             const string AUTHENTICATE_USER_QUERY = @"SELECT a.HashedPassword, a.SaltValue FROM [User] u INNER JOIN Account a ON u.UserID = a.UserID WHERE u.Email = @Email";
 
@@ -25,13 +28,13 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
 
             List<SqlParameter> parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@Email", account.Email)
-            };
+        {
+            new SqlParameter("@Email", account.Email)
+        };
 
-            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(AUTHENTICATE_USER_QUERY, parameters))
+            using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(AUTHENTICATE_USER_QUERY, parameters))
             {
-                if (reader.Read())
+                if (await reader.ReadAsync())
                 {
                     byte[] storedHash = (byte[])reader["HashedPassword"];
                     byte[] storedSalt = (byte[])reader["SaltValue"];
@@ -43,22 +46,22 @@ namespace DataAccessLayer.SkillsForce.DAL
             return false;
         }
 
-        public AccountModel GetUserDetailsWithRoles(AccountModel account)
+        public async Task<AccountModel> GetUserDetailsWithRolesAsync(AccountModel account)
         {
             const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.UserID, u.FirstName, u.LastName, u.Email, u.NIC, u.MobileNumber, 
-                                                                     u.DepartmentID, d.DepartmentName, u.ManagerID, r.RoleName, r.RoleID
-                                                                FROM [User] u
-                                                                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
-                                                                LEFT JOIN UserRole ur ON u.UserID = ur.UserID
-                                                                LEFT JOIN Role r ON ur.RoleID = r.RoleID
-                                                                WHERE u.Email = @Email";
+                                                                 u.DepartmentID, d.DepartmentName, u.ManagerID, r.RoleName, r.RoleID
+                                                            FROM [User] u
+                                                            LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
+                                                            LEFT JOIN UserRole ur ON u.UserID = ur.UserID
+                                                            LEFT JOIN Role r ON ur.RoleID = r.RoleID
+                                                            WHERE u.Email = @Email";
             AccountModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@Email", account.Email));
 
-            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_USER_DETAILS_WITH_ROLE_QUERY, parameters))
+            using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_USER_DETAILS_WITH_ROLE_QUERY, parameters))
             {
-                if (reader.Read())
+                if (await reader.ReadAsync())
                 {
                     user = new AccountModel
                     {
@@ -78,27 +81,26 @@ namespace DataAccessLayer.SkillsForce.DAL
                             RoleID = reader.GetByte(reader.GetOrdinal("RoleID"))
                         };
                         user.listOfRoles.Add(role);
-                    } while (reader.Read());
+                    } while (await reader.ReadAsync());
                 }
             }
 
             return user;
-
         }
 
-        public void Register(RegisterViewModel registerViewModel)
+        public async Task RegisterAsync(RegisterViewModel registerViewModel)
         {
             const string INSERT_INTO_USER_AND_ACCOUNT_REGISTER_QUERY = @"
-                                                           BEGIN TRANSACTION
-                                                           DECLARE @key INT
-                                                           INSERT INTO [dbo].[User] ([FirstName], [LastName], [Email], [NIC], [MobileNumber], [ManagerID], [DepartmentID])
-                                                           VALUES (@FirstName, @LastName, @Email, @NIC, @MobileNumber, @ManagerID, @DepartmentID)
-                                                           SELECT @key = @@IDENTITY
-                                                           INSERT INTO [dbo].[Account] ([UserID], [HashedPassword], [SaltValue]) 
-                                                           VALUES (@key, @HashedPassword, @SaltValue)
-                                                           INSERT INTO [dbo].[UserRole] ([UserID])
-                                                           VALUES (@key)
-                                                           COMMIT";  
+                                                       BEGIN TRANSACTION
+                                                       DECLARE @key INT
+                                                       INSERT INTO [dbo].[User] ([FirstName], [LastName], [Email], [NIC], [MobileNumber], [ManagerID], [DepartmentID])
+                                                       VALUES (@FirstName, @LastName, @Email, @NIC, @MobileNumber, @ManagerID, @DepartmentID)
+                                                       SELECT @key = @@IDENTITY
+                                                       INSERT INTO [dbo].[Account] ([UserID], [HashedPassword], [SaltValue]) 
+                                                       VALUES (@key, @HashedPassword, @SaltValue)
+                                                       INSERT INTO [dbo].[UserRole] ([UserID])
+                                                       VALUES (@key)
+                                                       COMMIT";
 
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@FirstName", registerViewModel.FirstName));
@@ -111,9 +113,8 @@ namespace DataAccessLayer.SkillsForce.DAL
             parameters.Add(new SqlParameter("@HashedPassword", registerViewModel.HashedPassword)); // Item1 is the hashed password
             parameters.Add(new SqlParameter("@SaltValue", registerViewModel.SaltValue)); // Item2 is the salt value
 
-            _dbCommand.InsertUpdateData(INSERT_INTO_USER_AND_ACCOUNT_REGISTER_QUERY, parameters);
+            await _dbCommand.InsertUpdateDataAsync(INSERT_INTO_USER_AND_ACCOUNT_REGISTER_QUERY, parameters);
         }
-
     }
 }
 

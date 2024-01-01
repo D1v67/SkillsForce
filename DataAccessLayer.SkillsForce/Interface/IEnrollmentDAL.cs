@@ -1,22 +1,19 @@
 ﻿using Common.SkillsForce.ViewModel;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.Interface
 {
     public interface IEnrollmentDAL
     {
-        IEnumerable<EnrollmentViewModel> GetAll();
-        EnrollmentViewModel GetByID(int id);
-        int Add(EnrollmentViewModel enrollment);
-        void Delete(int id);
-        void Update(EnrollmentViewModel enrollment);
-        IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails();
-        IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId);
-        void ApproveEnrollment(int enrollmentId);
-        void RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId);
-        EnrollmentNotificationViewModel GetEnrollmentNotificationDetailsByID(int id);
-        IEnumerable<EnrollmentViewModel> GetAllApprovedEnrollments();
-        List<int> ConfirmEnrollmentsByTrainingID(int trainingID);
-
+        Task<IEnumerable<EnrollmentViewModel>> GetAllAsync();
+        Task<int> AddAsync(EnrollmentViewModel enrollment);
+        Task<IEnumerable<EnrollmentViewModel>> GetAllEnrollmentsWithDetailsAsync();
+        Task<IEnumerable<EnrollmentViewModel>> GetAllEnrollmentsWithDetailsByManagerAsync(int managerId);
+        Task ApproveEnrollmentAsync(int enrollmentId);
+        Task RejectEnrollmentAsync(int enrollmentId, string rejectionReason, int declinedByUserId);
+        Task<EnrollmentNotificationViewModel> GetEnrollmentNotificationDetailsByIDAsync(int id);
+        Task<IEnumerable<EnrollmentViewModel>> GetAllApprovedEnrollmentsAsync();
+        Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int trainingID);
     }
 }
