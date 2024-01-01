@@ -18,48 +18,54 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
         public IEnumerable<TrainingModel> GetAll()
         {
-            const string GET_ALL_TRAINING_QUERY = @"SELECT  * FROM [dbo].[Training]";
+            const string GET_ALL_TRAINING_QUERY = @"SELECT * FROM [dbo].[Training]";
             List<TrainingModel> trainings = new List<TrainingModel>();
 
-            TrainingModel training;
-            var dt = _dbCommand.GetData(GET_ALL_TRAINING_QUERY);
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = _dbCommand.GetDataReader(GET_ALL_TRAINING_QUERY))
             {
-                training = new TrainingModel();
-                training.TrainingID = int.Parse(row["TrainingID"].ToString());
-                training.TrainingName = row["TrainingName"].ToString();
-                training.TrainingDescription = row["TrainingDescription"].ToString();
-                training.RegistrationDeadline = (DateTime)row["RegistrationDeadline"];
-                training.Capacity = int.Parse(row["Capacity"].ToString());
-                training.DepartmentID = int.Parse(row["DepartmentID"].ToString());
+                while (reader.Read())
+                {
+                    TrainingModel training = new TrainingModel
+                    {
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
+                        RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
+                        Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+                        DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
+                    };
 
-                trainings.Add(training);
+                    trainings.Add(training);
+                }
             }
+
             return trainings;
         }
         public TrainingModel GetByID(int id)
         {
             const string GET_TRAINING_BY_ID_QUERY = @"SELECT t.* FROM Training t WITH(NOLOCK)
-                                                        LEFT JOIN Department d WITH(NOLOCK) ON t.DepartmentID = d.DepartmentID
-                                                        WHERE t.TrainingID = @TrainingID";
+                                              LEFT JOIN Department d WITH(NOLOCK) ON t.DepartmentID = d.DepartmentID
+                                              WHERE t.TrainingID = @TrainingID";
             var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", id) };
-            var dt = _dbCommand.GetDataWithConditions(GET_TRAINING_BY_ID_QUERY, parameters);
 
-            if (dt.Rows.Count > 0)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_TRAINING_BY_ID_QUERY, parameters))
             {
-                DataRow row = dt.Rows[0];
-
-                TrainingModel training = new TrainingModel
+                if (reader.Read())
                 {
-                    TrainingID = int.Parse(row["TrainingID"].ToString()),
-                    TrainingName = row["TrainingName"].ToString(),
-                    TrainingDescription = row["TrainingDescription"].ToString(),
-                    RegistrationDeadline = (DateTime)row["RegistrationDeadline"],
-                    Capacity = int.Parse(row["Capacity"].ToString()),
-                    DepartmentID = int.Parse(row["DepartmentID"].ToString())
-                };
-                return training;
+                    TrainingModel training = new TrainingModel
+                    {
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
+                        RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
+                        Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+                        DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
+                    };
+
+                    return training;
+                }
             }
+
             return null;
         }
         public void Add(TrainingViewModel training)
@@ -175,278 +181,293 @@ namespace DataAccessLayer.SkillsForce.DAL
         public TrainingViewModel GetTrainingWithPrerequisites(int trainingId)
         {
             const string GET_TRAINING_QUERY = @"
-                    SELECT
-                        T.TrainingID,
-                        T.TrainingName,
-                        T.RegistrationDeadline,
-                        T.TrainingDescription,
-                        T.Capacity,
-                        T.StartDate,
-                        T.DepartmentID,
-                        P.PrerequisiteID,
-                        P.PrerequisiteName
+        SELECT
+            T.TrainingID,
+            T.TrainingName,
+            T.RegistrationDeadline,
+            T.TrainingDescription,
+            T.Capacity,
+            T.StartDate,
+            T.DepartmentID,
+            P.PrerequisiteID,
+            P.PrerequisiteName
                         
-                    FROM
-                        Training T
-                    LEFT JOIN
-                        TrainingPrerequisite TP ON T.TrainingID = TP.TrainingID
-                    LEFT JOIN
-                        Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID
-                    WHERE
-                        T.TrainingID = @TrainingID;
-                ";
+        FROM
+            Training T
+        LEFT JOIN
+            TrainingPrerequisite TP ON T.TrainingID = TP.TrainingID
+        LEFT JOIN
+            Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID
+        WHERE
+            T.TrainingID = @TrainingID;
+    ";
 
-            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", trainingId) }; ;
+            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", trainingId) };
 
-            var dt = _dbCommand.GetDataWithConditions(GET_TRAINING_QUERY, parameters);
-
-            TrainingViewModel training = null;
-
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_TRAINING_QUERY, parameters))
             {
-                if (training == null)
+                TrainingViewModel training = null;
+
+                while (reader.Read())
                 {
-                    // Create a new TrainingViewModel for the first row
-                    training = new TrainingViewModel
+                    if (training == null)
                     {
-                        TrainingID = trainingId,
-                        TrainingName = row["TrainingName"].ToString(),
-                        TrainingDescription = row["TrainingDescription"].ToString(),
-                        RegistrationDeadline = ((DateTime)row["RegistrationDeadline"]).ToString("MM/dd/yyyy"),
-                        Capacity = int.Parse(row["Capacity"].ToString()),
-                        DepartmentID = int.Parse(row["DepartmentID"].ToString()),
-                        Prerequisites = new List<PrerequisiteModel>(),
-                        StartDate = ((DateTime)row["StartDate"]).ToString("MM/dd/yyyy"),
-                    };
+                        // Create a new TrainingViewModel for the first row
+                        training = new TrainingViewModel
+                        {
+                            TrainingID = trainingId,
+                            TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                            TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
+                            RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")).ToString("MM/dd/yyyy"),
+                            Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+                            DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID")),
+                            Prerequisites = new List<PrerequisiteModel>(),
+                            StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")).ToString("MM/dd/yyyy"),
+                        };
+                    }
+
+                    // Check if the prerequisite columns are not null (indicating a match in the JOIN)
+                    if (!reader.IsDBNull(reader.GetOrdinal("PrerequisiteID")))
+                    {
+                        PrerequisiteModel prerequisite = new PrerequisiteModel
+                        {
+                            PrerequisiteID = reader.GetByte(reader.GetOrdinal("PrerequisiteID")),
+                            PrerequisiteName = reader.GetString(reader.GetOrdinal("PrerequisiteName"))
+                        };
+
+                        // Add the prerequisite to the existing list in TrainingViewModel
+                        training.Prerequisites.Add(prerequisite);
+                    }
                 }
 
-                // Check if the prerequisite columns are not null (indicating a match in the JOIN)
-                if (row["PrerequisiteID"] != DBNull.Value)
-                {
-                    PrerequisiteModel prerequisite = new PrerequisiteModel
-                    {
-                        PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString()),
-                        PrerequisiteName = row["PrerequisiteName"].ToString()
-                    };
-
-                    // Add the prerequisite to the existing list in TrainingViewModel
-                    training.Prerequisites.Add(prerequisite);
-                }
+                return training;
             }
-
-            return training;
         }
 
-
-        public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites()
+        public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsites()
         {
             const string GET_ALL_TRAINING_QUERY = @"
-                                SELECT
-                        T.TrainingID,
-                        T.TrainingName,
-                        T.RegistrationDeadline,
-                        T.TrainingDescription,
-                        T.Capacity,
-                        T.DepartmentID,
-                        P.PrerequisiteID,
-                        P.PrerequisiteName
-                    FROM
-                        Training T
-                    LEFT JOIN
-                        TrainingPrerequisite TP ON T.TrainingID = TP.TrainingID
-                    LEFT JOIN
-                        Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID;
-                    ";
+        SELECT
+            T.TrainingID,
+            T.TrainingName,
+            T.RegistrationDeadline,
+            T.TrainingDescription,
+            T.Capacity,
+            T.DepartmentID,
+            P.PrerequisiteID,
+            P.PrerequisiteName
+        FROM
+            Training T
+        LEFT JOIN
+            TrainingPrerequisite TP ON T.TrainingID = TP.TrainingID
+        LEFT JOIN
+            Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID;
+    ";
 
             List<TrainingViewModel> trainings = new List<TrainingViewModel>();
 
-            TrainingViewModel training = null;
-            var dt = _dbCommand.GetData(GET_ALL_TRAINING_QUERY);
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_ALL_TRAINING_QUERY, null))
             {
-                int trainingId = int.Parse(row["TrainingID"].ToString());
-
-                // Check if we already have the training in the list
-                training = trainings.FirstOrDefault(t => t.TrainingID == trainingId);
-
-                if (training == null)
+                while (reader.Read())
                 {
-                    // If the training doesn't exist in the list, create a new one
-                    training = new TrainingViewModel
+                    int trainingId = reader.GetByte(reader.GetOrdinal("TrainingID"));
+
+                    // Check if we already have the training in the list
+                    TrainingViewModel training = trainings.FirstOrDefault(t => t.TrainingID == trainingId);
+
+                    if (training == null)
                     {
-                        TrainingID = trainingId,
-                        TrainingName = row["TrainingName"].ToString(),
-                        TrainingDescription = row["TrainingDescription"].ToString(),
-                        RegistrationDeadline = ((DateTime)row["RegistrationDeadline"]).ToString("MM/dd/yyyy"),
-                        Capacity = int.Parse(row["Capacity"].ToString()),
-                        DepartmentID = int.Parse(row["DepartmentID"].ToString()),
-                        Prerequisites = new List<PrerequisiteModel>()
-                    };
+                        // If the training doesn't exist in the list, create a new one
+                        training = new TrainingViewModel
+                        {
+                            TrainingID = trainingId,
+                            TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                            TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
+                            RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")).ToString("MM/dd/yyyy"),
+                            Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+                            DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID")),
+                            Prerequisites = new List<PrerequisiteModel>()
+                        };
 
-                    trainings.Add(training);
-                }
+                        trainings.Add(training);
+                    }
 
-                // Check if the prerequisite columns are not null (indicating a match in the JOIN)
-                if (row["PrerequisiteID"] != DBNull.Value)
-                {
-                    PrerequisiteModel prerequisite = new PrerequisiteModel
+                    // Check if the prerequisite columns are not DBNull.Value (indicating a match in the JOIN)
+                    if (reader["PrerequisiteID"] != DBNull.Value)
                     {
-                        PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString()),
-                        PrerequisiteName = row["PrerequisiteName"].ToString()
-                    };
+                        PrerequisiteModel prerequisite = new PrerequisiteModel
+                        {
+                            PrerequisiteID = reader.GetByte(reader.GetOrdinal("PrerequisiteID")),
+                            PrerequisiteName = reader.GetString(reader.GetOrdinal("PrerequisiteName"))
+                        };
 
-                    // Add the prerequisite to the existing list in TrainingViewModel
-                    training.Prerequisites.Add(prerequisite);
+                        // Add the prerequisite to the existing list in TrainingViewModel
+                        training.Prerequisites.Add(prerequisite);
+                    }
                 }
             }
 
             return trainings;
         }
 
+
         public int GetCapacityID(int trainingID)
         {
             const string GET_CAPACITY_BY_ID_QUERY = @"SELECT Capacity FROM Training WHERE TrainingID = @TrainingID";
             var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", trainingID) };
-            var dt = _dbCommand.GetDataWithConditions(GET_CAPACITY_BY_ID_QUERY, parameters);
 
-            if (dt.Rows.Count > 0)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_CAPACITY_BY_ID_QUERY, parameters))
             {
-                DataRow row = dt.Rows[0];
-                return int.Parse(row["Capacity"].ToString());
+                if (reader.Read())
+                {
+                    return reader.GetByte(reader.GetOrdinal("Capacity"));
+                }
             }
+
             return -1;
         }
 
         public int GetRemainingCapacityID(int trainingID)
         {
-            const string GET_REMAINING_CAPACITY_BY_ID_QUERY = @"SELECT
-                                                                    T.TrainingID,
-                                                                    T.TrainingName,
-                                                                    T.Capacity - COUNT(E.EnrollmentID) AS RemainingCapacity
-                                                                FROM
-                                                                    Training T
-                                                                LEFT JOIN
-                                                                    Enrollment E ON T.TrainingID = E.TrainingID AND E.IsSelected = 1
-                                                                WHERE
-                                                                    T.TrainingID = @TrainingID
-                                                                GROUP BY
-                                                                    T.TrainingID, T.TrainingName, T.Capacity";
-            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", trainingID) };
-            var dt = _dbCommand.GetDataWithConditions(GET_REMAINING_CAPACITY_BY_ID_QUERY, parameters);
+            const string GET_REMAINING_CAPACITY_BY_ID_QUERY = @"
+        SELECT
+            T.TrainingID,
+            T.TrainingName,
+            T.Capacity - COUNT(E.EnrollmentID) AS RemainingCapacity
+        FROM
+            Training T
+        LEFT JOIN
+            Enrollment E ON T.TrainingID = E.TrainingID AND E.IsSelected = 1
+        WHERE
+            T.TrainingID = @TrainingID
+        GROUP BY
+            T.TrainingID, T.TrainingName, T.Capacity";
 
-            if (dt.Rows.Count > 0)
+            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", trainingID) };
+
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_REMAINING_CAPACITY_BY_ID_QUERY, parameters))
             {
-                DataRow row = dt.Rows[0];
-                return int.Parse(row["RemainingCapacity"].ToString());
+                if (reader.Read())
+                {
+                    return reader.GetInt32(reader.GetOrdinal("RemainingCapacity"));
+                }
             }
+
             return -1;
         }
 
         public IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline, bool isCronJob)
         {
-            const string GET_TRAININGS_BY_DEADLINE_QUERY = @"SELECT TrainingID,TrainingName,TrainingDescription,RegistrationDeadline,StartDate,Capacity,DepartmentID
-                                                             FROM [dbo].[Training] WHERE RegistrationDeadline = @RegistrationDeadline";
+            const string GET_TRAININGS_BY_DEADLINE_QUERY = @"
+        SELECT TrainingID, TrainingName, TrainingDescription, RegistrationDeadline, StartDate, Capacity, DepartmentID
+        FROM [dbo].[Training]
+        WHERE RegistrationDeadline = @RegistrationDeadline";
 
-            const string GET_TRAININGS_UPTO_DEADLINE_QUERY = @"SELECT TrainingID,TrainingName,TrainingDescription,RegistrationDeadline,StartDate,Capacity,DepartmentID
-                                                          FROM [dbo].[Training] WHERE RegistrationDeadline <= @RegistrationDeadline";
+            const string GET_TRAININGS_UPTO_DEADLINE_QUERY = @"
+        SELECT TrainingID, TrainingName, TrainingDescription, RegistrationDeadline, StartDate, Capacity, DepartmentID
+        FROM [dbo].[Training]
+        WHERE RegistrationDeadline <= @RegistrationDeadline";
 
             string query = isCronJob ? GET_TRAININGS_BY_DEADLINE_QUERY : GET_TRAININGS_UPTO_DEADLINE_QUERY;
 
             var parameters = new List<SqlParameter> { new SqlParameter("@RegistrationDeadline", registrationDeadline) };
 
-            var dt = _dbCommand.GetDataWithConditions(query, parameters);
-
-            List<TrainingModel> trainings = new List<TrainingModel>();
-
-            if (dt.Rows.Count > 0)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(query, parameters))
             {
-                foreach (DataRow row in dt.Rows)
+                List<TrainingModel> trainings = new List<TrainingModel>();
+
+                while (reader.Read())
                 {
                     var training = new TrainingModel
                     {
-                        TrainingID = int.Parse(row["TrainingID"].ToString()),
-                        TrainingName = (row["TrainingName"].ToString()),
-                        TrainingDescription = row["TrainingDescription"].ToString(),
-                        RegistrationDeadline = (DateTime)row["RegistrationDeadline"],
-                        Capacity = int.Parse(row["Capacity"].ToString()),
-                        DepartmentID = int.Parse(row["DepartmentID"].ToString())
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
+                        RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
+                        //StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                        Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+                        DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
                     };
 
                     trainings.Add(training);
                 }
+
                 return trainings;
             }
-            return null;
         }
 
         public IEnumerable<TrainingModel> GetAllTrainingsEnrolledByUser(int id)
         {
-            const string GET_ENROLLED_TRAININGS_QUERY = @"SELECT T.*
-                                                        FROM Training T
-                                                        WHERE  EXISTS (
-                                                            SELECT 1
-                                                            FROM Enrollment E
-                                                            WHERE E.TrainingID = T.TrainingID
-                                                              AND E.UserID = @UserID 	
-                                                        )
-                                                        Order by T.TrainingName";
+            const string GET_ENROLLED_TRAININGS_QUERY = @"
+        SELECT T.*
+        FROM Training T
+        WHERE EXISTS (
+            SELECT 1
+            FROM Enrollment E
+            WHERE E.TrainingID = T.TrainingID
+              AND E.UserID = @UserID
+        )
+        ORDER BY T.TrainingName";
+
             List<TrainingModel> trainings = new List<TrainingModel>();
             var parameters = new List<SqlParameter> { new SqlParameter("@UserID", id) };
-            var dt = _dbCommand.GetDataWithConditions(GET_ENROLLED_TRAININGS_QUERY, parameters);
-            TrainingModel training;
 
-            if (dt.Rows.Count > 0)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_ENROLLED_TRAININGS_QUERY, parameters))
             {
-                foreach (DataRow row in dt.Rows)
+                while (reader.Read())
                 {
-                    training = new TrainingModel();
-                    training.TrainingID = int.Parse(row["TrainingID"].ToString());
-                    training.TrainingName = row["TrainingName"].ToString();
-                    training.TrainingDescription = row["TrainingDescription"].ToString();
-                    training.RegistrationDeadline = (DateTime)row["RegistrationDeadline"];
-                    training.Capacity = int.Parse(row["Capacity"].ToString());
-                    training.DepartmentID = int.Parse(row["DepartmentID"].ToString());
+                    TrainingModel training = new TrainingModel
+                    {
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
+                        RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
+                        Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+                        DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
+                    };
 
                     trainings.Add(training);
                 }
-                return trainings;
             }
-            return null;
+
+            return trainings.Count > 0 ? trainings : null;
         }
 
         public IEnumerable<TrainingModel> GetAllTrainingsNotEnrolledByUser(int id)
         {
-            const string GET_ENROLLED_TRAININGS_QUERY = @"SELECT T.*
-                                                        FROM Training T
-                                                        WHERE  NOT EXISTS (
-                                                            SELECT 1
-                                                            FROM Enrollment E
-                                                            WHERE E.TrainingID = T.TrainingID
-                                                              AND E.UserID = @UserID 	
-                                                        )
-                                                        Order by T.TrainingName";
+            const string GET_NOT_ENROLLED_TRAININGS_QUERY = @"
+        SELECT T.*
+        FROM Training T
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM Enrollment E
+            WHERE E.TrainingID = T.TrainingID
+              AND E.UserID = @UserID
+        )
+        ORDER BY T.TrainingName";
+
             List<TrainingModel> trainings = new List<TrainingModel>();
             var parameters = new List<SqlParameter> { new SqlParameter("@UserID", id) };
-            var dt = _dbCommand.GetDataWithConditions(GET_ENROLLED_TRAININGS_QUERY, parameters);
-            TrainingModel training;
 
-            if (dt.Rows.Count > 0)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_NOT_ENROLLED_TRAININGS_QUERY, parameters))
             {
-                foreach (DataRow row in dt.Rows)
+                while (reader.Read())
                 {
-                    training = new TrainingModel();
-                    training.TrainingID = int.Parse(row["TrainingID"].ToString());
-                    training.TrainingName = row["TrainingName"].ToString();
-                    training.TrainingDescription = row["TrainingDescription"].ToString();
-                    training.RegistrationDeadline = (DateTime)row["RegistrationDeadline"];
-                    training.Capacity = int.Parse(row["Capacity"].ToString());
-                    training.DepartmentID = int.Parse(row["DepartmentID"].ToString());
+                    TrainingModel training = new TrainingModel
+                    {
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
+                        RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
+                        Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+                        DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
+                    };
 
                     trainings.Add(training);
                 }
-                return trainings;
             }
-            return null;
+
+            return trainings.Count > 0 ? trainings : null;
         }
 
 

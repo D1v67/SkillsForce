@@ -26,7 +26,7 @@ namespace MVC.SkillsForce.Controllers
 
         public ActionResult GetAllTrainingWithPrerequsiites()
         {
-            IEnumerable<TrainingViewModel> trainings = _trainingService.GetAllTrainingWithPrerequsiites();
+            IEnumerable<TrainingViewModel> trainings = _trainingService.GetAllTrainingWithPrerequsites();
             return View(trainings);
         }
         // 

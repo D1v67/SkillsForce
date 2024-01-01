@@ -1518,3 +1518,157 @@ Stack Trace:    at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
    at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
    at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
 "---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 1/1/2024 2:46:59 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: A potentially dangerous Request.Form value was detected from the client (Password="<b>bold</b>").
+Inner Exception: 
+Stack Trace:    at System.Web.HttpRequest.ValidateString(String value, String collectionKey, RequestValidationSource requestCollection)
+   at System.Web.HttpValueCollection.EnsureKeyValidated(String key)
+   at System.Web.HttpValueCollection.GetValues(String name)
+   at System.Web.Mvc.NameValueCollectionValueProvider.ValueProviderResultPlaceholder.GetResultFromCollection(String key, NameValueCollection collection, CultureInfo culture)
+   at System.Web.Mvc.NameValueCollectionValueProvider.GetValue(String key, Boolean skipValidation)
+   at System.Web.Mvc.ValueProviderCollection.GetValue(String key, Boolean skipValidation)
+   at System.Web.Mvc.DefaultModelBinder.BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+   at System.Web.Mvc.DefaultModelBinder.GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
+   at System.Web.Mvc.DefaultModelBinder.BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor)
+   at System.Web.Mvc.DefaultModelBinder.BindProperties(ControllerContext controllerContext, ModelBindingContext bindingContext)
+   at System.Web.Mvc.DefaultModelBinder.BindComplexElementalModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Object model)
+   at System.Web.Mvc.DefaultModelBinder.BindComplexModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+   at System.Web.Mvc.ControllerActionInvoker.GetParameterValue(ControllerContext controllerContext, ParameterDescriptor parameterDescriptor)
+   at System.Web.Mvc.ControllerActionInvoker.GetParameterValues(ControllerContext controllerContext, ActionDescriptor actionDescriptor)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__0(AsyncCallback asyncCallback, Object asyncState)
+"---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 1/1/2024 2:46:59 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: The view 'InternalServerError' or its master was not found or no view engine supports the searched locations. The following locations were searched:
+~/Views/Account/InternalServerError.aspx
+~/Views/Account/InternalServerError.ascx
+~/Views/Shared/InternalServerError.aspx
+~/Views/Shared/InternalServerError.ascx
+~/Views/Account/InternalServerError.cshtml
+~/Views/Account/InternalServerError.vbhtml
+~/Views/Shared/InternalServerError.cshtml
+~/Views/Shared/InternalServerError.vbhtml
+Inner Exception: 
+Stack Trace:    at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
+   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+"---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 1/1/2024 2:47:17 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: A potentially dangerous Request.Form value was detected from the client (Email="<script> alert <scri...").
+Inner Exception: 
+Stack Trace:    at System.Web.HttpRequest.ValidateString(String value, String collectionKey, RequestValidationSource requestCollection)
+   at System.Web.HttpValueCollection.EnsureKeyValidated(String key)
+   at System.Web.HttpValueCollection.GetValues(String name)
+   at System.Web.Mvc.NameValueCollectionValueProvider.ValueProviderResultPlaceholder.GetResultFromCollection(String key, NameValueCollection collection, CultureInfo culture)
+   at System.Web.Mvc.NameValueCollectionValueProvider.GetValue(String key, Boolean skipValidation)
+   at System.Web.Mvc.ValueProviderCollection.GetValue(String key, Boolean skipValidation)
+   at System.Web.Mvc.DefaultModelBinder.BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+   at System.Web.Mvc.DefaultModelBinder.GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
+   at System.Web.Mvc.DefaultModelBinder.BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor)
+   at System.Web.Mvc.DefaultModelBinder.BindProperties(ControllerContext controllerContext, ModelBindingContext bindingContext)
+   at System.Web.Mvc.DefaultModelBinder.BindComplexElementalModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Object model)
+   at System.Web.Mvc.DefaultModelBinder.BindComplexModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+   at System.Web.Mvc.ControllerActionInvoker.GetParameterValue(ControllerContext controllerContext, ParameterDescriptor parameterDescriptor)
+   at System.Web.Mvc.ControllerActionInvoker.GetParameterValues(ControllerContext controllerContext, ActionDescriptor actionDescriptor)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__0(AsyncCallback asyncCallback, Object asyncState)
+"---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 1/1/2024 2:47:17 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: The view 'InternalServerError' or its master was not found or no view engine supports the searched locations. The following locations were searched:
+~/Views/Account/InternalServerError.aspx
+~/Views/Account/InternalServerError.ascx
+~/Views/Shared/InternalServerError.aspx
+~/Views/Shared/InternalServerError.ascx
+~/Views/Account/InternalServerError.cshtml
+~/Views/Account/InternalServerError.vbhtml
+~/Views/Shared/InternalServerError.cshtml
+~/Views/Shared/InternalServerError.vbhtml
+Inner Exception: 
+Stack Trace:    at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
+   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+"---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 1/1/2024 2:47:22 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: A potentially dangerous Request.Form value was detected from the client (Email="<script> alert <scri...").
+Inner Exception: 
+Stack Trace:    at System.Web.HttpRequest.ValidateString(String value, String collectionKey, RequestValidationSource requestCollection)
+   at System.Web.HttpValueCollection.EnsureKeyValidated(String key)
+   at System.Web.HttpValueCollection.GetValues(String name)
+   at System.Web.Mvc.NameValueCollectionValueProvider.ValueProviderResultPlaceholder.GetResultFromCollection(String key, NameValueCollection collection, CultureInfo culture)
+   at System.Web.Mvc.NameValueCollectionValueProvider.GetValue(String key, Boolean skipValidation)
+   at System.Web.Mvc.ValueProviderCollection.GetValue(String key, Boolean skipValidation)
+   at System.Web.Mvc.DefaultModelBinder.BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+   at System.Web.Mvc.DefaultModelBinder.GetPropertyValue(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, IModelBinder propertyBinder)
+   at System.Web.Mvc.DefaultModelBinder.BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor)
+   at System.Web.Mvc.DefaultModelBinder.BindProperties(ControllerContext controllerContext, ModelBindingContext bindingContext)
+   at System.Web.Mvc.DefaultModelBinder.BindComplexElementalModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Object model)
+   at System.Web.Mvc.DefaultModelBinder.BindComplexModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+   at System.Web.Mvc.ControllerActionInvoker.GetParameterValue(ControllerContext controllerContext, ParameterDescriptor parameterDescriptor)
+   at System.Web.Mvc.ControllerActionInvoker.GetParameterValues(ControllerContext controllerContext, ActionDescriptor actionDescriptor)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__0(AsyncCallback asyncCallback, Object asyncState)
+"---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 1/1/2024 2:47:22 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: The view 'InternalServerError' or its master was not found or no view engine supports the searched locations. The following locations were searched:
+~/Views/Account/InternalServerError.aspx
+~/Views/Account/InternalServerError.ascx
+~/Views/Shared/InternalServerError.aspx
+~/Views/Shared/InternalServerError.ascx
+~/Views/Account/InternalServerError.cshtml
+~/Views/Account/InternalServerError.vbhtml
+~/Views/Shared/InternalServerError.cshtml
+~/Views/Shared/InternalServerError.vbhtml
+Inner Exception: 
+Stack Trace:    at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
+   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+"---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 1/1/2024 11:50:56 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: Specified cast is not valid.
+Inner Exception: 
+Stack Trace:    at System.Data.SqlClient.SqlBuffer.get_Int16()
+   at DataAccessLayer.SkillsForce.DAL.AttachmentDAL.GetAll() in C:\SkillsForce\DataAccessLayer.SkillsForce\DAL\AttachmentDAL.cs:line 25
+   at BusinessLayer.SkillsForce.Services.AttachmentService.GetAll() in C:\SkillsForce\BusinessLayer.SkillsForce\Services\AttachmentService.cs:line 20
+   at MVC.SkillsForce.Controllers.AttachmentController.Index() in C:\SkillsForce\MVC.SkillsForce\Controllers\AttachmentController.cs:line 20
+   at lambda_method(Closure , ControllerBase , Object[] )
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c.<BeginInvokeSynchronousActionMethod>b__9_0(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   at System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_0.<InvokeActionMethodFilterAsynchronouslyRecursive>b__0()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_2.<InvokeActionMethodFilterAsynchronouslyRecursive>b__2()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_6.<BeginInvokeAction>b__4()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+"---------------------------------------------------------";
+---------------------------------------------------------
+Timestamp: 1/1/2024 11:52:32 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: The view 'Index' or its master was not found or no view engine supports the searched locations. The following locations were searched:
+~/Views/Attachment/Index.aspx
+~/Views/Attachment/Index.ascx
+~/Views/Shared/Index.aspx
+~/Views/Shared/Index.ascx
+~/Views/Attachment/Index.cshtml
+~/Views/Attachment/Index.vbhtml
+~/Views/Shared/Index.cshtml
+~/Views/Shared/Index.vbhtml
+Inner Exception: 
+Stack Trace:    at System.Web.Mvc.ViewResult.FindView(ControllerContext context)
+   at System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilterRecursive(IList`1 filters, Int32 filterIndex, ResultExecutingContext preContext, ControllerContext controllerContext, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilterRecursive(IList`1 filters, Int32 filterIndex, ResultExecutingContext preContext, ControllerContext controllerContext, ActionResult actionResult)
+   at System.Web.Mvc.ControllerActionInvoker.InvokeActionResultWithFilters(ControllerContext controllerContext, IList`1 filters, ActionResult actionResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+"---------------------------------------------------------";

@@ -3,6 +3,7 @@ using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
@@ -17,18 +18,23 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public IEnumerable<DepartmentModel> GetAll()
         {
-            const string GET_ALL_DEPARTMENT_QUERY = @"SELECT  * FROM [dbo].[Department]";
+            const string GET_ALL_DEPARTMENT_QUERY = @"SELECT * FROM [dbo].[Department]";
             List<DepartmentModel> departments = new List<DepartmentModel>();
 
-            DepartmentModel department;
-            var dt = _dbCommand.GetData(GET_ALL_DEPARTMENT_QUERY);
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = _dbCommand.GetDataReader(GET_ALL_DEPARTMENT_QUERY))
             {
-                department = new DepartmentModel();
-                department.DepartmentID = int.Parse(row["DepartmentID"].ToString());
-                department.DepartmentName = row["DepartmentName"].ToString();
-                departments.Add(department);
+                while (reader.Read())
+                {
+                    DepartmentModel department = new DepartmentModel
+                    {
+                        DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID")),
+                        DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName"))
+                    };
+
+                    departments.Add(department);
+                }
             }
+
             return departments;
         }
 

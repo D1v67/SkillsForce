@@ -110,17 +110,8 @@ namespace MVC.SkillsForce.Controllers
 
         public ActionResult GetPrerequisiteByTrainingID(int TrainigID)
         {
-            IEnumerable<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
-            try
-            {
-                prerequisites = _prerequisiteService.GetPrerequisiteByTrainingID(TrainigID);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            IEnumerable<PrerequisiteModel> prerequisites =  _prerequisiteService.GetPrerequisiteByTrainingID(TrainigID);   
             return Json(prerequisites, JsonRequestBehavior.AllowGet);
-
         }
 
         [HttpPost]
@@ -157,6 +148,7 @@ namespace MVC.SkillsForce.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
         [HttpPost]
         public ActionResult UploadFiles(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
         {

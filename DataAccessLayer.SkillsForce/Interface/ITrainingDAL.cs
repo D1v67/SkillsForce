@@ -12,7 +12,7 @@ namespace DataAccessLayer.SkillsForce.Interface
         void Add(TrainingViewModel training);
         bool Delete(int id);
         void Update(TrainingViewModel training);
-        IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites();
+        IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsites();
         int GetCapacityID(int id);
         int GetRemainingCapacityID(int trainingID);
         IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline, bool isCronJob);

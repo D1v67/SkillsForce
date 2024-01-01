@@ -51,9 +51,9 @@ namespace BusinessLayer.SkillsForce.Services
             return _trainingDAL.GetAllTrainingsNotEnrolledByUser(id);
         }
 
-        public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsiites()
+        public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsites()
         {
-            return _trainingDAL.GetAllTrainingWithPrerequsiites();
+            return _trainingDAL.GetAllTrainingWithPrerequsites();
         }
 
         public TrainingModel GetByID(int id)

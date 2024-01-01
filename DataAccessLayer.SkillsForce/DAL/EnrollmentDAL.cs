@@ -38,79 +38,83 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             const string GET_ALL_ENROLLMENT_QUERY = @"SELECT * FROM [dbo].[Enrollment]";
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
-
-            EnrollmentViewModel enrollment;
-            var dt = _dbCommand.GetData(GET_ALL_ENROLLMENT_QUERY);
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = _dbCommand.GetDataReader(GET_ALL_ENROLLMENT_QUERY))
             {
-                enrollment = new EnrollmentViewModel();
-                enrollment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
-                enrollment.UserID = int.Parse(row["UserID"].ToString());
-                enrollment.TrainingID = int.Parse(row["TrainingID"].ToString());
-                enrollment.EnrollmentDate = (DateTime)row["EnrollmentDate"];
-                enrollment.EnrollmentStatus = row["EnrollmentStatus"].ToString();
-                enrollments.Add(enrollment);
+                while (reader.Read())
+                {
+                    EnrollmentViewModel enrollment = new EnrollmentViewModel
+                    {
+                        EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
+                        UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus"))
+                    };
+                    enrollments.Add(enrollment);
+                }
             }
+
             return enrollments;
         }
         public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetails()
         {
             const string GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY =
-            @"SELECT E.EnrollmentID, U.UserID, U.FirstName,U.LastName,T.TrainingID, TrainingName, D.DepartmentName,E.EnrollmentDate, E.EnrollmentStatus
-              FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID";
+                @"SELECT E.EnrollmentID, U.UserID, U.FirstName, U.LastName, T.TrainingID, TrainingName, D.DepartmentName, E.EnrollmentDate, E.EnrollmentStatus
+          FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID";
 
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
-
-            EnrollmentViewModel enrollment;
-            var dt = _dbCommand.GetData(GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY);
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = _dbCommand.GetDataReader(GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY))
             {
-                enrollment = new EnrollmentViewModel();
-                enrollment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
-                enrollment.UserID = int.Parse(row["UserID"].ToString());
-                enrollment.FirstName = row["FirstName"].ToString();
-                enrollment.LastName = row["LastName"].ToString();
-                enrollment.TrainingID = int.Parse(row["TrainingID"].ToString());
-                enrollment.TrainingName = row["TrainingName"].ToString();
-                enrollment.DepartmentName = row["DepartmentName"].ToString();
-                enrollment.EnrollmentDate = (DateTime)row["EnrollmentDate"];
-                enrollment.EnrollmentStatus = row["EnrollmentStatus"].ToString();
-                enrollments.Add(enrollment);
+                while (reader.Read())
+                {
+                    EnrollmentViewModel enrollment = new EnrollmentViewModel
+                    {
+                        EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
+                        UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus"))
+                    };
+                    enrollments.Add(enrollment);
+                }
             }
             return enrollments;
         }
         public IEnumerable<EnrollmentViewModel> GetAllEnrollmentsWithDetailsByManager(int managerId)
         {
             const string GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY =
-            @"SELECT E.EnrollmentID, U.UserID,U.FirstName, U.LastName, T.TrainingID, T.TrainingName, D.DepartmentName, E.EnrollmentDate,E.EnrollmentStatus
-              FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
-              WHERE U.ManagerID = @ManagerID";
+                @"SELECT E.EnrollmentID, U.UserID, U.FirstName, U.LastName, T.TrainingID, T.TrainingName, D.DepartmentName, E.EnrollmentDate, E.EnrollmentStatus
+          FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
+          WHERE U.ManagerID = @ManagerID";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@ManagerID", managerId) };
-            var dt = _dbCommand.GetDataWithConditions(GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY, parameters);
-
-            List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
-
-            EnrollmentViewModel enrollment;
-            if (dt.Rows.Count > 0)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY, parameters))
             {
-                foreach (DataRow row in dt.Rows)
+                List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
+
+                while (reader.Read())
                 {
-                    enrollment = new EnrollmentViewModel();
-                    enrollment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
-                    enrollment.UserID = int.Parse(row["UserID"].ToString());
-                    enrollment.FirstName = row["FirstName"].ToString();
-                    enrollment.LastName = row["LastName"].ToString();
-                    enrollment.TrainingID = int.Parse(row["TrainingID"].ToString());
-                    enrollment.TrainingName = row["TrainingName"].ToString();
-                    enrollment.DepartmentName = row["DepartmentName"].ToString();
-                    enrollment.EnrollmentDate = (DateTime)row["EnrollmentDate"];
-                    enrollment.EnrollmentStatus = row["EnrollmentStatus"].ToString();
+                    EnrollmentViewModel enrollment = new EnrollmentViewModel
+                    {
+                        EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
+                        UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus"))
+                    };
                     enrollments.Add(enrollment);
                 }
+
                 return enrollments;
             }
-            return null;
         }
 
         public EnrollmentViewModel GetByID(int id)
@@ -157,111 +161,117 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             const string GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID =
                 @"SELECT
-                    E.EnrollmentID,
-                    U.UserID AS AppUserID,
-                    U.FirstName AS AppUserFirstName,
-                    U.LastName AS AppUserLastName,
-                    U.Email AS AppUserEmail,
-                    E.TrainingID,
-                    T.TrainingName,
-                    D.DepartmentName,
-                    E.EnrollmentDate,
-                    E.EnrollmentStatus,
-                    E.DeclineReason,
-                    U.ManagerID,
-                    M.Email AS ManagerEmail,
-                    M.FirstName AS ManagerFirstName,
-                    M.LastName AS ManagerLastName
-                FROM
-                    Enrollment E
-                INNER JOIN [User] U ON E.UserID = U.UserID
-                INNER JOIN Training T ON E.TrainingID = T.TrainingID
-                LEFT JOIN Department D ON U.DepartmentID = D.DepartmentID
-                LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
+            E.EnrollmentID,
+            U.UserID AS AppUserID,
+            U.FirstName AS AppUserFirstName,
+            U.LastName AS AppUserLastName,
+            U.Email AS AppUserEmail,
+            E.TrainingID,
+            T.TrainingName,
+            D.DepartmentName,
+            E.EnrollmentDate,
+            E.EnrollmentStatus,
+            E.DeclineReason,
+            U.ManagerID,
+            M.Email AS ManagerEmail,
+            M.FirstName AS ManagerFirstName,
+            M.LastName AS ManagerLastName
+        FROM
+            Enrollment E
+        INNER JOIN [User] U ON E.UserID = U.UserID
+        INNER JOIN Training T ON E.TrainingID = T.TrainingID
+        LEFT JOIN Department D ON U.DepartmentID = D.DepartmentID
+        LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
-            var dt = _dbCommand.GetDataWithConditions(GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID, parameters);
-
-            if (dt.Rows.Count > 0)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID, parameters))
             {
-                DataRow row = dt.Rows[0];
-                EnrollmentNotificationViewModel enrollment = new EnrollmentNotificationViewModel
+                if (reader.Read())
                 {
-                    EnrollmentID = int.Parse(row["EnrollmentID"].ToString()),
-                    AppUserID = int.Parse(row["AppUserID"].ToString()),
-                    AppUserFirstName = row["AppUserFirstName"].ToString(),
-                    AppUserLastName = row["AppUserLastName"].ToString(),
-                    AppUserEmail = row["AppUserEmail"].ToString(),
-                    TrainingID = int.Parse(row["TrainingID"].ToString()),
-                    TrainingName = row["TrainingName"].ToString(),
-                    DepartmentName = row["DepartmentName"].ToString(),
-                    EnrollmentDate = DateTime.Parse(row["EnrollmentDate"].ToString()),
-                    EnrollmentStatus = row["EnrollmentStatus"].ToString(),
-                    ManagerID = int.Parse(row["ManagerID"].ToString()),
-                    ManagerEmail = row["ManagerEmail"].ToString(),
-                    ManagerFirstName = row["ManagerFirstName"].ToString(),
-                    ManagerLastName = row["ManagerLastName"].ToString(),
-                    DeclineReason = row["DeclineReason"].ToString(),
-                };
-                return enrollment;
+                    EnrollmentNotificationViewModel enrollment = new EnrollmentNotificationViewModel
+                    {
+                        EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
+                        AppUserID = reader.GetInt16(reader.GetOrdinal("AppUserID")),
+                        AppUserFirstName = reader.GetString(reader.GetOrdinal("AppUserFirstName")),
+                        AppUserLastName = reader.GetString(reader.GetOrdinal("AppUserLastName")),
+                        AppUserEmail = reader.GetString(reader.GetOrdinal("AppUserEmail")),
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        DepartmentName = reader.IsDBNull(reader.GetOrdinal("DepartmentName")) ? string.Empty : reader.GetString(reader.GetOrdinal("DepartmentName")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus")),
+                        ManagerID = reader.GetInt16(reader.GetOrdinal("ManagerID")),
+                        ManagerEmail = reader.GetString(reader.GetOrdinal("ManagerEmail")),
+                        ManagerFirstName = reader.GetString(reader.GetOrdinal("ManagerFirstName")),
+                        ManagerLastName = reader.GetString(reader.GetOrdinal("ManagerLastName")),
+                        DeclineReason = reader.IsDBNull(reader.GetOrdinal("DeclineReason")) ? string.Empty : reader.GetString(reader.GetOrdinal("DeclineReason")),
+                    };
+                    return enrollment;
+                }
             }
+
             return null;
         }
+
 
         public IEnumerable<EnrollmentViewModel> GetAllApprovedEnrollments()
         {
             const string GET_ALL_APPROVED_ENROLLMENT_WITH_DETAILS_QUERY =
-            @"
-                SELECT
-                    E.EnrollmentID,
-                    U.UserID,
-                    U.FirstName,
-                    U.LastName,
-                    T.TrainingID,
-                    T.TrainingName,
-                    U.DepartmentID AS UserDepartmentID,
-                    UD.DepartmentName AS UserDepartmentName,
-                    T.DepartmentID AS TrainingDepartmentID,
-                    TD.DepartmentName AS TrainingDepartmentName,
-                    E.EnrollmentDate,
-                    E.EnrollmentStatus,
-                    E.IsSelected
-                FROM
-                    Enrollment E
-                JOIN
-                    [User] U ON E.UserID = U.UserID
-                JOIN
-                    Training T ON E.TrainingID = T.TrainingID
-                JOIN
-                    Department UD ON U.DepartmentID = UD.DepartmentID -- User's department
-                JOIN
-                    Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
-                WHERE
-                    E.EnrollmentStatus = 'Approved'";
+                @"
+         SELECT
+             E.EnrollmentID,
+             U.UserID,
+             U.FirstName,
+             U.LastName,
+             T.TrainingID,
+             T.TrainingName,
+             U.DepartmentID AS UserDepartmentID,
+             UD.DepartmentName AS UserDepartmentName,
+             T.DepartmentID AS TrainingDepartmentID,
+             TD.DepartmentName AS TrainingDepartmentName,
+             E.EnrollmentDate,
+             E.EnrollmentStatus,
+             E.IsSelected
+         FROM
+             Enrollment E
+         JOIN
+             [User] U ON E.UserID = U.UserID
+         JOIN
+             Training T ON E.TrainingID = T.TrainingID
+         JOIN
+             Department UD ON U.DepartmentID = UD.DepartmentID -- User's department
+         JOIN
+             Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
+         WHERE
+             E.EnrollmentStatus = 'Approved'";
 
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
 
-            EnrollmentViewModel enrollment;
-            var dt = _dbCommand.GetData(GET_ALL_APPROVED_ENROLLMENT_WITH_DETAILS_QUERY);
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_ALL_APPROVED_ENROLLMENT_WITH_DETAILS_QUERY, null))
             {
-                enrollment = new EnrollmentViewModel();
-                enrollment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
-                enrollment.UserID = int.Parse(row["UserID"].ToString());
-                enrollment.FirstName = row["FirstName"].ToString();
-                enrollment.LastName = row["LastName"].ToString();
-                enrollment.TrainingID = int.Parse(row["TrainingID"].ToString());
-                enrollment.TrainingName = row["TrainingName"].ToString();
-                enrollment.DepartmentName = row["UserDepartmentName"].ToString();
-                enrollment.EnrollmentDate = (DateTime)row["EnrollmentDate"];
-                enrollment.EnrollmentStatus = row["EnrollmentStatus"].ToString();
-                enrollment.TrainingDepartmentName = row["TrainingDepartmentName"].ToString();
-                enrollment.IsSelected = (bool)row["IsSelected"];
-
-                enrollments.Add(enrollment);
+                while (reader.Read())
+                {
+                    EnrollmentViewModel enrollment = new EnrollmentViewModel
+                    {
+                        EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
+                        UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        DepartmentName = reader.GetString(reader.GetOrdinal("UserDepartmentName")),
+                        TrainingDepartmentName = reader.GetString(reader.GetOrdinal("TrainingDepartmentName")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus")),
+                        IsSelected = reader.GetBoolean(reader.GetOrdinal("IsSelected")),
+                    };
+                    enrollments.Add(enrollment);
+                }
             }
+
             return enrollments;
         }
+
 
         public List<int> ConfirmEnrollmentsByTrainingID(int trainingID)
         {

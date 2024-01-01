@@ -16,32 +16,31 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             _dbCommand = dbCommand;
         }
-
         public IEnumerable<PrerequisiteModel> GetPrerequisiteByTrainingID(int TrainingID)
         {
-            const string GET_PREREQUISITE_BY_TRAINING_ID_QUERY = @"SELECT P.PrerequisiteID, TP.TrainingID, T.TrainingName, P.PrerequisiteName
-                                                                    FROM TrainingPrerequisite TP
-                                                                    JOIN Training T ON TP.TrainingID = T.TrainingID
-                                                                    JOIN Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID
-                                                                    WHERE T.TrainingID = @TrainingID";
+            const string GET_PREREQUISITE_BY_TRAINING_ID_QUERY = @"SELECT P.PrerequisiteID, P.PrerequisiteName
+                                                            FROM TrainingPrerequisite TP
+                                                            JOIN Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID
+                                                            WHERE TP.TrainingID = @TrainingID";
             List<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
-            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", TrainingID) };
-            var dt = _dbCommand.GetDataWithConditions(GET_PREREQUISITE_BY_TRAINING_ID_QUERY, parameters);
-            PrerequisiteModel prerequisite;
 
-            if (dt.Rows.Count > 0)
+            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", TrainingID) };
+
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_PREREQUISITE_BY_TRAINING_ID_QUERY, parameters))
             {
-                foreach (DataRow row in dt.Rows)
+                while (reader.Read())
                 {
-                    prerequisite = new PrerequisiteModel();
-                    prerequisite.PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString());
-                    prerequisite.PrerequisiteName = row["PrerequisiteName"].ToString();
+                    PrerequisiteModel prerequisite = new PrerequisiteModel
+                    {
+                        PrerequisiteID = reader.GetByte(reader.GetOrdinal("PrerequisiteID")),
+                        PrerequisiteName = reader.GetString(reader.GetOrdinal("PrerequisiteName"))
+                    };
 
                     prerequisites.Add(prerequisite);
                 }
-                return prerequisites;
             }
-            return null;
+
+            return prerequisites.Count > 0 ? prerequisites : null;
         }
         public void Add(PrerequisiteModel prerequisite)
         {
@@ -58,16 +57,20 @@ namespace DataAccessLayer.SkillsForce.DAL
             const string GET_ALL_PREREQUISITE_QUERY = @"SELECT * FROM Prerequisite";
             List<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
 
-            PrerequisiteModel prerequisite;
-            var dt = _dbCommand.GetData(GET_ALL_PREREQUISITE_QUERY);
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = _dbCommand.GetDataReader(GET_ALL_PREREQUISITE_QUERY))
             {
-                prerequisite = new PrerequisiteModel();
-                prerequisite.PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString());
-                prerequisite.PrerequisiteName = row["PrerequisiteName"].ToString();
+                while (reader.Read())
+                {
+                    PrerequisiteModel prerequisite = new PrerequisiteModel
+                    {
+                        PrerequisiteID = reader.GetByte(reader.GetOrdinal("PrerequisiteID")),
+                        PrerequisiteName = reader.GetString(reader.GetOrdinal("PrerequisiteName"))
+                    };
 
-                prerequisites.Add(prerequisite);
+                    prerequisites.Add(prerequisite);
+                }
             }
+
             return prerequisites;
         }
 

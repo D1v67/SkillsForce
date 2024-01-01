@@ -18,67 +18,77 @@ namespace DataAccessLayer.SkillsForce.DAL
             const string GET_ALL_ATTACHMENTS_QUERY = @"SELECT * FROM [dbo].[Attachment]";
             List<AttachmentModel> attachments = new List<AttachmentModel>();
 
-            AttachmentModel attachment;
-            var dt = _dbCommand.GetData(GET_ALL_ATTACHMENTS_QUERY);
-            foreach (DataRow row in dt.Rows)
+            using (SqlDataReader reader = _dbCommand.GetDataReader(GET_ALL_ATTACHMENTS_QUERY))
             {
-                attachment = new AttachmentModel();
-                attachment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
-                attachment.PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString());
-              //  attachment.AttachmentURL = row["AttachmentURL"].ToString();
-                attachment.FileData = row["FileData"] as byte[];
-                attachment.FileName = row["FileName"].ToString();
+                while (reader.Read())
+                {
+                    AttachmentModel attachment = new AttachmentModel
+                    {
+                        AttachmentID = reader.GetInt32(reader.GetOrdinal("AttachmentID")),
+                        EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
+                        PrerequisiteID = reader.GetByte(reader.GetOrdinal("PrerequisiteID")),
+                        // AttachmentURL = reader["AttachmentURL"] == DBNull.Value ? null : reader["AttachmentURL"].ToString(),
+                        FileData = (byte[])reader["FileData"],
+                        FileName = reader.GetString(reader.GetOrdinal("FileName"))
+                    };
 
-                attachments.Add(attachment);
+                    attachments.Add(attachment);
+                }
             }
             return attachments;
         }
 
         public IEnumerable<AttachmentModel> GetAllByEnrollmentID(int id)
         {
-            const string GET_ALL_BY_ENROLLMENTID = @"SELECT* FROM Attachment A WHERE A.EnrollmentID = @EnrollmentID";
+            const string GET_ALL_BY_ENROLLMENTID = @"SELECT * FROM Attachment A WHERE A.EnrollmentID = @EnrollmentID";
             List<AttachmentModel> attachments = new List<AttachmentModel>();
-            var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
-            var dt = _dbCommand.GetDataWithConditions(GET_ALL_BY_ENROLLMENTID, parameters);
-            AttachmentModel attachment;
 
-            if (dt.Rows.Count > 0)
+            var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
+
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_ALL_BY_ENROLLMENTID, parameters))
             {
-                foreach (DataRow row in dt.Rows)
+                while (reader.Read())
                 {
-                    attachment = new AttachmentModel();
-                    attachment.AttachmentID = int.Parse(row["AttachmentID"].ToString());
-                    attachment.EnrollmentID = int.Parse(row["EnrollmentID"].ToString());
-                    attachment.PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString());
-                    attachment.FileName = row["FileName"].ToString();
-                    //attachment.FileData = row["FileData"] as byte[];
+                    AttachmentModel attachment = new AttachmentModel
+                    {
+                        AttachmentID = reader.GetInt32(reader.GetOrdinal("AttachmentID")),
+                        EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
+                        PrerequisiteID = reader.GetByte(reader.GetOrdinal("PrerequisiteID")),
+                        FileName = reader.GetString(reader.GetOrdinal("FileName")),
+                        // FileData = reader["FileData"] == DBNull.Value ? null : (byte[])reader["FileData"]
+                    };
+
                     attachments.Add(attachment);
                 }
-                return attachments;
             }
-            return null;
+
+            return attachments.Count > 0 ? attachments : null;
         }
+
 
         public AttachmentModel GetByAttachmentID(int id)
         {
             const string GET_BY_ATTACHMENTID_QUERY = @"SELECT * FROM Attachment A WHERE A.AttachmentID = @AttachmentID";
             var parameters = new List<SqlParameter> { new SqlParameter("@AttachmentID", id) };
-            var dt = _dbCommand.GetDataWithConditions(GET_BY_ATTACHMENTID_QUERY, parameters);
 
-            if (dt.Rows.Count > 0)
+            using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(GET_BY_ATTACHMENTID_QUERY, parameters))
             {
-                DataRow row = dt.Rows[0];
-                AttachmentModel attachment = new AttachmentModel
+                if (reader.Read())
                 {
-                    AttachmentID = int.Parse(row["AttachmentID"].ToString()),
-                    EnrollmentID = int.Parse(row["EnrollmentID"].ToString()),
-                    PrerequisiteID = int.Parse(row["PrerequisiteID"].ToString()),
-                    FileName = row["FileName"].ToString(),
-                // AttachmentURL = row["AttachmentURL"].ToString(),
-                    FileData = row["FileData"] as byte[],
-                };
-                return attachment;
+                    AttachmentModel attachment = new AttachmentModel
+                    {
+                        AttachmentID = reader.GetInt32(reader.GetOrdinal("AttachmentID")),
+                        EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
+                        PrerequisiteID = reader.GetByte(reader.GetOrdinal("PrerequisiteID")),
+                        FileName = reader.GetString(reader.GetOrdinal("FileName")),
+                        // AttachmentURL = reader["AttachmentURL"] == DBNull.Value ? null : reader["AttachmentURL"].ToString(),
+                        FileData = reader["FileData"] as byte[]
+                    };
+
+                    return attachment;
+                }
             }
+
             return null;
         }
 
