@@ -24,19 +24,5 @@ namespace BusinessLayer.SkillsForce.Services
         {
             return await _prerequisiteDAL.GetAllAsync();
         }
-
-
-
-
-        public IEnumerable<PrerequisiteModel> GetPrerequisiteByTrainingID(int TrainingID)
-        {
-            return _prerequisiteDAL.GetPrerequisiteByTrainingID(TrainingID);
-        }
-
-        public IEnumerable<PrerequisiteModel> GetAll()
-        {
-           return _prerequisiteDAL.GetAll();
-        }
-
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
+using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
 using System;
@@ -67,21 +68,13 @@ namespace MVC.SkillsForce.Controllers
         [HttpPost]
         public async Task<JsonResult> CreateTraining(TrainingViewModel model)
         {
-            if (await _trainingService.IsTrainingNameAlreadyExistsAsync(model.TrainingName))
+            var result = await _trainingService.AddAsync(model);
+            if (result.IsSuccessful)
             {
-                ModelState.AddModelError("Email", "TrainingName already exists.");
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _trainingService.AddAsync(model);
                 return Json(new { url = Url.Action("Index", "Training") });
             }
-
-            var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                          .Select(e => e.ErrorMessage)
-                                          .ToList();
-
+            AddErrorsToModelState(result.Errors);
+            var errors = GetModelStateErrors();
             return Json(new { errorMessage = errors });
         }
 
@@ -100,27 +93,21 @@ namespace MVC.SkillsForce.Controllers
         [HttpPost]
         public async Task<JsonResult> Edit(TrainingViewModel model)
         {
-            if (await _trainingService.IsTrainingNameAlreadyExistsOnUpdateAsync(model.TrainingID, model.TrainingName))
+            var result = await _trainingService.UpdateAsync(model);
+            if (result.IsSuccessful)
             {
-                ModelState.AddModelError("Email", "Training already exists with the same name.");
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _trainingService.UpdateAsync(model);
                 return Json(new { url = Url.Action("Index", "Training") });
             }
-
-            var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                          .Select(e => e.ErrorMessage)
-                                          .ToList();
-
+            AddErrorsToModelState(result.Errors);
+            var errors = GetModelStateErrors();
             return Json(new { errorMessage = errors });
+
+
         }
 
-        public async Task<ActionResult> Delete(int id)
+        public ActionResult Delete(int id)
         {
-            bool isDeletionSuccessful = await _trainingService.DeleteAsync(id);
+            bool isDeletionSuccessful =  _trainingService.Delete(id);
 
             if (isDeletionSuccessful)
             {
@@ -132,6 +119,19 @@ namespace MVC.SkillsForce.Controllers
                 TempData["ErrorMessage"] = $"Cannot delete the training because it has enrolled users: ";
                 return RedirectToAction("Index");
             }
+        }
+
+        private void AddErrorsToModelState(List<string> errors)
+        {
+            foreach (var error in errors)
+            {
+                ModelState.AddModelError(string.Empty, error);
+            }
+        }
+
+        private List<string> GetModelStateErrors()
+        {
+            return ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
         }
 
     }

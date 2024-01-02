@@ -11,13 +11,5 @@ namespace BusinessLayer.SkillsForce.Interface
         Task AddAsync(DepartmentModel department);
         Task DeleteAsync(int id);
         Task UpdateAsync(DepartmentModel department);
-
-
-
-        IEnumerable<DepartmentModel> GetAll();
-        DepartmentModel GetByID(int id);
-        void Add(DepartmentModel department);
-        void Delete(int id);
-        void Update(DepartmentModel department);
     }
 }

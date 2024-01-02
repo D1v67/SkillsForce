@@ -16,6 +16,7 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             _dbCommand = dbCommand;
         }
+
         public async Task<IEnumerable<DepartmentModel>> GetAllAsync()
         {
             const string GET_ALL_DEPARTMENT_QUERY = @"SELECT * FROM [dbo].[Department]";
@@ -30,11 +31,9 @@ namespace DataAccessLayer.SkillsForce.DAL
                         DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID")),
                         DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName"))
                     };
-
                     departments.Add(department);
                 }
             }
-
             return departments;
         }
 
@@ -54,55 +53,6 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
 
         public Task UpdateAsync(DepartmentModel department)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-
-
-
-
-
-        public IEnumerable<DepartmentModel> GetAll()
-        {
-            const string GET_ALL_DEPARTMENT_QUERY = @"SELECT * FROM [dbo].[Department]";
-            List<DepartmentModel> departments = new List<DepartmentModel>();
-
-            using (SqlDataReader reader = _dbCommand.GetDataReader(GET_ALL_DEPARTMENT_QUERY))
-            {
-                while (reader.Read())
-                {
-                    DepartmentModel department = new DepartmentModel
-                    {
-                        DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID")),
-                        DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName"))
-                    };
-
-                    departments.Add(department);
-                }
-            }
-
-            return departments;
-        }
-
-        public DepartmentModel GetByID(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Add(DepartmentModel department)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(DepartmentModel department)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,5 @@
 ﻿using Common.SkillsForce.Entity;
+using Common.SkillsForce.Helpers;
 using Common.SkillsForce.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ namespace BusinessLayer.SkillsForce.Interface
 
         Task<IEnumerable<TrainingModel>> GetAllAsync();
         Task<TrainingModel> GetByIDAsync(int id);
-        Task AddAsync(TrainingViewModel training);
+        Task<ValidationResult> AddAsync(TrainingViewModel training);
         Task<bool> DeleteAsync(int id);
-        Task UpdateAsync(TrainingViewModel training);
+        Task<ValidationResult> UpdateAsync(TrainingViewModel training);
         Task<IEnumerable<TrainingViewModel>> GetAllTrainingWithPrerequisitesAsync();
         Task<int> GetCapacityIDAsync(int id);
         Task<int> GetRemainingCapacityIDAsync(int trainingID);
@@ -25,22 +26,6 @@ namespace BusinessLayer.SkillsForce.Interface
         Task<bool> IsTrainingNameAlreadyExistsOnUpdateAsync(int trainingId, string newTrainingName);
 
 
-
-
-        IEnumerable<TrainingModel> GetAll();
-        TrainingModel GetByID(int id);
-        void Add(TrainingViewModel training);
         bool Delete(int id);
-        void Update(TrainingViewModel training);
-        IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsites();
-        int GetCapacityID(int id);
-        int GetRemainingCapacityID(int trainingID);
-        IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline, bool isCronJob);
-        IEnumerable<TrainingModel> GetAllTrainingsEnrolledByUser(int id);
-        IEnumerable<TrainingModel> GetAllTrainingsNotEnrolledByUser(int id);
-        TrainingViewModel GetTrainingViewModelDetailsWithDepartmentsAndPrerequsites();
-        bool IsTrainingNameAlreadyExists(string trainingName);
-        TrainingViewModel GetTrainingWithPrerequisites(int trainingId);
-        bool IsTrainingNameAlreadyExistsOnUpdate(int trainingId, string newTrainingName);
     }
 }

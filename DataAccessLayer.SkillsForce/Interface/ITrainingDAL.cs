@@ -8,7 +8,6 @@ namespace DataAccessLayer.SkillsForce.Interface
 {
     public interface ITrainingDAL
     {
-
         Task<IEnumerable<TrainingModel>> GetAllAsync();
         Task<TrainingModel> GetByIDAsync(int id);
         Task AddAsync(TrainingViewModel training);
@@ -25,22 +24,7 @@ namespace DataAccessLayer.SkillsForce.Interface
         Task<bool> IsTrainingNameAlreadyExistsOnUpdateAsync(int trainingId, string newTrainingName);
 
 
-
-
-
-        IEnumerable<TrainingModel> GetAll();
-        TrainingModel GetByID(int id);
-        void Add(TrainingViewModel training);
-        bool Delete(int id);
-        void Update(TrainingViewModel training);
-        IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsites();
-        int GetCapacityID(int id);
-        int GetRemainingCapacityID(int trainingID);
-        IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline, bool isCronJob);
-        IEnumerable<TrainingModel> GetAllTrainingsEnrolledByUser(int id);
-        IEnumerable<TrainingModel> GetAllTrainingsNotEnrolledByUser(int id);
-        bool IsTrainingNameAlreadyExists(string trainingName);
-        TrainingViewModel GetTrainingWithPrerequisites(int trainingId);
-        bool IsTrainingNameAlreadyExistsOnUpdate(int trainingId, string newTrainingName);
+        bool Delete(int trainingId);
+        
     }
 }

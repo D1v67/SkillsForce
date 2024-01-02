@@ -32,21 +32,18 @@ namespace DataAccessLayer.SkillsForce.DAL
                         FileData = (byte[])reader["FileData"],
                         FileName = reader.GetString(reader.GetOrdinal("FileName"))
                     };
-
                     attachments.Add(attachment);
                 }
             }
-
             return attachments;
         }
 
         public async Task<IEnumerable<AttachmentModel>> GetAllByEnrollmentIDAsync(int id)
         {
-            const string GET_ALL_BY_ENROLLMENTID = @"SELECT * FROM Attachment A WHERE A.EnrollmentID = @EnrollmentID";
+            const string GET_ALL_BY_ENROLLMENTID = @"SELECT A.AttachmentID, A.EnrollmentID, A.PrerequisiteID, A.FileName FROM Attachment A WHERE A.EnrollmentID = @EnrollmentID";
             List<AttachmentModel> attachments = new List<AttachmentModel>();
 
             var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
-
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_ALL_BY_ENROLLMENTID, parameters))
             {
                 while (await reader.ReadAsync())
@@ -58,11 +55,9 @@ namespace DataAccessLayer.SkillsForce.DAL
                         PrerequisiteID = reader.GetByte(reader.GetOrdinal("PrerequisiteID")),
                         FileName = reader.GetString(reader.GetOrdinal("FileName")),
                     };
-
                     attachments.Add(attachment);
                 }
             }
-
             return attachments.Count > 0 ? attachments : null;
         }
 
@@ -83,18 +78,16 @@ namespace DataAccessLayer.SkillsForce.DAL
                         FileName = reader.GetString(reader.GetOrdinal("FileName")),
                         FileData = reader["FileData"] as byte[]
                     };
-
                     return attachment;
                 }
             }
-
             return null;
         }
 
         public async Task AddAsync(AttachmentModel attachment)
         {
             const string INSERT_EVIDENCE_QUERY = @"INSERT INTO Attachment (EnrollmentID, PrerequisiteID, FileName, FileData)
-                                               VALUES (@EnrollmentID, @PrerequisiteID, @FileName, @FileData)";
+                                                   VALUES (@EnrollmentID, @PrerequisiteID, @FileName, @FileData)";
 
             List<SqlParameter> parameters = new List<SqlParameter>
         {
@@ -103,7 +96,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             new SqlParameter("@FileData", attachment.FileData),
             new SqlParameter("@FileName", attachment.FileName),
         };
-
             await _dbCommand.InsertUpdateDataAsync(INSERT_EVIDENCE_QUERY, parameters);
         }
 
@@ -111,9 +103,5 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             throw new NotImplementedException();
         }
-
-
-
-
     }
 }

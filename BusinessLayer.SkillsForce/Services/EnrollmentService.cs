@@ -16,6 +16,12 @@ namespace BusinessLayer.SkillsForce.Services
         private readonly ITrainingService _trainingService;
         private readonly INotificationService _notificationService;
 
+        public EnrollmentService(IEnrollmentDAL enrollmentDAL, ITrainingService trainingService, INotificationService notificationService)
+        {
+            _enrollmentDAL = enrollmentDAL;
+            _trainingService = trainingService;
+            _notificationService = notificationService;
+        }
         public async Task<int> AddAsync(EnrollmentViewModel enrollment)
         {
             return await _enrollmentDAL.AddAsync(enrollment);

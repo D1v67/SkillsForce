@@ -15,7 +15,7 @@ namespace MVC.SkillsForce.Controllers
             _departmentService = departmentService;
         }
 
-        public async Task<JsonResult> GetListOfDepartmentsAsync()
+        public async Task<JsonResult> GetListOfDepartments()
         {
             IEnumerable<DepartmentModel> departments = await _departmentService.GetAllAsync();
             return Json(departments, JsonRequestBehavior.AllowGet);

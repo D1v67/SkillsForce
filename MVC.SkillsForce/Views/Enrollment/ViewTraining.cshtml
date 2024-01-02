@@ -501,10 +501,16 @@ https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
             data: { TrainigID: trainingId },
             success: function (prerequisites) {
                 console.log(prerequisites);
-                populateCoursesCheckboxList(prerequisites, trainingId);
+                if (prerequisites.length > 0) {
+                    populateCoursesCheckboxList(prerequisites, trainingId);
+                } else {
+                    // No prerequisites, display a message in the modal
+                    $("#coursesCheckboxList").html("<p>No prerequisites for this training.</p>");
+                }
             },
             error: function () {
-                alert("Failed to fetch prerequisites!");
+                //alert("Failed to fetch prerequisites!");
+                $("#coursesCheckboxList").html("<p>Failed to fetch prerequisites. Please try again later.</p>");
             }
         });
     }

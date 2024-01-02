@@ -38,36 +38,5 @@ namespace BusinessLayer.SkillsForce.Services
         {
             await _departmentDAL.UpdateAsync(department);
         }
-
-
-
-
-
-
-
-        public void Add(DepartmentModel department)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<DepartmentModel> GetAll()
-        {
-            return _departmentDAL.GetAll();
-        }
-
-        public DepartmentModel GetByID(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(DepartmentModel department)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

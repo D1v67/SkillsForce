@@ -186,18 +186,10 @@
     $(document).ready(function () {
 
 
-        // Validate Training Name on blur
-        $('#TrainingName').blur(function () {
-            validateFieldOnBlur($(this), /^[A-Z][a-z]*( [A-Z][a-z]*)*$/);
-        });
-
-        // Validate Capacity on blur
-        $('#Capacity').blur(function () {
-            validateFieldOnBlur($(this), /^[1-9][0-9]*$/);
-        });
 
 
-        toastr.options.timeOut = 2000;
+
+        toastr.options.timeOut = 3000;
         function validateFieldOnBlur(field, regex) {
             var value = field.val();
             if (!regex.test(value)) {
@@ -209,9 +201,45 @@
             }
         }
 
+        // Validate Training Name on blur
+        $('#TrainingName').blur(function () {
+            validateFieldOnBlur($(this), /^[A-Z][a-z]*( [A-Z][a-z]*)*$/);
+        });
+
+        // Validate Capacity on blur
+        $('#Capacity').blur(function () {
+            validateFieldOnBlur($(this), /^[1-9][0-9]*$/);
+        });
+
+
+        function validateStartDateVsRegistrationDeadline() {
+            var startDate = new Date($('#StartDate').val());
+            var registrationDeadline = new Date($('#RegistrationDeadline').val());
+
+            if (startDate <= registrationDeadline) {
+                $('#StartDate').addClass('is-invalid');
+                $('#RegistrationDeadline').addClass('is-invalid');
+                toastr.error("Start date must be greater than registration deadline.");
+                return false;
+            } else {
+                $('#StartDate').removeClass('is-invalid');
+                $('#RegistrationDeadline').removeClass('is-invalid');
+                return true;
+            }
+        }
+
+        // Validate Start Date vs Registration Deadline
+        $('#StartDate, #RegistrationDeadline').change(function () {
+            validateStartDateVsRegistrationDeadline();
+        });
+
+
+
+
+
         // Fetch Departments
         $.ajax({
-            url: '/Department/GetListOfDepartments', // Replace with your actual endpoint for departments
+            url: '/Department/GetListOfDepartments', 
             type: 'GET',
             success: function (data) {
                 var departmentDropdown = $('#DepartmentID');
@@ -233,7 +261,7 @@
 
         // Fetch Prerequisites
         $.ajax({
-            url: '/Prerequisite/GetListOfPrerequisites', // Replace with your actual endpoint for prerequisites
+            url: '/Prerequisite/GetListOfPrerequisites', 
             type: 'GET',
             success: function (data) {
                 var prerequisitesDropdown = $('#Prerequisites');
@@ -278,9 +306,20 @@
             event.preventDefault();
 
             // Validate form fields
-            if (!validateForm()) {
+            if (!validateForm() || !validateStartDateVsRegistrationDeadline()) {
                 return;
             }
+
+            if ($('#trainingForm .is-invalid').length > 0) {
+                $('#trainingForm .is-invalid').each(function () {
+                    var fieldName = $(this).siblings('label').text().trim();
+                    toastr.error("Invalid input for " + fieldName + ". Please check again.");
+
+                    //$(this).siblings('.help-block').show();
+                });
+                return;
+            }
+
 
             var selectedPrerequisites = [];
             $('#selectedPrerequisitesTable tbody tr').each(function () {

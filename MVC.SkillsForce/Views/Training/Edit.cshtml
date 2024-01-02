@@ -205,7 +205,7 @@
 
         // Fetch training details using AJAX
         $.ajax({
-            url: '/Training/GetTrainingDetails/' + '@Model.TrainingID', // Replace with the actual URL of your GetTrainingDetails action
+            url: '/Training/GetTrainingDetails/' + '@Model.TrainingID', 
             type: 'GET',
             success: function (trainingData) {
 
@@ -213,9 +213,7 @@
                 var startDate = convertDateFormat(trainingData.StartDate);
 
 
-                //trainingData.StartDate = new Date(trainingData.StartDate).toISOString().split('T')[0];
-                //trainingData.RegistrationDeadline = new Date(trainingData.RegistrationDeadline).toISOString().split('T')[0];
-                // Fill the form fields with training details
+    
                 $('#TrainingName').val(trainingData.TrainingName);
                 $('#TrainingDescription').val(trainingData.TrainingDescription);
                 $('#StartDate').val(startDate);
@@ -267,14 +265,14 @@
                                 selected: true
                             }));
 
-                            // Add the selected prerequisites to the table
+                         
                             var tableBody = $('#selectedPrerequisitesTable tbody');
                             tableBody.append('<tr><td>' + selectedPrerequisite.PrerequisiteID +
                                 '</td><td>' + selectedPrerequisite.PrerequisiteName +
                                 '</td><td><button class="btn btn-danger btn-sm deleteRow">Delete</button></td></tr>');
                         });
 
-                        // Show the div when prerequisites are added
+                      
                         $('#selectedPrerequisitesDiv').show();
                     },
                     error: function (error) {

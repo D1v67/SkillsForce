@@ -28,9 +28,9 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
 
             List<SqlParameter> parameters = new List<SqlParameter>
-        {
-            new SqlParameter("@Email", account.Email)
-        };
+            {
+                new SqlParameter("@Email", account.Email)
+            };
 
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(AUTHENTICATE_USER_QUERY, parameters))
             {
@@ -42,14 +42,13 @@ namespace DataAccessLayer.SkillsForce.DAL
                     return PasswordHasher.VerifyPassword(account.Password, storedHash, storedSalt);
                 }
             }
-
             return false;
         }
 
         public async Task<AccountModel> GetUserDetailsWithRolesAsync(AccountModel account)
         {
             const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.UserID, u.FirstName, u.LastName, u.Email, u.NIC, u.MobileNumber, 
-                                                                 u.DepartmentID, d.DepartmentName, u.ManagerID, r.RoleName, r.RoleID
+                                                              u.DepartmentID, d.DepartmentName, u.ManagerID, r.RoleName, r.RoleID
                                                             FROM [User] u
                                                             LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
                                                             LEFT JOIN UserRole ur ON u.UserID = ur.UserID
@@ -58,7 +57,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             AccountModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@Email", account.Email));
-
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_USER_DETAILS_WITH_ROLE_QUERY, parameters))
             {
                 if (await reader.ReadAsync())
@@ -71,7 +69,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                         Email = reader.GetString(reader.GetOrdinal("Email")).Trim(),
                         listOfRoles = new List<UserRoleModel>()
                     };
-
                     do
                     {
                         UserRoleModel role = new UserRoleModel
@@ -84,7 +81,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                     } while (await reader.ReadAsync());
                 }
             }
-
             return user;
         }
 

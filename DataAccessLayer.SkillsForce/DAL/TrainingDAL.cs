@@ -107,20 +107,24 @@ namespace DataAccessLayer.SkillsForce.DAL
             // Retrieve the generated 
             int trainingID = await _dbCommand.InsertDataAndReturnIdentityAsync(INSERT_TRAINING_QUERY, parameters);
 
-            // If TrainingID is obtained, add prerequisites to TrainingPrerequisite table
-            if (trainingID > 0)
+            // If TrainingID is obtained and Prerequisites is not null, add prerequisites to TrainingPrerequisite table
+            if (trainingID > 0 && training.Prerequisites != null)
             {
                 foreach (PrerequisiteModel prerequisite in training.Prerequisites)
                 {
-                    const string INSERT_TRAINING_PREREQUISITE_QUERY = @"INSERT INTO [dbo].[TrainingPrerequisite] (TrainingID, PrerequisiteID)
-                                                                      VALUES (@TrainingID, @PrerequisiteID);";
+                    if (prerequisite != null)
+                    {
+                        const string INSERT_TRAINING_PREREQUISITE_QUERY = @"INSERT INTO [dbo].[TrainingPrerequisite] (TrainingID, PrerequisiteID)
+                                                                    VALUES (@TrainingID, @PrerequisiteID);";
 
-                    List<SqlParameter> prerequisiteParameters = new List<SqlParameter>
-                {
-                    new SqlParameter("@TrainingID", trainingID),
-                    new SqlParameter("@PrerequisiteID", prerequisite.PrerequisiteID)
-                };
-                    await _dbCommand.InsertUpdateDataAsync(INSERT_TRAINING_PREREQUISITE_QUERY, prerequisiteParameters);
+                        List<SqlParameter> prerequisiteParameters = new List<SqlParameter>
+                        {
+                            new SqlParameter("@TrainingID", trainingID),
+                            new SqlParameter("@PrerequisiteID", prerequisite.PrerequisiteID)
+                        };
+
+                        await _dbCommand.InsertUpdateDataAsync(INSERT_TRAINING_PREREQUISITE_QUERY, prerequisiteParameters);
+                    }
                 }
             }
         }

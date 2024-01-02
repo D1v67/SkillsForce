@@ -8,10 +8,5 @@ namespace BusinessLayer.SkillsForce.Interface
     {
         Task<IEnumerable<PrerequisiteModel>> GetPrerequisiteByTrainingIDAsync(int TrainingID);
         Task<IEnumerable<PrerequisiteModel>> GetAllAsync();
-
-
-
-        IEnumerable<PrerequisiteModel> GetPrerequisiteByTrainingID(int TrainingID);
-        IEnumerable<PrerequisiteModel> GetAll();
     }
 }

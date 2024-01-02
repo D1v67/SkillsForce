@@ -1,11 +1,18 @@
-﻿using BusinessLayer.SkillsForce.Interface;
+﻿using BusinessLayer.SkillsForce.Helpers;
+using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Helpers;
 using Common.SkillsForce.ViewModel;
+using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.ModelBinding;
 
 namespace BusinessLayer.SkillsForce.Services
 {
@@ -22,14 +29,53 @@ namespace BusinessLayer.SkillsForce.Services
             _prerequisiteDAL = prerequisiteDAL;
         }
 
-        public async Task AddAsync(TrainingViewModel training)
+        public async Task<ValidationResult> AddAsync(TrainingViewModel model)
         {
-            await _trainingDAL.AddAsync(training);
+            var validationErrors = new List<string>();
+
+            // Validate Training Name
+            if (string.IsNullOrWhiteSpace(model.TrainingName) || !Regex.IsMatch(model.TrainingName, @"^[A-Z][a-z]*( [A-Z][a-z]*)*$"))
+            {
+                validationErrors.Add("Training Name is required and must be in a valid format.");
+            }
+            else if (await IsTrainingNameAlreadyExistsAsync(model.TrainingName))
+            {
+                validationErrors.Add("Training Name is already in use.");
+            }
+
+            // Validate Start Date and Registration Deadline
+            if (!IsValidDateRange(model.StartDate, model.RegistrationDeadline))
+            {
+                validationErrors.Add("Start date must be greater than Registration Deadline.");
+            }
+
+            // Validate Capacity
+            if (!Regex.IsMatch(model.Capacity.ToString(), @"^[1-9]\d*$"))
+            {
+                validationErrors.Add("Capacity must be a positive integer.");
+            }
+
+
+            ValidateField(model.TrainingName, "Training Name", validationErrors, minLength: 2, maxLength: 100);
+
+            if (validationErrors.Count == 0)
+            {
+                await _trainingDAL.AddAsync(model);
+                return new ValidationResult { IsSuccessful = true };
+            }
+
+
+            return new ValidationResult { IsSuccessful = false, Errors = validationErrors };
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             return await _trainingDAL.DeleteAsync(id);
+        }
+
+        public  bool Delete(int id)
+        {
+            return  _trainingDAL.Delete(id);
         }
 
         public async Task<IEnumerable<TrainingModel>> GetAllAsync()
@@ -101,100 +147,81 @@ namespace BusinessLayer.SkillsForce.Services
             return await _trainingDAL.IsTrainingNameAlreadyExistsOnUpdateAsync(trainingId, newTrainingName);
         }
 
-        public async Task UpdateAsync(TrainingViewModel training)
+        public async Task<ValidationResult> UpdateAsync(TrainingViewModel model)
         {
-            await _trainingDAL.UpdateAsync(training);
+            var validationErrors = new List<string>();
+
+            // Validate Training Name
+            if (string.IsNullOrWhiteSpace(model.TrainingName) || !Regex.IsMatch(model.TrainingName, @"^[A-Z][a-z]*( [A-Z][a-z]*)*$"))
+            {
+                validationErrors.Add("Training Name is required and must be in a valid format.");
+            }
+
+            if (await IsTrainingNameAlreadyExistsOnUpdateAsync(model.TrainingID, model.TrainingName))
+            {
+                validationErrors.Add("Training Name is already in use.");
+            }
+
+            // Validate Start Date and Registration Deadline
+            if (!IsValidDateRange(model.StartDate, model.RegistrationDeadline))
+            {
+                validationErrors.Add("Start date must be greater than Registration Deadline.");
+            }
+
+            // Validate Capacity
+            if (!Regex.IsMatch(model.Capacity.ToString(), @"^[1-9]\d*$"))
+            {
+                validationErrors.Add("Capacity must be a positive integer.");
+            }
+
+
+            ValidateField(model.TrainingName, "Training Name", validationErrors, minLength: 2, maxLength: 100);
+
+            if (validationErrors.Count == 0)
+            {
+                await _trainingDAL.UpdateAsync(model);
+                return new ValidationResult { IsSuccessful = true };
+            }
+
+
+            return new ValidationResult { IsSuccessful = false, Errors = validationErrors };
+        }
+
+        private void ValidateField(string fieldValue, string fieldName, List<string> validationErrors, int? minLength = null, int? maxLength = null, int? fixedLength = null)
+        {
+            if (string.IsNullOrWhiteSpace(fieldValue))
+            {
+                validationErrors.Add($"{fieldName} is required.");
+            }
+            else
+            {
+                if (fixedLength.HasValue && fieldValue.Length != fixedLength.Value)
+                {
+                    validationErrors.Add($"{fieldName} must be exactly {fixedLength.Value} characters.");
+                }
+                else if (minLength.HasValue && maxLength.HasValue && (fieldValue.Length < minLength.Value || fieldValue.Length > maxLength.Value))
+                {
+                    validationErrors.Add($"{fieldName} must be between {minLength.Value} and {maxLength.Value} characters.");
+                }
+            }
+        }
+
+        // Helper method to validate date range
+        private bool IsValidDateRange(string startDate, string registrationDeadline)
+        {
+            if (DateTime.TryParse(startDate, out var start) && DateTime.TryParse(registrationDeadline, out var deadline))
+            {
+                return start > deadline && start > DateTime.Now && deadline > DateTime.Now;
+            }
+            return false;
         }
 
 
-
-
-
-
-
-
-        public void Add(TrainingViewModel training)
+        public enum ValidationType
         {
-            _trainingDAL.Add(training);
-        }
-
-        public bool Delete(int id)
-        {
-            return _trainingDAL.Delete(id);
-        }
-
-        public IEnumerable<TrainingModel> GetAll()
-        {
-            return _trainingDAL.GetAll();
-        }
-
-        public IEnumerable<TrainingModel> GetAllTrainingsByRegistrationDeadline(DateTime registrationDeadline, bool isCronJob)
-        {
-            return _trainingDAL.GetAllTrainingsByRegistrationDeadline(registrationDeadline, isCronJob);
-        }
-
-        public IEnumerable<TrainingModel> GetAllTrainingsEnrolledByUser(int id)
-        {
-            return _trainingDAL.GetAllTrainingsEnrolledByUser(id);
-        }
-
-        public IEnumerable<TrainingModel> GetAllTrainingsNotEnrolledByUser(int id)
-        {
-            return _trainingDAL.GetAllTrainingsNotEnrolledByUser(id);
-        }
-
-        public IEnumerable<TrainingViewModel> GetAllTrainingWithPrerequsites()
-        {
-            return _trainingDAL.GetAllTrainingWithPrerequsites();
-        }
-
-        public TrainingModel GetByID(int id)
-        {
-            return _trainingDAL.GetByID(id);
-        }
-
-        public int GetCapacityID(int id)
-        {
-            return _trainingDAL.GetCapacityID(id);
-        }
-
-        public int GetRemainingCapacityID(int trainingID)
-        {
-            return _trainingDAL.GetRemainingCapacityID(trainingID);
-        }
-
-        public TrainingViewModel GetTrainingViewModelDetailsWithDepartmentsAndPrerequsites()
-        {
-            var departments = _departmentDAL.GetAll();
-            var prerequisites = _prerequisiteDAL.GetAll();
-
-            var trainingViewModel = new TrainingViewModel
-            {   
-                Prerequisites = prerequisites.ToList(),
-                Departments = departments.ToList(),      
-            };
-
-            return trainingViewModel;
-        }
-
-        public TrainingViewModel GetTrainingWithPrerequisites(int trainingId)
-        {
-            return _trainingDAL.GetTrainingWithPrerequisites(trainingId);
-        }
-
-        public bool IsTrainingNameAlreadyExists(string trainingName)
-        {
-            return _trainingDAL.IsTrainingNameAlreadyExists(trainingName);
-        }
-
-        public bool IsTrainingNameAlreadyExistsOnUpdate(int trainingId, string newTrainingName)
-        {
-            return _trainingDAL.IsTrainingNameAlreadyExistsOnUpdate(trainingId, newTrainingName);
-        }
-
-        public void Update(TrainingViewModel training)
-        {
-            _trainingDAL.Update(training);
+            FixedLength,
+            Range,
+            Both
         }
     }
 }

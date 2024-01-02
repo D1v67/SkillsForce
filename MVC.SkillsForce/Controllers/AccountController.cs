@@ -11,13 +11,13 @@ namespace MVC.SkillsForce.Controllers
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
-        private readonly IAccountService _loginService;
+        private readonly IAccountService _accountService;
         private readonly IDepartmentService _departmentService;
 
-        public AccountController(IUserService userService, IAccountService loginService, IDepartmentService departmentService)
+        public AccountController(IUserService userService, IAccountService accountService, IDepartmentService departmentService)
         {
             _userService = userService;
-            _loginService = loginService;
+            _accountService = accountService;
             _departmentService = departmentService;    
         }
 
@@ -29,28 +29,16 @@ namespace MVC.SkillsForce.Controllers
         [HttpPost]
         public async Task<JsonResult> Authenticate(AccountModel account)
         {
-            bool isUserValid = await _loginService.IsUserAuthenticatedAsync(account);
+            bool isUserValid = await _accountService.IsUserAuthenticatedAsync(account);
             if (isUserValid)
             {
-                var userDetailsWithRoles = await _loginService.GetUserDetailsWithRolesAsync(account);
+                var userDetailsWithRoles = await _accountService.GetUserDetailsWithRolesAsync(account);
                 SetSessionVariables(userDetailsWithRoles);
-                var userRoles = userDetailsWithRoles.listOfRoles.Select(r => r.RoleName).ToList();
-                Session["UserRoles"] = userRoles;
-                var redirectController = userRoles.Count == 1 ? "Home" : "Account";
-                var redirectAction = userRoles.Count == 1 ? "Index" : "RoleSelection";
-
+                SetUserRolesInSession(userDetailsWithRoles.listOfRoles);
+                var (redirectController, redirectAction) = GetRedirectInfo(userDetailsWithRoles.listOfRoles);
                 return Json(new { result = isUserValid, url = Url.Action(redirectAction, redirectController) });
             }
-
             return Json(new { result = isUserValid, url = Url.Action("Login", "Account") });
-        }
-
-        private void SetSessionVariables(AccountModel userDetailsWithRoles)
-        {
-            Session["UserID"] = userDetailsWithRoles.UserID;
-            Session["Email"] = userDetailsWithRoles.Email;
-            Session["FirstName"] = userDetailsWithRoles.FirstName;
-            Session["CurrentRole"] = userDetailsWithRoles.listOfRoles.Count == 1 ? userDetailsWithRoles.listOfRoles[0].RoleName : null;
         }
 
         public ActionResult Register()
@@ -61,13 +49,12 @@ namespace MVC.SkillsForce.Controllers
         [HttpPost]
         public async Task<JsonResult> Register(RegisterViewModel registerViewModel)
         {
-            var result = await _loginService.RegisterUserAsync(registerViewModel);
+            var result = await _accountService.RegisterUserAsync(registerViewModel);
             if (result.IsSuccessful)
             {
                 return Json(new { url = Url.Action("Index", "Account") });
             }
             AddErrorsToModelState(result.Errors);
-
             var errors = GetModelStateErrors();
             return Json(new { errorMessage = errors });
         }
@@ -102,6 +89,26 @@ namespace MVC.SkillsForce.Controllers
         {
             Session["CurrentRole"] = selectedRole;
             return RedirectToAction("Index", "Home");
+        }
+
+        private void SetSessionVariables(AccountModel userDetailsWithRoles)
+        {
+            Session["UserID"] = userDetailsWithRoles.UserID;
+            Session["Email"] = userDetailsWithRoles.Email;
+            Session["FirstName"] = userDetailsWithRoles.FirstName;
+            Session["CurrentRole"] = userDetailsWithRoles.listOfRoles.Count == 1 ? userDetailsWithRoles.listOfRoles[0].RoleName : null;
+        }
+
+        private void SetUserRolesInSession(List<UserRoleModel> userRoles)
+        {
+            Session["UserRoles"] = userRoles.Select(r => r.RoleName).ToList();
+        }
+
+        private (string redirectController, string redirectAction) GetRedirectInfo(List<UserRoleModel> userRoles)
+        {
+            var redirectController = userRoles.Count == 1 ? "Home" : "Account";
+            var redirectAction = userRoles.Count == 1 ? "Index" : "RoleSelection";
+            return (redirectController, redirectAction);
         }
 
         private void AddErrorsToModelState(List<string> errors)

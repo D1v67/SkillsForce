@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
@@ -16,7 +17,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             _databaseConnection = new SqlConnection(databaseConnectionstring);
             OpenConnection();
         }
-        public void OpenConnection()
+        public async Task OpenConnectionAsync()
         {
             try
             {
@@ -24,12 +25,18 @@ namespace DataAccessLayer.SkillsForce.DAL
                 {
                     _databaseConnection.Close();
                 }
-                _databaseConnection.Open();
+
+                await _databaseConnection.OpenAsync();
             }
             catch (SqlException ex)
             {
                 throw ex;
             }
+        }
+
+        public void OpenConnection()
+        {
+            Task.Run(() => OpenConnectionAsync()).Wait();
         }
 
         public void CloseConnection()
@@ -42,3 +49,5 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
     }
 }
+
+

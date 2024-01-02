@@ -111,7 +111,16 @@ namespace MVC.SkillsForce.Controllers
         public async Task<JsonResult> GetPrerequisiteByTrainingID(int TrainigID)
         {
             IEnumerable<PrerequisiteModel> prerequisites = await _prerequisiteService.GetPrerequisiteByTrainingIDAsync(TrainigID);
-            return Json(prerequisites, JsonRequestBehavior.AllowGet);
+
+            if (prerequisites != null)
+            {
+                return Json(prerequisites, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                // Return an empty array as a valid response when there are no prerequisites
+                return Json(new List<PrerequisiteModel>(), JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]

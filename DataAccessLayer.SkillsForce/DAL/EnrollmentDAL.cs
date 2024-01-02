@@ -26,7 +26,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                 new SqlParameter("@UserID", enrollment.UserID),
                 new SqlParameter("@TrainingID", enrollment.TrainingID)
             };
-
             int generatedEnrollmentId = await _dbCommand.InsertDataAndReturnIdentityAsync(INSERT_ENROLLMENT_QUERY, parameters);
             return generatedEnrollmentId;
         }
@@ -51,7 +50,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                     enrollments.Add(enrollment);
                 }
             }
-
             return enrollments;
         }
 
@@ -59,10 +57,9 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             const string GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY =
                 @"SELECT E.EnrollmentID, U.UserID, U.FirstName, U.LastName, T.TrainingID, TrainingName, D.DepartmentName, E.EnrollmentDate, E.EnrollmentStatus
-  FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID";
+                  FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID";
 
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
-
             using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY))
             {
                 while (await reader.ReadAsync())
@@ -82,7 +79,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                     enrollments.Add(enrollment);
                 }
             }
-
             return enrollments;
         }
 
@@ -90,11 +86,10 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             const string GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY =
                 @"SELECT E.EnrollmentID, U.UserID, U.FirstName, U.LastName, T.TrainingID, T.TrainingName, D.DepartmentName, E.EnrollmentDate, E.EnrollmentStatus
-  FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
-  WHERE U.ManagerID = @ManagerID";
+                FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
+                WHERE U.ManagerID = @ManagerID";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@ManagerID", managerId) };
-
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY, parameters))
             {
                 List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
@@ -115,13 +110,9 @@ namespace DataAccessLayer.SkillsForce.DAL
                     };
                     enrollments.Add(enrollment);
                 }
-
                 return enrollments;
             }
         }
-
-
-
 
         public async Task ApproveEnrollmentAsync(int enrollmentId)
         {
@@ -134,51 +125,49 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task RejectEnrollmentAsync(int enrollmentId, string rejectionReason, int declinedByUserId)
         {
-            const string UPDATE_STATUS_REJECTED_QUERY = @"
-        UPDATE Enrollment
-        SET EnrollmentStatus = 'Rejected',
-            DeclineReason = @DeclineReason,
-            DeclinedByUserId = @DeclinedByUserId,
-            LastModifiedTimestamp = GETDATE(),
-            LastModifiedUserId = @LastModifiedUserId
-        WHERE EnrollmentID = @EnrollmentID";
+            const string UPDATE_STATUS_REJECTED_QUERY = @"UPDATE Enrollment
+                                                            SET EnrollmentStatus = 'Rejected',
+                                                                DeclineReason = @DeclineReason,
+                                                                DeclinedByUserId = @DeclinedByUserId,
+                                                                LastModifiedTimestamp = GETDATE(),
+                                                                LastModifiedUserId = @LastModifiedUserId
+                                                            WHERE EnrollmentID = @EnrollmentID";
 
             List<SqlParameter> parameters = new List<SqlParameter>
-    {
-        new SqlParameter("@EnrollmentID", enrollmentId),
-        new SqlParameter("@DeclineReason", (object)rejectionReason ?? DBNull.Value),
-        new SqlParameter("@DeclinedByUserId", (object)declinedByUserId ?? DBNull.Value),
-        new SqlParameter("@LastModifiedUserId", declinedByUserId)
-    };
-
+            {
+                new SqlParameter("@EnrollmentID", enrollmentId),
+                new SqlParameter("@DeclineReason", (object)rejectionReason ?? DBNull.Value),
+                new SqlParameter("@DeclinedByUserId", (object)declinedByUserId ?? DBNull.Value),
+                new SqlParameter("@LastModifiedUserId", declinedByUserId)
+            };
             await _dbCommand.InsertUpdateDataAsync(UPDATE_STATUS_REJECTED_QUERY, parameters);
         }
 
         public async Task<EnrollmentNotificationViewModel> GetEnrollmentNotificationDetailsByIDAsync(int id)
         {
             const string GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID =
-                @"SELECT
-            E.EnrollmentID,
-            U.UserID AS AppUserID,
-            U.FirstName AS AppUserFirstName,
-            U.LastName AS AppUserLastName,
-            U.Email AS AppUserEmail,
-            E.TrainingID,
-            T.TrainingName,
-            D.DepartmentName,
-            E.EnrollmentDate,
-            E.EnrollmentStatus,
-            E.DeclineReason,
-            U.ManagerID,
-            M.Email AS ManagerEmail,
-            M.FirstName AS ManagerFirstName,
-            M.LastName AS ManagerLastName
-        FROM
-            Enrollment E
-        INNER JOIN [User] U ON E.UserID = U.UserID
-        INNER JOIN Training T ON E.TrainingID = T.TrainingID
-        LEFT JOIN Department D ON U.DepartmentID = D.DepartmentID
-        LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
+                                                                    @"SELECT
+                                                                E.EnrollmentID,
+                                                                U.UserID AS AppUserID,
+                                                                U.FirstName AS AppUserFirstName,
+                                                                U.LastName AS AppUserLastName,
+                                                                U.Email AS AppUserEmail,
+                                                                E.TrainingID,
+                                                                T.TrainingName,
+                                                                D.DepartmentName,
+                                                                E.EnrollmentDate,
+                                                                E.EnrollmentStatus,
+                                                                E.DeclineReason,
+                                                                U.ManagerID,
+                                                                M.Email AS ManagerEmail,
+                                                                M.FirstName AS ManagerFirstName,
+                                                                M.LastName AS ManagerLastName
+                                                                FROM
+                                                                    Enrollment E
+                                                                INNER JOIN [User] U ON E.UserID = U.UserID
+                                                                INNER JOIN Training T ON E.TrainingID = T.TrainingID
+                                                                LEFT JOIN Department D ON U.DepartmentID = D.DepartmentID
+                                                                LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
 
@@ -216,32 +205,32 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             const string GET_ALL_APPROVED_ENROLLMENT_WITH_DETAILS_QUERY =
                 @"
-        SELECT
-            E.EnrollmentID,
-            U.UserID,
-            U.FirstName,
-            U.LastName,
-            T.TrainingID,
-            T.TrainingName,
-            U.DepartmentID AS UserDepartmentID,
-            UD.DepartmentName AS UserDepartmentName,
-            T.DepartmentID AS TrainingDepartmentID,
-            TD.DepartmentName AS TrainingDepartmentName,
-            E.EnrollmentDate,
-            E.EnrollmentStatus,
-            E.IsSelected
-        FROM
-            Enrollment E
-        JOIN
-            [User] U ON E.UserID = U.UserID
-        JOIN
-            Training T ON E.TrainingID = T.TrainingID
-        JOIN
-            Department UD ON U.DepartmentID = UD.DepartmentID -- User's department
-        JOIN
-            Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
-        WHERE
-            E.EnrollmentStatus = 'Approved'";
+                    SELECT
+                        E.EnrollmentID,
+                        U.UserID,
+                        U.FirstName,
+                        U.LastName,
+                        T.TrainingID,
+                        T.TrainingName,
+                        U.DepartmentID AS UserDepartmentID,
+                        UD.DepartmentName AS UserDepartmentName,
+                        T.DepartmentID AS TrainingDepartmentID,
+                        TD.DepartmentName AS TrainingDepartmentName,
+                        E.EnrollmentDate,
+                        E.EnrollmentStatus,
+                        E.IsSelected
+                    FROM
+                        Enrollment E
+                    JOIN
+                        [User] U ON E.UserID = U.UserID
+                    JOIN
+                        Training T ON E.TrainingID = T.TrainingID
+                    JOIN
+                        Department UD ON U.DepartmentID = UD.DepartmentID -- User's department
+                    JOIN
+                        Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
+                    WHERE
+                        E.EnrollmentStatus = 'Approved'";
 
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
 
@@ -266,7 +255,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                     enrollments.Add(enrollment);
                 }
             }
-
             return enrollments;
         }
 
