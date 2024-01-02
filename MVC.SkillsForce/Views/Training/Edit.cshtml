@@ -201,6 +201,51 @@
         window.onload = setMinDate;
 
 
+        toastr.options.timeOut = 3000;
+        function validateFieldOnBlur(field, regex) {
+            var value = field.val();
+            if (!regex.test(value)) {
+                field.addClass('is-invalid');
+                var fieldName = field.attr('id');
+                toastr.error("Invalid input for " + fieldName + ". Please check again.");
+            } else {
+                field.removeClass('is-invalid');
+            }
+        }
+
+        // Validate Training Name on blur
+        $('#TrainingName').blur(function () {
+            validateFieldOnBlur($(this), /^[A-Z][a-z]*( [A-Z][a-z]*)*$/);
+        });
+
+        // Validate Capacity on blur
+        $('#Capacity').blur(function () {
+            validateFieldOnBlur($(this), /^[1-9][0-9]*$/);
+        });
+
+        function validateStartDateVsRegistrationDeadline() {
+            var startDate = new Date($('#StartDate').val());
+            var registrationDeadline = new Date($('#RegistrationDeadline').val());
+
+            if (startDate <= registrationDeadline) {
+                $('#StartDate').addClass('is-invalid');
+                $('#RegistrationDeadline').addClass('is-invalid');
+                toastr.error("Start date must be greater than registration deadline.");
+                return false;
+            } else {
+                $('#StartDate').removeClass('is-invalid');
+                $('#RegistrationDeadline').removeClass('is-invalid');
+                return true;
+            }
+        }
+
+        // Validate Start Date vs Registration Deadline
+        $('#StartDate, #RegistrationDeadline').change(function () {
+            validateStartDateVsRegistrationDeadline();
+        });
+
+
+
 
 
         // Fetch training details using AJAX
@@ -303,57 +348,68 @@
             $(this).closest('tr').remove();
         });
 
-            $("#trainingForm").submit(function (event) {
-        event.preventDefault();
+       $("#trainingForm").submit(function (event) {
+                event.preventDefault();
 
-        // Validate form fields
-        if (!validateForm()) {
-            return;
-        }
+                // Validate form fields
+           if (!validateForm() || !validateStartDateVsRegistrationDeadline()) {
+               return;
+           }
 
-        var selectedPrerequisites = [];
-        $('#selectedPrerequisitesTable tbody tr').each(function () {
-            var prerequisiteID = parseInt($(this).find('td:first').text());
-            var prerequisiteName = $(this).find('td:nth-child(2)').text();
-            selectedPrerequisites.push({ PrerequisiteID: prerequisiteID, PrerequisiteName: prerequisiteName });
-        });
 
-        var formData = {
-            TrainingID: parseInt('@Model.TrainingID'),
-            TrainingName: $('#TrainingName').val(),
-            TrainingDescription: $('#TrainingDescription').val(),
-            RegistrationDeadline: $('#RegistrationDeadline').val(),
-            StartDate: $('#StartDate').val(),
-            Capacity: $('#Capacity').val(),
-            DepartmentID: parseInt($("#DepartmentID").val()),
-            Prerequisites: selectedPrerequisites
-        };
+           if ($('#trainingForm .is-invalid').length > 0) {
+               $('#trainingForm .is-invalid').each(function () {
+                   var fieldName = $(this).siblings('label').text().trim();
+                   toastr.error("Invalid input for " + fieldName + ". Please check again.");
 
-        console.log(formData)
-        // Add your AJAX call to submit the form data
-        $.ajax({
-            type: "POST",
-            url: "/Training/Edit", // Replace with your actual controller and action
-            data: formData,
-            success: function (response) {
-                console.log(response);
-                if (response.url) {
-                    console.log('iin success')
-                    // Redirect to a relevant page on success
-                    setTimeout(function () {
-                        window.location = response.url;
-                    }, 500);
-                    $("#registrationSuccessDiv").show();
-                } else {
-                    console.log(response.errorMessage);
+                   //$(this).siblings('.help-block').show();
+               });
+               return;
+           }
+
+                var selectedPrerequisites = [];
+                $('#selectedPrerequisitesTable tbody tr').each(function () {
+                    var prerequisiteID = parseInt($(this).find('td:first').text());
+                    var prerequisiteName = $(this).find('td:nth-child(2)').text();
+                    selectedPrerequisites.push({ PrerequisiteID: prerequisiteID, PrerequisiteName: prerequisiteName });
+                });
+
+                var formData = {
+                    TrainingID: parseInt('@Model.TrainingID'),
+                    TrainingName: $('#TrainingName').val(),
+                    TrainingDescription: $('#TrainingDescription').val(),
+                    RegistrationDeadline: $('#RegistrationDeadline').val(),
+                    StartDate: $('#StartDate').val(),
+                    Capacity: $('#Capacity').val(),
+                    DepartmentID: parseInt($("#DepartmentID").val()),
+                    Prerequisites: selectedPrerequisites
+                };
+
+                console.log(formData)
+                // Add your AJAX call to submit the form data
+                $.ajax({
+                    type: "POST",
+                    url: "/Training/Edit", // Replace with your actual controller and action
+                    data: formData,
+                    success: function (response) {
+                        console.log(response);
+                        if (response.url) {
+                            console.log('iin success')
+                            // Redirect to a relevant page on success
+                            setTimeout(function () {
+                                window.location = response.url;
+                            }, 500);
+                            $("#registrationSuccessDiv").show();
+                        } else {
+                            console.log(response.errorMessage);
                    
-                    handleValidationErrors(response.errorMessage);
-                }
-            },
-            error: function (error) {
-                console.error("Error submitting form:", error);
-                // Handle errors as needed
-            }
+                            handleValidationErrors(response.errorMessage);
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Error submitting form:", error);
+                        // Handle errors as needed
+                    }
         });
      });
 
