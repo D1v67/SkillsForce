@@ -40,5 +40,15 @@ namespace MVC.SkillsForce.Controllers
             return File(binaryData, contentType, filename);
         }
 
+        public async Task<ActionResult> ViewAttachmentByAttachmentID(int id)
+        {
+            var result = await _attachmentService.GetByAttachmentIDAsync(id);
+
+            byte[] binaryData = result.FileData;
+            string contentType = "application/pdf";
+
+            return new FileContentResult(binaryData, contentType);
+        }
+
     }
 }

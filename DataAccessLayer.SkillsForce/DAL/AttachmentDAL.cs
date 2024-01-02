@@ -40,7 +40,16 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<IEnumerable<AttachmentModel>> GetAllByEnrollmentIDAsync(int id)
         {
-            const string GET_ALL_BY_ENROLLMENTID = @"SELECT A.AttachmentID, A.EnrollmentID, A.PrerequisiteID, A.FileName FROM Attachment A WHERE A.EnrollmentID = @EnrollmentID";
+            const string GET_ALL_BY_ENROLLMENTID = @"
+                SELECT 
+                    A.AttachmentID, 
+                    A.EnrollmentID, 
+                    A.PrerequisiteID, 
+                    A.FileName,
+                    P.PrerequisiteName -- Add the PrerequisiteName field
+                FROM Attachment A
+                JOIN Prerequisite P ON A.PrerequisiteID = P.PrerequisiteID
+                WHERE A.EnrollmentID = @EnrollmentID";
             List<AttachmentModel> attachments = new List<AttachmentModel>();
 
             var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
@@ -54,6 +63,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                         EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
                         PrerequisiteID = reader.GetByte(reader.GetOrdinal("PrerequisiteID")),
                         FileName = reader.GetString(reader.GetOrdinal("FileName")),
+                        PrerequisiteName = reader.GetString(reader.GetOrdinal("PrerequisiteName"))
                     };
                     attachments.Add(attachment);
                 }

@@ -5,6 +5,25 @@
 }
 
 <style>
+    .attachment-info-container {
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    .prerequisite-name {
+        font-weight: bold;
+    }
+
+    .file-name {
+        color: #555;
+    }
+
+    .view-attachment-btn,
+    .download-attachment-btn {
+        margin-top: 5px;
+
+    }
 </style>
 <script type="text/javascript" src="
 https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -316,37 +335,83 @@ https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
         //    });
         //});
 
+        //function showAttachments(enrollmentId) {
+
+        //    console.log(enrollmentId)
+
+        //    $.ajax({
+        //        url: '/Attachment/GetAllAttachmentByEnrollmentID',
+        //        type: 'GET',
+        //        data: { enrollmentID: parseInt(enrollmentId) },
+        //        dataType: "json",
+        //        success: function (result) {
+
+        //            console.log('in success ' + enrollmentId)
+
+
+        //            var attachments = result.result
+        //            var modalBody = $('#attachmentModalBody');
+        //            modalBody.empty();
+
+        //            for (let i = 0; i < attachments.length; i++) {
+
+        //                var attachmentInfo = attachments[i];
+        //                console.log('in show attach id ' + attachmentInfo.AttachmentID)
+
+        //                var downloadButton = $('<button class="btn btn-success download-attachment-btn" data-attachment-id="' + attachmentInfo.AttachmentID + '">Download</button>');
+
+        //                modalBody.append('<p>' + attachmentInfo.FileName + '</p>');
+        //                modalBody.append(downloadButton);
+
+        //                downloadButton.click(function () {
+        //                    var attachmentId = $(this).data("attachment-id");
+
+        //                    window.location.href = '/Attachment/DownloadAttachmentByAttachmentID/' + attachmentId;
+        //                });
+        //            }
+
+        //            $('#attachmentModal').modal('show');
+        //        },
+        //        error: function (e) {
+
+        //            debugger;
+        //            alert('Error fetching attachments.');
+        //        }
+        //    });
+        //}
+
+
         function showAttachments(enrollmentId) {
-
-            console.log(enrollmentId)
-
             $.ajax({
                 url: '/Attachment/GetAllAttachmentByEnrollmentID',
                 type: 'GET',
                 data: { enrollmentID: parseInt(enrollmentId) },
                 dataType: "json",
                 success: function (result) {
-
-                    console.log('in success ' + enrollmentId)
-
-
-                    var attachments = result.result
+                    var attachments = result.result;
                     var modalBody = $('#attachmentModalBody');
                     modalBody.empty();
 
                     for (let i = 0; i < attachments.length; i++) {
-
                         var attachmentInfo = attachments[i];
-                        console.log('in show attach id ' + attachmentInfo.AttachmentID)
+                        var viewButton = $('<button class="btn btn-info view-attachment-btn" data-attachment-id="' + attachmentInfo.AttachmentID + '">View</button>');
+                        var downloadButton = $('<button class="btn btn-success download-attachment-btn ml-2" data-attachment-id="' + attachmentInfo.AttachmentID + '">Download</button>');
 
-                        var downloadButton = $('<button class="btn btn-success download-attachment-btn" data-attachment-id="' + attachmentInfo.AttachmentID + '">Download</button>');
+                        var attachmentInfoContainer = $('<div class="attachment-info-container"></div>');
+                        attachmentInfoContainer.append('<p class="prerequisite-name">Prerequisite Name: ' + attachmentInfo.PrerequisiteName + '</p>');
+                        attachmentInfoContainer.append('<p class="file-name">File Name: ' + attachmentInfo.FileName + '</p>');
+                        attachmentInfoContainer.append(viewButton);
+                        attachmentInfoContainer.append(downloadButton);
 
-                        modalBody.append('<p>' + attachmentInfo.FileName + '</p>');
-                        modalBody.append(downloadButton);
+                        modalBody.append(attachmentInfoContainer);
+
+                        viewButton.click(function () {
+                            var attachmentId = $(this).data("attachment-id");
+                            window.open('/Attachment/ViewAttachmentByAttachmentID/' + attachmentId, '_blank');
+                        });
 
                         downloadButton.click(function () {
                             var attachmentId = $(this).data("attachment-id");
-
                             window.location.href = '/Attachment/DownloadAttachmentByAttachmentID/' + attachmentId;
                         });
                     }
@@ -354,14 +419,10 @@ https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
                     $('#attachmentModal').modal('show');
                 },
                 error: function (e) {
-
-                    debugger;
                     alert('Error fetching attachments.');
                 }
             });
         }
-
-
 
     </script>
 }
