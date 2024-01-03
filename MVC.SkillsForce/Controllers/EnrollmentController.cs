@@ -6,6 +6,7 @@ using Common.SkillsForce.ViewModel;
 using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -90,8 +91,11 @@ namespace MVC.SkillsForce.Controllers
         [HttpPost]
         public async Task<JsonResult> GetTrainingsAlreadyEnrolledByUser(int id)
         {
+            //IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingsEnrolledByUserAsync(id);
+            //return Json(trainings, JsonRequestBehavior.AllowGet);
+
             IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingsEnrolledByUserAsync(id);
-            return Json(trainings, JsonRequestBehavior.AllowGet);
+            return Json(trainings ?? Enumerable.Empty<TrainingModel>(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
