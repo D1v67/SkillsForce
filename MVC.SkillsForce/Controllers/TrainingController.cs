@@ -25,6 +25,11 @@ namespace MVC.SkillsForce.Controllers
             IEnumerable<TrainingModel> trainings = await _trainingService.GetAllAsync();
             return View(trainings);
         }
+        public async Task<JsonResult> GetAll()
+        {
+            IEnumerable<TrainingModel> trainings = await _trainingService.GetAllAsync();
+            return Json(trainings, JsonRequestBehavior.AllowGet);
+        }
 
         public async Task<ActionResult> GetAllTrainingWithPrerequisites()
         {

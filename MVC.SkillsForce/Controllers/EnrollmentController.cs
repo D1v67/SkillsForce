@@ -63,6 +63,23 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
+        public async Task<ActionResult> GetEnrollmentsData()
+        {
+            if (Session == null || Session["UserID"] == null || Session["CurrentRole"] == null)
+            {
+                return RedirectToAction("/Index");
+            }
+            var userId = Convert.ToInt32(Session["UserID"]);
+            var currentRole = Session["CurrentRole"].ToString();
+
+            IEnumerable<EnrollmentViewModel> enrollments = currentRole == "Manager"
+                ? await _enrollmentService.GetAllEnrollmentsWithDetailsByManagerAsync(userId)
+                : await _enrollmentService.GetAllEnrollmentsWithDetailsAsync();
+
+            return Json(enrollments, JsonRequestBehavior.AllowGet);
+        }
+
+
         public async Task<ActionResult> GetEnrollmentsForManager(int managerId)
         {
             IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllEnrollmentsWithDetailsByManagerAsync(managerId);

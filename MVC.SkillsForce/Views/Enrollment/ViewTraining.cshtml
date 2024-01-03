@@ -132,36 +132,35 @@
                 Trainings you have not enrolled in...
 
             </div>
+
+
             <div id="trainingCardContainer" class="card-deck mt-5"></div>
 
 
 
-            <table id="trainingDataTable" class="table mt-3">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Training Name</th>
-                        <th>Description</th>
-                        <th>Registration Deadline</th>
-                        <th>Capacity</th>
-                        <th>Department ID</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div id="myDataTable">
+                <table id="trainingDataTable" class="table mt-3">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Training Name</th>
+                            <th>Description</th>
+                            <th>Registration Deadline</th>
+                            <th>Capacity</th>
+                            <th>Department ID</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+            </div>
 
 
-
-
-            <!--<table id="trainingTable" class="table mt-3">
-        <thead>-->
-            <!-- ... your existing table head ... -->
-            <!--</thead>
-        <tbody></tbody>
-    </table>-->
 
         </div>
+
+
 
         <!-- My Trainings Tab -->
         <div class="tab-pane fade" id="myTrainingsTab">
@@ -216,48 +215,55 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
      var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
-        $('#trainingDataTable').DataTable({
-        ajax: {
-            url: '/Enrollment/ViewTrainingData',
-            type: 'POST',
-            data: { id: userId },
-            dataSrc: function (data) {
-                console.log('Data retrieved successfully:', data);
-                return data;
-            },
-            error: function (xhr, error, thrown) {
-                console.error('Error fetching data:', error);
-            }
-        },
-        columns: [
-            { data: 'TrainingID' },
-            { data: 'TrainingName' },
-            { data: 'TrainingDescription' },
-            { data: 'RegistrationDeadline' },
-            { data: 'Capacity' },
-            { data: 'DepartmentID' },
-            {
-                data: 'TrainingID',
-                render: function (data, type, row) {
-                    var currentDate = new Date().toJSON().slice(0, 10);
-                    var registrationDeadlineDate = new Date(parseInt(row.RegistrationDeadline.substr(6)));
-                    var isEnrollmentOpen = registrationDeadlineDate >= new Date();
+        function updateTableGrid() {
+            var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
-                    return isEnrollmentOpen
-                        ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${data}" onclick="enroll(${data})">Enroll</button>`
-                        : '<span style="color: red;">Enrollment Closed</span>';
+            // Initialize DataTable and store the reference in the global variable
+            trainingDataTable = $('#trainingDataTable').DataTable({
+                ajax: {
+                    url: '/Enrollment/ViewTrainingData',
+                    type: 'POST',
+                    data: { id: userId },
+                    dataSrc: function (data) {
+                        console.log('Data retrieved successfully:', data);
+                        return data;
+                    },
+                    error: function (xhr, error, thrown) {
+                        console.error('Error fetching data:', error);
+                    }
                 },
-            },
-        ],
-        // Add any additional options you need
-        });
+                columns: [
+                    { data: 'TrainingID' },
+                    { data: 'TrainingName' },
+                    { data: 'TrainingDescription' },
+                    { data: 'RegistrationDeadline' },
+                    { data: 'Capacity' },
+                    { data: 'DepartmentID' },
+                    {
+                        data: 'TrainingID',
+                        render: function (data, type, row) {
+                            var currentDate = new Date().toJSON().slice(0, 10);
+                            var registrationDeadlineDate = new Date(parseInt(row.RegistrationDeadline.substr(6)));
+                            var isEnrollmentOpen = registrationDeadlineDate >= new Date();
 
+                            return isEnrollmentOpen
+                                ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${data}" onclick="enroll(${data})">Enroll</button>`
+                                : '<span style="color: red;">Enrollment Closed</span>';
+                        },
+                    },
+                ],
+                // Add any additional options you need
+            });
+        }
 
 
 
         const searchInput = $("#searchInput");
 
         loadData(true, searchInput.val());
+
+
+
 
         $('a[data-bs-toggle="tab"][href="#myTrainingsTab"]').on('shown.bs.tab', function (e) {
             GetAllEnrolledTrainings();
@@ -279,12 +285,12 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
             if (newValue === "grid") {
                 $("#trainingCardContainer").show();
-                $("#trainingDataTable").hide();
+                $("#myDataTable").hide();
                 loadData(true, searchInput.val());
                 //GetAllEnrolledTrainings(true, $(this).val());
             } else {
                 $("#trainingCardContainer").hide();
-                $("#trainingDataTable").show();
+                $("#myDataTable").show();
                 loadData(false, searchInput.val());
 
                 //GetAllEnrolledTrainings(false, $(this).val());
@@ -438,44 +444,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
                 col.appendChild(card);
                 cardContainer.appendChild(col);
-            });
-        }
-
-        //  update the table with data
-        function updateTableGrid(data) {
-            var tableBody = document.querySelector('#trainingTable tbody');
-            var tableHead = document.querySelector('#trainingTable thead');
-            tableBody.innerHTML = '';
-            tableHead.innerHTML = '';
-
-
-            var headerRow = document.createElement('tr');
-            var headers = ['ID', 'Training Name', 'Description', 'Registration Deadline', 'Capacity', 'Department ID', 'Action'];
-            headers.forEach(function (header) {
-                var th = document.createElement('th');
-                th.textContent = header;
-                headerRow.appendChild(th);
-            });
-            tableHead.appendChild(headerRow);
-
-
-            data.forEach(function (item) {
-                var currentDate = new Date().toJSON().slice(0, 10);
-                var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
-                var isEnrollmentOpen = registrationDeadlineDate >= new Date();
-
-                var row = document.createElement('tr');
-                row.innerHTML = `
-            <td>${item.TrainingID}</td>
-            <td>${item.TrainingName}</td>
-            <td>${item.TrainingDescription}</td>
-            <td>${formatDate(registrationDeadlineDate)}</td>
-            <td>${item.Capacity}</td>
-            <td>${item.DepartmentID}</td>
-            <td>${isEnrollmentOpen ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${item.TrainingID}" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
-        `;
-
-                tableBody.appendChild(row);
             });
         }
 
