@@ -9,15 +9,29 @@ namespace BusinessLayer.SkillsForce.Services
 {
     public class NotificationService : INotificationService
     {
+        #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<string> SendNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
+        #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             try
             {
                 string result = enrollment.EnrollmentStatus;
-                string htmlBody =  GenerateHtmlBody(enrollment, notificationType);
-                string subject = $"Training Request - {result}";
-                string success = await EmailSender.SendEmailAsync(subject, htmlBody, enrollment.AppUserEmail);
-                return success;
+                string htmlBody = GenerateHtmlBody(enrollment, notificationType);
+
+                // Modify the subject based on NotificationType
+                string subject = (notificationType == NotificationType.Confirmation)
+                    ? $"Training Confirmed - {enrollment.TrainingName}"
+                    : $"Training Request - {result} - {enrollment.TrainingName}";
+
+
+                #pragma warning disable CS4014
+                Task.Run(() =>
+                {
+                    EmailSender.SendEmailAsync(subject, htmlBody, enrollment.AppUserEmail);
+                }).ConfigureAwait(false);
+                #pragma warning restore CS4014
+
+                return "";
             }
             catch (Exception ex)
             {
@@ -27,12 +41,12 @@ namespace BusinessLayer.SkillsForce.Services
 
         private string GenerateHtmlBody(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
-                    string actionVerb = GetActionVerb(notificationType);
-                    string htmlBody;
+            string actionVerb = GetActionVerb(notificationType);
+            string htmlBody;
 
-                    if (notificationType == NotificationType.Confirmation)
-                    {
-                        htmlBody = $@"
+            if (notificationType == NotificationType.Confirmation)
+            {
+                htmlBody = $@"
                 <html>
                 <head>
                     <title>HTML Email</title>
@@ -44,10 +58,10 @@ namespace BusinessLayer.SkillsForce.Services
                     <p>Please check your email for further details.</p>
                 </body>
                 </html>";
-                    }
-                    else
-                    {
-                        htmlBody = $@"
+            }
+            else
+            {
+                htmlBody = $@"
                 <html>
                 <head>
                     <title>HTML Email</title>
@@ -57,19 +71,19 @@ namespace BusinessLayer.SkillsForce.Services
                     <p>Your training <strong>{enrollment.TrainingName}</strong> has been {actionVerb} by your
                         manager <strong>{enrollment.ManagerFirstName}</strong>.</p>";
 
-                        if (notificationType == NotificationType.Rejection && !string.IsNullOrEmpty(enrollment.DeclineReason))
-                        {
-                            htmlBody += $"<p>Decline Reason: <strong>{enrollment.DeclineReason}</strong></p>";
-                        }
+                if (notificationType == NotificationType.Rejection && !string.IsNullOrEmpty(enrollment.DeclineReason))
+                {
+                    htmlBody += $"<p>Decline Reason: <strong>{enrollment.DeclineReason}</strong></p>";
+                }
 
-                        htmlBody += @"
+                htmlBody += @"
                     <br/>
                     <p>Please liaise with your manager for further information.</p>
                 </body>
                 </html>";
-                    }
+            }
 
-                    return htmlBody;
+            return htmlBody;
         }
 
 

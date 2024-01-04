@@ -10,6 +10,20 @@
 
     </head>*@
 
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="text/javascript" src="
+    https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+@*
+    https://codeseven.github.io/toastr/*@
+<script type="text/javascript" src="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link rel="stylesheet" href="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
 <style>
     .card-container {
         padding: 20px;
@@ -54,8 +68,48 @@
     h1 {
         margin: 0;
     }
+
+    .error-border {
+        border: 1px solid #dc3545 !important; /* Red border color */
+        border-radius: 0.2rem !important; /* Adjust border-radius as needed */
+        transition: border-color 0.2s ease-in-out; /* Optional: Add a smooth transition effect */
+        animation: glow 1s infinite alternate; /* Add a glowing animation */
+    }
+
+    @@keyframes glow {
+        from {
+            box-shadow: 0 0 5px #dc3545; /* Initial shadow color */
+        }
+
+        to {
+            box-shadow: 0 0 10px #dc3545; /* Glowing shadow color */
+        }
+    }
+
+    .spinner-wrapper {
+        background-color: rgba(0, 0, 0, 0.4);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999999999999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .spinner-border {
+        height: 60px;
+        width: 60px;
+    }
 </style>
 
+<div class="spinner-wrapper" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+
+</div>
 
 <div class="table-responsive container-fluid mt-5 mb-5">
 
@@ -89,7 +143,7 @@
                                 <p>Your User ID: <span id="userIdInfo"></span></p>
                                 <p id="trainingInfo"></p>
 
-                                <label>You must meet all the following prerequisites:</label>
+                                @*<label>You must meet all the following prerequisites:</label>*@
                                 <div id="coursesCheckboxList"></div>
 
                                 <input type="hidden" id="currentEnrollmentId" value="" />
@@ -506,33 +560,52 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 
 
-    function populateCoursesCheckboxList(prerequisites, trainingId ) {
+    function populateCoursesCheckboxList(prerequisites, trainingId) {
         var container = $("#coursesCheckboxList");
         container.empty();
+
+        // Add label for prerequisites
+        var prerequisitesLabel = $('<label class="mb-3 text-danger">You must meet all the following prerequisites:</label>');
+
+        container.append(prerequisitesLabel);
 
         for (var i = 0; i < prerequisites.length; i++) {
             var prerequisite = prerequisites[i];
 
-            var row = $('<div class="row mb-2">' +
-                '<div class="col-2"><span class="badge bg-primary">' + prerequisite.PrerequisiteID + '</span></div>' +
-                '<div class="col-6">' + prerequisite.PrerequisiteName + '</div>' +
-                '<div class="col-4">' +
-                '<div class="input-group">' +
-                '<input type="file" class="form-control  fileUploader" id="fileInput' + prerequisite.PrerequisiteID + '" data-prerequisite-id="' + prerequisite.PrerequisiteID + '" required >' +
-                '<button type="button" class="btn btn-primary upload-button" onclick="uploadFiles()">Upload</button>' +
-                '</div>' +
-                '</div>' +
-                '</div>');
+            var row = $(
+                '<div class="row mb-3 border p-3 rounded">' +
+                '   <div class="col-6 col-md-12">' +
+                '       <div class="mb-2">' +
+                '           <label class="prerequisite-label fw-bold">' + prerequisite.PrerequisiteName + '</label>' +
+                '       </div>' +
+                '   </div>' +
+                '   <div class="col-6 col-md-12">' +
+                '       <div class="input-group">' +
+                '           <input type="file" class="form-control fileUploader" id="fileInput' + prerequisite.PrerequisiteID + '" data-prerequisite-id="' + prerequisite.PrerequisiteID + '" required>' +
+                '       </div>' +
+                '   </div>' +
+                '</div>'
+            );
 
             container.append(row);
         }
 
         // Set unique ID for the save button using the training ID
-        var saveButton = $('<button type="button" class="btn btn-primary save-button" id="saveBtn_' + trainingId + '">Save</button>');
+        var saveButton = $(
+            '<div class="row mb-3">' +
+            '   <div class="col-12 text-center">' +
+            '       <button type="button" class="btn btn-primary save-button" id="saveBtn_' + trainingId + '">Save</button>' +
+            '   </div>' +
+            '</div>'
+        );
         saveButton.on('click', function () {
             saveEnrollment(trainingId);
         });
         container.append(saveButton);
+
+        // Optionally, apply styling to the modal
+        $('#enrollModal').find('.modal-content').addClass('rounded');
+        $('#enrollModal').find('.modal-body').addClass('p-4');
     }
 
 
@@ -580,55 +653,64 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                 }
 
 
-    function saveEnrollment() {
+function saveEnrollment() {
+    var trainingId = parseInt($("#enrollModal").data("trainingId"));
+    var userId = parseInt("@HttpContext.Current.Session["UserID"]");
+    var uniqueSaveBtnId = "saveBtn_" + trainingId;
+    var saveButton = $("#" + uniqueSaveBtnId);
 
-        var trainingId = parseInt($("#enrollModal").data("trainingId"));
+    // Check if any file input is empty
+    var filesUploaded = true;
 
-        console.log("Insave "+trainingId);
+    // Loop through file input elements
+    // Loop through file input elements
+    $('.fileUploader').each(function () {
+        var fileInput = $(this);
+        if (!fileInput.val()) {
+            filesUploaded = false;
+            fileInput.addClass('error-border'); // Add error border styling to the empty field
+        } else {
+            fileInput.removeClass('error-border'); // Remove error border styling if the field is not empty
+        }
+    });
 
-        var userId = parseInt("@HttpContext.Current.Session["UserID"]");
-        console.log(userId)
-
-
-        var uniqueSaveBtnId = "saveBtn_" + trainingId;
-        var saveButton = $("#" + uniqueSaveBtnId);
-
-
-        $.ajax({
-            url: '/Enrollment/SaveEnrollment',
-            type: 'POST',
-            data: {
-                UserID: parseInt(userId),
-                TrainingID: trainingId,
-
-            },
-            success: function (result) {
-                var generatedEnrollmentId = result.EnrollmentID;
-               // debugger;
-                uploadFiles(parseInt(generatedEnrollmentId));
-
-                alert("Enrollment successful!");
-                //saveButton.prop('disabled', true);
-                saveButton.prop('disabled', true);
-
-                ////
-                //$("#enrollModal").modal("hide");
-                // Disable the specific "Enroll" button
-                $(".enroll-btn").prop("disabled", false); // Enable all buttons before disabling the specific one
-                $(`.enroll-btn[data-training-id="${trainingId}"]`).prop("disabled", true); // Disable the clicked button
-
-                $("#enrollModal").modal("hide");
-
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000)
-
-            },
-            error: function () {
-                alert("Enrollment failed!");
-            }
-        });
+    if (!filesUploaded) {
+        toastr.error("Please upload files for all prerequisites.");
+        return;
     }
+
+    $(".spinner-wrapper").show();
+    $.ajax({
+        url: '/Enrollment/SaveEnrollment',
+        type: 'POST',
+        data: {
+            UserID: parseInt(userId),
+            TrainingID: trainingId,
+        },
+        success: function (result) {
+            var generatedEnrollmentId = result.EnrollmentID;
+            uploadFiles(parseInt(generatedEnrollmentId));
+            toastr.success("Enrollment Successfully.");
+            saveButton.prop('disabled', true);
+
+            // Disable the specific "Enroll" button
+            $(".enroll-btn").prop("disabled", false); // Enable all buttons before disabling the specific one
+            $(`.enroll-btn[data-training-id="${trainingId}"]`).prop("disabled", true); // Disable the clicked button
+
+            $("#enrollModal").modal("hide");
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+
+           // $(".spinner-wrapper").hide();
+        },
+        error: function () {
+            alert("Enrollment failed!");
+            $(".spinner-wrapper").hide();
+        }
+    });
+}
 
 </script>
 

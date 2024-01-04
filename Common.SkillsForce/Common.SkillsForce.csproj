@@ -47,6 +47,7 @@
     <Compile Include="CustomException.cs" />
     <Compile Include="EmailSender\EmailSender.cs" />
     <Compile Include="Entity\AccountModel.cs" />
+    <Compile Include="Entity\AppNotificationModel.cs" />
     <Compile Include="Entity\AttachmentModel.cs" />
     <Compile Include="Entity\DepartmentModel.cs" />
     <Compile Include="Entity\EnrollmentModel.cs" />

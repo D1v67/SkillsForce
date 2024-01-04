@@ -15,28 +15,30 @@
 
     @if (Model.Any())
     {
+
         <p>
-            @Html.ActionLink("Automatic Selection", "RunAutomaticSelectionOfApprovedEnrollments", "Enrollment", null, new { @class = "btn btn-primary" })
+            <button id="automaticSelectionBtn" class="btn btn-primary" disabled>Automatic Selection</button>
         </p>
+
+
         <div class="table-bordered table-hover table-responsive">
             @foreach (var group in Model.GroupBy(m => m.TrainingName))
             {
                 <h3>@group.Key  <span id="@group.First().TrainingID" class="capacity"></span> </h3> <!-- Display the TrainingName as a heading for the group -->
 
                 <script>
-        var trainingId = @group.First().TrainingID;
+                    var trainingId = @group.First().TrainingID;
 
-        console.log(trainingId)
-                    // Make AJAX call to retrieve capacity
                     $(document).ready(function () {
+                        // Display the spinner while prerequisites are loading
+                        $('#@group.First().TrainingID')
                         $.ajax({
                             url: '/Training/GetRemainingCapacityById?id=' + '@group.First().TrainingID',
                             type: 'GET',
                             success: function (data) {
                                 if (data.success) {
-                                   // toastr.success(data.capacity);
-                                    $('#@group.First().TrainingID').text(' - Remainng Capacity: ' + data.capacity);
-                                   console.log('trainingHeader_@group.Key')
+                                    $('#@group.First().TrainingID').html(' - Remaining Capacity: ' + data.capacity);
+                                    checkAllPrerequisitesFetched();
                                 } else {
                                     toastr.error(data.message);
                                 }
@@ -46,6 +48,22 @@
                             }
                         });
                     });
+
+                    function checkAllPrerequisitesFetched() {
+                        // Check if all prerequisites are fetched
+                        var allPrerequisitesFetched = true;
+                        $('.capacity').each(function () {
+                            if ($(this).text().trim() === '') {
+                                allPrerequisitesFetched = false;
+                                return false;
+                            }
+                        });
+
+                        // Enable the button if all prerequisites are fetched
+                        if (allPrerequisitesFetched) {
+                            $('#automaticSelectionBtn').prop('disabled', false);
+                        }
+                    }
                 </script>
 
                 <table class="table table-striped mx-auto ">
@@ -150,9 +168,32 @@
         </div>
     }
 
+</div>
     <script>
         function confirmSelection(EnrollmentID) {
             // Add your logic here to handle the confirmation for the selected training
             alert('Confirming selection for ' + EnrollmentID);
+
         }
+
+
+        $(document).ready(function () {
+            $('#automaticSelectionBtn').click(function () {
+                $.ajax({
+                    url: '/Enrollment/RunAutomaticSelectionOfApprovedEnrollments',
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.success) {
+                            toastr.success('Automatic processing successful');
+                            window.location = data.url;
+                        } else {
+                            toastr.error('Automatic processing failed');
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Error in the automatic processing');
+                    }
+                });
+            });
+        });
     </script>

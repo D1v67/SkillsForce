@@ -38,12 +38,24 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
+        //public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments()
+        //{
+        //    bool isCronJob = false;
+        //    await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(isCronJob);
+
+        //    return RedirectToAction("/GetAllApprovedEnrollments");
+        //}
+
+        [HttpPost]
         public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments()
         {
             bool isCronJob = false;
             await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(isCronJob);
 
-            return RedirectToAction("/GetAllApprovedEnrollments");
+            // Assuming your enrollment service sets a success flag
+            var success = true;
+
+            return Json(new { success, url = Url.Action("GetAllApprovedEnrollments", "Enrollment") });
         }
 
         [AuthorizePermission("GetAllEnrollment")]
@@ -76,7 +88,7 @@ namespace MVC.SkillsForce.Controllers
                 ? await _enrollmentService.GetAllEnrollmentsWithDetailsByManagerAsync(userId)
                 : await _enrollmentService.GetAllEnrollmentsWithDetailsAsync();
 
-            return Json(enrollments, JsonRequestBehavior.AllowGet);
+            return Json(enrollments ?? Enumerable.Empty<EnrollmentViewModel>(), JsonRequestBehavior.AllowGet);
         }
 
 

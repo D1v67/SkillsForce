@@ -1,8 +1,10 @@
 ﻿
+using System.Threading.Tasks;
+
 namespace BusinessLayer.SkillsForce.Interface
 {
     public interface IUserAuthorizationService
     {
-        bool IsUserHavePermission(int userID, string permission);
+        Task<bool> IsUserHavePermissionAsync(int userID, string permission);
     }
 }

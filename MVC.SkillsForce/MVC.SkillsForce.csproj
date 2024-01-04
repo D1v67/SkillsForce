@@ -295,6 +295,7 @@
     <Compile Include="App_Start\ContainerJobActivator.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AppNotificationController.cs" />
     <Compile Include="Custom\GlobalExceptionHandler.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
@@ -418,6 +419,7 @@
     <Content Include="Views\Training\CreateTraining.cshtml" />
     <Content Include="Views\Training\Index.cshtml" />
     <Content Include="Views\Training\Edit.cshtml" />
+    <Content Include="Views\AppNotification\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,86 @@
+﻿
+<style>
+    .notification {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .unread-notification {
+        background-color: #e6f7ff; /* Light blue for unread notifications */
+    }
+
+    .read-notification {
+        background-color: #f2f2f2; /* Light gray for read notifications */
+    }
+
+    .notification:hover {
+        background-color: #d9edf7; /* Hover effect color */
+    }
+</style>
+
+<div class="container mt-5">
+    <h2>Notifications</h2>
+
+    <div id="notificationList">
+        <!-- Notifications will be dynamically added here -->
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var userId = parseInt("@HttpContext.Current.Session["UserID"]");
+
+
+        var userId = parseInt("@HttpContext.Current.Session["UserID"]");
+
+        $.ajax({
+            url: '/AppNotification/GetByUserId/' + userId,
+            method: 'GET',
+            success: function (notifications) {
+                notifications.forEach(function (notification) {
+                    var notificationDiv = $('<div>').attr('id', 'notification_' + notification.AppNotificationID)
+                        .addClass('notification mb-3 p-3');
+
+                    var title = $('<h5>').text(notification.NotificationMessage);
+                    var time = $('<p>').text('Received at: ' + notification.CreateTimestamp);
+
+                    notificationDiv.append(title, time);
+
+                    if (notification.HasRead === false) {
+                        notificationDiv.addClass('unread-notification');
+                        notificationDiv.click(function () {
+                            $.ajax({
+                                url: '/AppNotification/MarkNotificationAsRead',
+                                method: 'POST',
+                                data: { notificationId: notification.AppNotificationID, userId: userId },
+                                success: async function (response) {
+                                    // Notification marked as read
+                                    notificationDiv.removeClass('unread-notification');
+                                    // Update session variable for unread notification count
+                                    //await updateUnreadNotificationCount();
+
+                                    window.location.href = response.redirectUrl;
+                                },
+                                error: function (error) {
+                                    console.error('Error marking notification as read:', error);
+                                }
+                            });
+                        });
+                    } else {
+                        notificationDiv.addClass('read-notification');
+                    }
+
+                    $('#notificationList').append(notificationDiv);
+                });
+            },
+            error: function (error) {
+                console.error('Error fetching notifications:', error);
+            }
+        });
+
+
+    });
+</script>

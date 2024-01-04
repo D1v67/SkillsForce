@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http.Controllers;
 using System.Web.Mvc;
@@ -50,8 +51,7 @@ namespace MVC.SkillsForce.Custom
 
         private bool IsUserHavePermission(int userID, string permission)
         {
-           
-            return _authorizationService.IsUserHavePermission(userID, permission);
+            return Task.Run(async () => await _authorizationService.IsUserHavePermissionAsync(userID, permission)).Result;
         }
 
         //private void RedirectToErrorAction(ActionExecutingContext filterContext)

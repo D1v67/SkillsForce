@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
@@ -13,7 +14,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand = dbCommand;
         }
 
-        public bool IsUserHavePermission(int userID, string permission)
+        public async Task<bool> IsUserHavePermissionAsync(int userID, string permission)
         {
             const string IS_USER_HAVE_PERMISSION_QUERY = @"SELECT 1
                                                     FROM [User] U
@@ -31,7 +32,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                     new SqlParameter("@PermissionName", permission)
                 };
 
-                using (SqlDataReader reader = _dbCommand.GetDataWithConditionsReader(IS_USER_HAVE_PERMISSION_QUERY, parameters))
+                using (SqlDataReader reader =await _dbCommand.GetDataWithConditionsReaderAsync(IS_USER_HAVE_PERMISSION_QUERY, parameters))
                 {
                     return reader.HasRows;
                 }

@@ -49,6 +49,9 @@ namespace MVC.SkillsForce
             Container.RegisterType<IAttachmentService, AttachmentService>();
             Container.RegisterType<IAttachmentDAL, AttachmentDAL>();
 
+            Container.RegisterType<IAppNotificationService, AppNotificationService>();
+            Container.RegisterType<IAppNotificationDAL, AppNotificationDAL>();
+
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(Container));
         }

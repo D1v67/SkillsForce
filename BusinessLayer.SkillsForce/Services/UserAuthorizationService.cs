@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using DataAccessLayer.SkillsForce.DAL;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.SkillsForce.Services
 {
@@ -11,9 +12,9 @@ namespace BusinessLayer.SkillsForce.Services
         {
             _useAuthorizationDAL = useAuthorizationDAL;
         }
-        public bool IsUserHavePermission(int userID, string permission)
+        public async Task<bool> IsUserHavePermissionAsync(int userID, string permission)
         {
-            return _useAuthorizationDAL.IsUserHavePermission(userID, permission);
+            return await _useAuthorizationDAL.IsUserHavePermissionAsync(userID, permission);
         }
     }
 }

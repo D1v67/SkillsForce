@@ -83,7 +83,9 @@ namespace BusinessLayer.SkillsForce.Services
                     foreach (var enrollmentId in enrollmentIds)
                     {
                         EnrollmentNotificationViewModel enrollment = await GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
-                        await _notificationService.SendNotificationAsync(enrollment, NotificationType.Confirmation);
+#pragma warning disable CS4014 
+                        _notificationService.SendNotificationAsync(enrollment, NotificationType.Confirmation);
+#pragma warning restore CS4014 
                     }
                 }
             }

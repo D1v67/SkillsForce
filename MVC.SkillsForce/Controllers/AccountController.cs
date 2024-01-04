@@ -13,12 +13,14 @@ namespace MVC.SkillsForce.Controllers
         private readonly IUserService _userService;
         private readonly IAccountService _accountService;
         private readonly IDepartmentService _departmentService;
+        private readonly IAppNotificationService _appNotificationService;
 
-        public AccountController(IUserService userService, IAccountService accountService, IDepartmentService departmentService)
+        public AccountController(IUserService userService, IAccountService accountService, IDepartmentService departmentService, IAppNotificationService appNotificationService)
         {
             _userService = userService;
             _accountService = accountService;
             _departmentService = departmentService;    
+            _appNotificationService = appNotificationService;
         }
 
         public ActionResult Index()
@@ -91,12 +93,17 @@ namespace MVC.SkillsForce.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        private void SetSessionVariables(AccountModel userDetailsWithRoles)
+        private async  void SetSessionVariables(AccountModel userDetailsWithRoles)
         {
             Session["UserID"] = userDetailsWithRoles.UserID;
             Session["Email"] = userDetailsWithRoles.Email;
             Session["FirstName"] = userDetailsWithRoles.FirstName;
+            Session["LastName"] = userDetailsWithRoles.LastName;
             Session["CurrentRole"] = userDetailsWithRoles.listOfRoles.Count == 1 ? userDetailsWithRoles.listOfRoles[0].RoleName : null;
+
+            int userId = userDetailsWithRoles.UserID; 
+            int unreadNotificationCount = await _appNotificationService.GetUnreadNotificationCountAsync(userId);
+            Session["UnreadNotificationCount"] = unreadNotificationCount;
         }
 
         private void SetUserRolesInSession(List<UserRoleModel> userRoles)

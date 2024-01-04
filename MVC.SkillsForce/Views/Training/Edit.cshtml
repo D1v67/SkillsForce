@@ -79,7 +79,7 @@
 
                             <div class="mb-3">
                                 <label for="DepartmentID">Select Department:</label>
-                                <select class="form-control" id="DepartmentID" name="DepartmentID" required>
+                                <select class="form-control form-select" id="DepartmentID" name="DepartmentID" required>
                                     <option value="" selected disabled>Select Department</option>
                                     <!-- Options will be populated using AJAX -->
                                 </select>
@@ -90,7 +90,7 @@
 
                             <div class="mb-3">
                                 <label for="Prerequisites">Select Prerequisites:</label>
-                                <select class="form-control" id="Prerequisites" name="Prerequisites">
+                                <select class="form-control form-select" id="Prerequisites" name="Prerequisites">
                                     <option value="" selected disabled>Select Prerequisites</option>
                                     <!-- Options will be populated using AJAX -->
                                 </select>
@@ -138,8 +138,21 @@
 
                     <!-- Table to display selected prerequisites -->
                     <!-- Table to display selected prerequisites -->
-                    <div id="selectedPrerequisitesDiv" style="display: none;">
+                    <div id="selectedPrerequisitesDiv" style="display: none; text-align: center;">
                         <h4>Selected Prerequisites</h4>
+
+
+                        <!-- Delayed display of the spinner -->
+                        <!-- Centered and larger spinner-border -->
+                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+
+                        <!-- Centered and larger spinner-grow -->
+                        <div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+
                         <table class="table" id="selectedPrerequisitesTable">
                             <thead>
                                 <tr>
@@ -155,9 +168,15 @@
                     </div>
 
 
-
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary" id="btnRegister">Save</button>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <!-- Back button -->
+                            <a href="@Url.Action("Index", "Training")" class="btn btn-danger">Back</a>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <!-- Save button -->
+                            <button type="submit" class="btn btn-primary" id="btnRegister">Save</button>
+                        </div>
                     </div>
 
 
@@ -250,7 +269,7 @@
 
         // Fetch training details using AJAX
         $.ajax({
-            url: '/Training/GetTrainingDetails/' + '@Model.TrainingID', 
+            url: '/Training/GetTrainingDetails/' + '@Model.TrainingID',
             type: 'GET',
             success: function (trainingData) {
 
@@ -258,7 +277,7 @@
                 var startDate = convertDateFormat(trainingData.StartDate);
 
 
-    
+
                 $('#TrainingName').val(trainingData.TrainingName);
                 $('#TrainingDescription').val(trainingData.TrainingDescription);
                 $('#StartDate').val(startDate);
@@ -287,6 +306,10 @@
                     }
                 });
 
+                // Show the spinner before fetching prerequisites
+                $('#selectedPrerequisitesDiv .spinner-border, #selectedPrerequisitesDiv .spinner-grow').show();
+
+
                 // Fetch Prerequisites
                 $.ajax({
                     url: '/Prerequisite/GetListOfPrerequisites', // Replace with your actual endpoint for prerequisites
@@ -295,6 +318,8 @@
                         var prerequisitesDropdown = $('#Prerequisites');
                         prerequisitesDropdown.empty();
                         prerequisitesDropdown.append('<option value="" selected disabled>Select Prerequisite</option>');
+
+
                         $.each(prerequisitesData, function (index, item) {
                             prerequisitesDropdown.append($('<option>', {
                                 value: item.PrerequisiteID,
@@ -310,15 +335,25 @@
                                 selected: true
                             }));
 
-                         
+
                             var tableBody = $('#selectedPrerequisitesTable tbody');
                             tableBody.append('<tr><td>' + selectedPrerequisite.PrerequisiteID +
                                 '</td><td>' + selectedPrerequisite.PrerequisiteName +
                                 '</td><td><button class="btn btn-danger btn-sm deleteRow">Delete</button></td></tr>');
                         });
 
-                      
+                        // Hide the spinner after prerequisites are fetched
+                       // //
+                       //setTimeout(
+                       //     () => {
+                              
+
+                       //     },300
+                       // )
+                        $('#selectedPrerequisitesDiv .spinner-border, #selectedPrerequisitesDiv .spinner-grow').hide();
                         $('#selectedPrerequisitesDiv').show();
+
+                        
                     },
                     error: function (error) {
                         console.log(error);
@@ -402,7 +437,7 @@
                             $("#registrationSuccessDiv").show();
                         } else {
                             console.log(response.errorMessage);
-                   
+
                             handleValidationErrors(response.errorMessage);
                         }
                     },

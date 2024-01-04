@@ -25,7 +25,11 @@ namespace Common.SkillsForce.EmailSender
 
             try
             {
-                await smtpClent.SendMailAsync(mailMessage);
+
+                #pragma warning disable CS4014 
+                Task.Run(()=> { smtpClent.SendMailAsync(mailMessage); }).ConfigureAwait(false);
+                 #pragma warning restore CS4014 
+
                 return "Email Sent Successfully";
             }
             catch (Exception ex)
