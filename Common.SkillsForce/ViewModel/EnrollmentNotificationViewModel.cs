@@ -20,5 +20,7 @@ namespace Common.SkillsForce.ViewModel
         public string ManagerLastName { get; set; }
         public string DeclineReason { get; set;}
         public bool IsSelected { get; set; }
+        public int ApprovedByUserId { get; set; }
+        public int DeclinedByUserId { get; set; }
     }
 }

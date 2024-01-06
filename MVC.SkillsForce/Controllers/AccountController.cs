@@ -1,7 +1,9 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -31,16 +33,25 @@ namespace MVC.SkillsForce.Controllers
         [HttpPost]
         public async Task<JsonResult> Authenticate(AccountModel account)
         {
-            bool isUserValid = await _accountService.IsUserAuthenticatedAsync(account);
-            if (isUserValid)
+            try
             {
-                var userDetailsWithRoles = await _accountService.GetUserDetailsWithRolesAsync(account);
-                SetSessionVariables(userDetailsWithRoles);
-                SetUserRolesInSession(userDetailsWithRoles.listOfRoles);
-                var (redirectController, redirectAction) = GetRedirectInfo(userDetailsWithRoles.listOfRoles);
-                return Json(new { result = isUserValid, url = Url.Action(redirectAction, redirectController) });
+                bool isUserValid = await _accountService.IsUserAuthenticatedAsync(account);
+                if (isUserValid)
+                {
+                    var userDetailsWithRoles = await _accountService.GetUserDetailsWithRolesAsync(account);
+                    await SetSessionVariables(userDetailsWithRoles);
+                    SetUserRolesInSession(userDetailsWithRoles.listOfRoles);
+                    var (redirectController, redirectAction) = GetRedirectInfo(userDetailsWithRoles.listOfRoles);
+                    return Json(new { result = isUserValid, url = Url.Action(redirectAction, redirectController) });
+                }
+                
+            }catch (Exception ex)
+            {
+                Debug.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                Debug.WriteLine(ex);
             }
-            return Json(new { result = isUserValid, url = Url.Action("Login", "Account") });
+            return Json(new { result = false, url = Url.Action("Login", "Account") });
+
         }
 
         public ActionResult Register()
@@ -93,7 +104,7 @@ namespace MVC.SkillsForce.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        private async  void SetSessionVariables(AccountModel userDetailsWithRoles)
+        private async  Task SetSessionVariables(AccountModel userDetailsWithRoles)
         {
             Session["UserID"] = userDetailsWithRoles.UserID;
             Session["Email"] = userDetailsWithRoles.Email;
@@ -101,7 +112,7 @@ namespace MVC.SkillsForce.Controllers
             Session["LastName"] = userDetailsWithRoles.LastName;
             Session["CurrentRole"] = userDetailsWithRoles.listOfRoles.Count == 1 ? userDetailsWithRoles.listOfRoles[0].RoleName : null;
 
-            int userId = userDetailsWithRoles.UserID; 
+            int userId = userDetailsWithRoles.UserID;
             int unreadNotificationCount = await _appNotificationService.GetUnreadNotificationCountAsync(userId);
             Session["UnreadNotificationCount"] = unreadNotificationCount;
         }

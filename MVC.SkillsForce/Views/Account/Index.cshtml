@@ -109,7 +109,7 @@
                 var authObj = { Email: emailAddress, Password: password };
 
                 // Show spinner while waiting for the response
-                $(".spinner-wrapper").show();
+             //   $(".spinner-wrapper").show();
 
 
                 $.ajax({
@@ -118,26 +118,35 @@
                     data: authObj,
                     dataType: "json",
                     success: function (response) {
-                        if (response.result) {
-              
-                            setTimeout(function () {
-                                $(".spinner-wrapper").hide();
-                                toastr.success("Login Successful...Redirecting to Home page...");
-                                setTimeout(function () {
-                                    window.location.href = response.url;
-                                }, 500);
-                            }, 500);
+                        try {
+                            if (response.result) {
 
-                        } else {
-                            toastr.error('Invalid Email or Password');
-                            $(".spinner-wrapper").hide();
+                                setTimeout(function () {
+                                    //$(".spinner-wrapper").hide();
+                                    toastr.success("Login Successful...Redirecting to Home page...");
+                                    setTimeout(function () {
+                                        window.location.href = response.url;
+                                    }, 500);
+                                }, 500);
+
+                            } else {
+                                toastr.error('Invalid Email or Password');
+                               // $(".spinner-wrapper").hide();
+                            }
+                        } catch (error) {
+                            console.log(error)
+                            toastr.error('aaaaaaaaaaaaa');
                         }
+
                     },
-                    error: function (error) {
-                        console.log("Error:", error);
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log("Error:", xhr);
+                        console.log("Status:", textStatus);
+                        console.log("Error Thrown:", errorThrown);
+
                         toastr.error('Something went wrong. Please try again later.');
 
-                        $(".spinner-wrapper").hide();
+                       // $(".spinner-wrapper").hide();
                     },
                     //complete: function () {
                     //    // Hide spinner after a delay of 2 seconds

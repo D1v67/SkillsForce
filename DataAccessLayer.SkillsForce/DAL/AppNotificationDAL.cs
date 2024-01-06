@@ -36,7 +36,9 @@ namespace DataAccessLayer.SkillsForce.DAL
                 NotificationSubject = GetNotificationSubject(notificationType),
                 NotificationMessage = notificationMessage,
                 Status = GetNotificationStatus(notificationType),
-                HasRead = false
+                HasRead = false,
+                //SenderName = $"{enrollment.ManagerFirstName} {enrollment.ManagerLastName}",
+
             };
 
             return await AddAsync(appNotification);
@@ -92,7 +94,7 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<IEnumerable<AppNotificationModel>> GetByUserIdAsync(int userId)
         {
-            const string GET_NOTIFICATION_BY_ID_QUERY = @"SELECT * FROM [dbo].[AppNotification] WHERE UserID = @UserID";
+            const string GET_NOTIFICATION_BY_ID_QUERY = @"SELECT * FROM [dbo].[AppNotification] WHERE UserID = @UserID ORDER BY CreateTimeStamp DESC";
             List<SqlParameter> parameters = new List<SqlParameter>
             {
                 new SqlParameter("@UserID", userId),
@@ -113,6 +115,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                         NotificationMessage = reader.IsDBNull(reader.GetOrdinal("NotificationMessage")) ? string.Empty : reader.GetString(reader.GetOrdinal("NotificationMessage")),
                         Status = reader.IsDBNull(reader.GetOrdinal("Status")) ? string.Empty : reader.GetString(reader.GetOrdinal("Status")),
                         HasRead = reader.GetBoolean(reader.GetOrdinal("HasRead")),
+                        CreateTimeStamp = reader.GetDateTime(reader.GetOrdinal("CreateTimeStamp")),
                     };
                     notifications.Add(notification);
                 }
@@ -165,6 +168,8 @@ namespace DataAccessLayer.SkillsForce.DAL
                 case NotificationType.Confirmation:
                     return enrollment.AppUserID;
 
+                case NotificationType.Enrollment:
+                    return enrollment.ManagerID;
                 // Add more cases for other notification types if needed
 
                 default:
@@ -186,7 +191,9 @@ namespace DataAccessLayer.SkillsForce.DAL
                 case NotificationType.Confirmation:
                     return "Enrollment Confirmed";
 
-                // Add more cases for other notification types if needed
+                case NotificationType.Enrollment: // Handle the new Enrollment type
+                    return "Training Enrollment";
+
 
                 default:
                     return "New Notification";
@@ -207,6 +214,8 @@ namespace DataAccessLayer.SkillsForce.DAL
                 case NotificationType.Confirmation:
                     return "Confirmed";
 
+                case NotificationType.Enrollment: // Handle the new Enrollment type
+                    return "Enrolled";
                 // Add more cases for other notification types if needed
 
                 default:
@@ -230,6 +239,8 @@ namespace DataAccessLayer.SkillsForce.DAL
                 case NotificationType.Confirmation:
                     return $"Your enrollment for '{enrollment.TrainingName}' has been confirmed by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}.";
 
+                case NotificationType.Enrollment: // Handle the new Enrollment type
+                    return $"Your employee {enrollment.AppUserFirstName} {enrollment.AppUserLastName} has enrolled for '{enrollment.TrainingName}'.";
                 // Add more cases for other notification types if needed
 
                 default:

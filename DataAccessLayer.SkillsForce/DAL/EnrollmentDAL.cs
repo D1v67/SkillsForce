@@ -114,10 +114,22 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
         }
 
-        public async Task ApproveEnrollmentAsync(int enrollmentId)
+        public async Task ApproveEnrollmentAsync(int enrollmentId, int approvedByUserId)
         {
-            const string UPDATE_STATUS_APPROVED_QUERY = @"UPDATE Enrollment SET EnrollmentStatus = 'Approved' WHERE EnrollmentID = @EnrollmentID";
-            List<SqlParameter> parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", enrollmentId) };
+            const string UPDATE_STATUS_APPROVED_QUERY = @"UPDATE Enrollment 
+                                                           SET EnrollmentStatus = 'Approved', 
+                                                              ApprovedByUserId = @ApprovedByUserId,
+                                                              LastModifiedTimestamp = GETDATE(),
+                                                              LastModifiedUserId = @LastModifiedUserId
+                                                           WHERE EnrollmentID = @EnrollmentID";
+
+
+            List<SqlParameter> parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@EnrollmentID", enrollmentId),
+                new SqlParameter("@ApprovedByUserId", (object)approvedByUserId ?? DBNull.Value),
+                new SqlParameter("@LastModifiedUserId", approvedByUserId)
+            };
 
             await _dbCommand.InsertUpdateDataAsync(UPDATE_STATUS_APPROVED_QUERY, parameters);
         }

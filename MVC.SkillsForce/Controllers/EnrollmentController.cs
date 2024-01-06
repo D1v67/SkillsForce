@@ -14,6 +14,8 @@ using System.Web.Mvc;
 namespace MVC.SkillsForce.Controllers
 {
     [UserSession]
+
+    //[SessionTimeout]
     public class EnrollmentController : Controller
     {
         private readonly IEnrollmentService _enrollmentService;
@@ -22,13 +24,16 @@ namespace MVC.SkillsForce.Controllers
         private readonly INotificationService _notificationService;
         private readonly IAttachmentService _attachmentService;
 
-        public EnrollmentController(IEnrollmentService enrollmentService, ITrainingService trainingService, IPrerequisiteService prerequisiteService, INotificationService notificationService, IAttachmentService attachmentService)
+        private readonly INotificationHandler _notificationHandler;
+
+        public EnrollmentController(IEnrollmentService enrollmentService, ITrainingService trainingService, IPrerequisiteService prerequisiteService, INotificationService notificationService, IAttachmentService attachmentService, INotificationHandler notificationHandler)
         {
             _enrollmentService = enrollmentService;
             _trainingService = trainingService;
             _prerequisiteService = prerequisiteService;
             _notificationService = notificationService;
             _attachmentService = attachmentService;
+            _notificationHandler = notificationHandler;
         }
 
         [AuthorizePermission("GetAllEnrollment")]
@@ -106,6 +111,9 @@ namespace MVC.SkillsForce.Controllers
 
         public ActionResult ViewTraining()
         {
+            var x = 0;
+            x = x / 0;
+        
             return View();
 
         }
@@ -133,6 +141,13 @@ namespace MVC.SkillsForce.Controllers
             try
             {
                 int generatedEnrollmentId = await _enrollmentService.AddAsync(model);
+
+                EnrollmentNotificationViewModel enrollment = await _enrollmentService.GetEnrollmentNotificationDetailsByIDAsync(generatedEnrollmentId);
+
+                // await _notificationService.SendNotificationAsync(enrollment, NotificationType.Approval);
+
+                await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Enrollment);
+
                 return Json(new { success = true, message = "Enrollment successful!", EnrollmentID = generatedEnrollmentId });
             }
             catch (Exception ex)
@@ -157,14 +172,16 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> ApproveEnrollment(int enrollmentId)
+        public async Task<JsonResult> ApproveEnrollment(int enrollmentId, int approvedByUserId)
         {
             try
             {
-                await _enrollmentService.ApproveEnrollmentAsync(enrollmentId);
+                await _enrollmentService.ApproveEnrollmentAsync(enrollmentId, approvedByUserId);
                 EnrollmentNotificationViewModel enrollment = await _enrollmentService.GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
 
-                await _notificationService.SendNotificationAsync(enrollment, NotificationType.Approval);
+               // await _notificationService.SendNotificationAsync(enrollment, NotificationType.Approval);
+
+                await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Approval);
 
                 return Json(new { success = true });
             }
@@ -181,7 +198,9 @@ namespace MVC.SkillsForce.Controllers
             {
                 await _enrollmentService.RejectEnrollmentAsync(enrollmentId, rejectionReason, declinedByUserId);
                 EnrollmentNotificationViewModel enrollment = await _enrollmentService.GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
-                await _notificationService.SendNotificationAsync(enrollment, NotificationType.Rejection);
+
+                await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Rejection);
+               // await _notificationService.SendNotificationAsync(enrollment, NotificationType.Rejection);
                 return Json(new { success = true });
             }
             catch (Exception ex)

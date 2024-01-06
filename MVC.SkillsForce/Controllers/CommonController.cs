@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Diagnostics;
+using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
@@ -13,8 +14,10 @@ namespace MVC.SkillsForce.Controllers
         {
             return View();
         }
-        public ActionResult InternalServerError()
+        public ActionResult InternalServerError(string message)
         {
+            TempData["Message"] = message;
+            Debug.WriteLine(TempData["Message"]);
             return View();
         }
     }

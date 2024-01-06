@@ -6,6 +6,7 @@ using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,9 +56,10 @@ namespace BusinessLayer.SkillsForce.Services
 
         public async  Task<string> SendNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
+            Debug.WriteLine("hello my name in app");
             // Call AddNotificationAsync and handle the returned int value as needed
             int affectedRows = await _appNotificationDAL.AddNotificationAsync(enrollment, notificationType);
-
+            Debug.WriteLine("hello my name in app");
             // For simplicity, just return a string indicating success
             return $"Notification added successfully. Affected rows: {affectedRows}";
         }

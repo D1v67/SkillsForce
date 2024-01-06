@@ -192,6 +192,8 @@
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Interface\IAttachmentService.cs" />
     <Compile Include="Services\AppNotificationService.cs" />
+    <Compile Include="Interface\INotificationHandler.cs" />
+    <Compile Include="Services\NotificationHandler.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\DepartmentService.cs" />
     <Compile Include="Services\EnrollmentService.cs" />

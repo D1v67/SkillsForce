@@ -19,6 +19,21 @@
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
 
+    <script>
+        var timeoutWarning;
+
+            // Reset the timer on any user activity
+            $(document).on('mousemove keydown scroll', function () {
+                clearTimeout(timeoutWarning);
+                timeoutWarning = setTimeout(sessionTimeoutWarning, 600000); // 30 minutes in milliseconds
+            });
+
+            function sessionTimeoutWarning() {
+                // Display your modal here
+                //alert('Timeout')
+                $('#timeoutModal').modal('show');
+            }
+      </script>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -83,6 +98,34 @@
 </head>
 <body>
 
+
+
+    <div class="modal fade" id="timeoutModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Session Timeout</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Your session has expired due to inactivity. Please log in again.</p>
+                    <!-- Add any additional friendly message content here -->
+                </div>
+                <div class="modal-footer">
+                    <!-- Add a login button that redirects to the login controller method -->
+                    <button type="button" class="btn btn-primary" onclick="redirectToLogin()">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to redirect to the login controller method
+        function redirectToLogin() {
+            window.location.href = '/Account/Index'; // Adjust the URL based on your application's routing
+        }
+    </script>
+
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
         <div class="container-fluid">
             <button class="btn btn-link nav-link" data-bs-toggle="offcanvas" data-bs-target="#userProfileCanvas">
@@ -120,6 +163,20 @@
 
                         if (Session["CurrentRole"].ToString() == "Admin")
                         {
+                            @*<li class="nav-item">
+                       
+                                <button type="button" class="btn btn-primary position-relative" id="inboxButton">
+                                    Inbox
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+                                        @Session["UnreadNotificationCount"]
+
+                                        <span class="visually-hidden">unread messages</span>
+                                    </span>
+                                </button>
+                            </li>*@
+
+
                             <li class="nav-item">@Html.ActionLink("Dashboard", "Index", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
                         }
 
@@ -185,11 +242,14 @@
     </div>
 
     <script>
-            // Add click event listener to the button
-            document.getElementById("inboxButton").addEventListener("click", function () {
-                // Redirect to the controller action
-                window.location.href = '@Url.Action("Index", "AppNotification")';
-            });
+    // Add click event listener to the button if it exists
+    var inboxButton = document.getElementById("inboxButton");
+    if (inboxButton) {
+        inboxButton.addEventListener("click", function () {
+            // Redirect to the controller action
+            window.location.href = '@Url.Action("Index", "AppNotification")';
+        });
+    }
     </script>
 
 

@@ -291,6 +291,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 
         function approveEnrollment(enrollmentId, button) {
+            var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
             button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Approving...');
 
@@ -298,17 +299,17 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             $.ajax({
                 url: '/Enrollment/ApproveEnrollment',
                 type: 'POST',
-                data: { enrollmentId: enrollmentId },
+                data: { enrollmentId: enrollmentId, approvedByUserId: userId },
                 success: function (result) {
                     if (result.success) {
                         //button.closest('tr').find('td:eq(7)').html('Approved');
                         button.prop('disabled', true);
                         button.siblings('.reject-btn').prop('disabled', false);
                         toastr.success("Enrollment Approved Successfully.");
-                        setTimeout(() => {
+                        //setTimeout(() => {
 
-                            window.location.reload();
-                        }, 2000)
+                        //    window.location.reload();
+                        //}, 500)
 
                         //window.location.reload();
 

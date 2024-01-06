@@ -51,7 +51,7 @@ namespace MVC.SkillsForce
             // Let's also create a sample background job
             // BackgroundJob.Enqueue(() => Debug.WriteLine("Hello world from Hangfire!"));
 
-          //  BackgroundJob.Schedule<IEnrollmentService>(x => x.RunAutomaticSelectionOfApprovedEnrollments(true), TimeSpan.FromMinutes(1));
+            //BackgroundJob.Schedule<IEnrollmentService>(x => x.RunAutomaticSelectionOfApprovedEnrollmentsAsync(true), TimeSpan.FromMinutes(1));
         }
 
 

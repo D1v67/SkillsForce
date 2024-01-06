@@ -1,11 +1,12 @@
-﻿
-<style>
+﻿<style>
     .notification {
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        padding: 15px;
+        margin-bottom: 15px;
         cursor: pointer;
-        transition: background-color 0.3s;
+        transition: box-shadow 0.3s, background-color 0.3s;
+        border-radius: 15px;
     }
 
     .unread-notification {
@@ -17,9 +18,48 @@
     }
 
     .notification:hover {
-        background-color: #d9edf7; /* Hover effect color */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9; /* Hover effect color */
+    }
+
+    .notification h5 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .notification p {
+        margin-bottom: 0;
+        color: #888;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 1500px;
+    }
+
+    .mt-5 {
+        margin-top: 50px;
+    }
+
+    #notificationList {
+        max-height: 600px;
+        overflow-y: auto;
     }
 </style>
+
+@if (Session["FirstName"] != null)
+{
+    <button type="button" class="btn btn-primary position-relative" id="inboxButton">
+        Unread
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+            @Session["UnreadNotificationCount"]
+
+            <span class="visually-hidden">unread messages</span>
+        </span>
+    </button>
+}
+
 
 <div class="container mt-5">
     <h2>Notifications</h2>
@@ -33,8 +73,22 @@
     $(document).ready(function () {
         var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
+        function formatDateTime(timestamp) {
+            // Extracting only unix timestamp
+            var match = timestamp.match(/\d+/);
+            var numericPart = match ? match[0] : null;
 
-        var userId = parseInt("@HttpContext.Current.Session["UserID"]");
+            // Make sure to treat as millisecond
+            const dateObject = new Date(parseInt(numericPart, 10))
+            const day = String(dateObject.getDate()).padStart(2, '0')
+            const month = String(dateObject.getMonth() + 1).padStart(2, '0')
+            const year = dateObject.getFullYear()
+            const hours = String(dateObject.getHours()).padStart(2, '0');
+            const minutes = String(dateObject.getMinutes()).padStart(2, '0');
+            const seconds = String(dateObject.getSeconds()).padStart(2, '0');
+
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
 
         $.ajax({
             url: '/AppNotification/GetByUserId/' + userId,
@@ -42,10 +96,10 @@
             success: function (notifications) {
                 notifications.forEach(function (notification) {
                     var notificationDiv = $('<div>').attr('id', 'notification_' + notification.AppNotificationID)
-                        .addClass('notification mb-3 p-3');
+                        .addClass('notification');
 
                     var title = $('<h5>').text(notification.NotificationMessage);
-                    var time = $('<p>').text('Received at: ' + notification.CreateTimestamp);
+                    var time = $('<p>').text('Received at: ' + formatDateTime(notification.CreateTimeStamp));
 
                     notificationDiv.append(title, time);
 
@@ -80,7 +134,5 @@
                 console.error('Error fetching notifications:', error);
             }
         });
-
-
     });
 </script>

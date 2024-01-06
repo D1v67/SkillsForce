@@ -16,20 +16,23 @@ namespace BusinessLayer.SkillsForce.Services
         private readonly ITrainingService _trainingService;
         private readonly INotificationService _notificationService;
 
-        public EnrollmentService(IEnrollmentDAL enrollmentDAL, ITrainingService trainingService, INotificationService notificationService)
+        private readonly INotificationHandler _notificationHandler;
+
+        public EnrollmentService(IEnrollmentDAL enrollmentDAL, ITrainingService trainingService, INotificationService notificationService, INotificationHandler notificationHandler)
         {
             _enrollmentDAL = enrollmentDAL;
             _trainingService = trainingService;
             _notificationService = notificationService;
+            _notificationHandler = notificationHandler;
         }
         public async Task<int> AddAsync(EnrollmentViewModel enrollment)
         {
             return await _enrollmentDAL.AddAsync(enrollment);
         }
 
-        public async Task ApproveEnrollmentAsync(int enrollmentId)
+        public async Task ApproveEnrollmentAsync(int enrollmentId, int approvedByUserId)
         {
-            await _enrollmentDAL.ApproveEnrollmentAsync(enrollmentId);
+            await _enrollmentDAL.ApproveEnrollmentAsync(enrollmentId, approvedByUserId);
         }
 
 
@@ -83,9 +86,9 @@ namespace BusinessLayer.SkillsForce.Services
                     foreach (var enrollmentId in enrollmentIds)
                     {
                         EnrollmentNotificationViewModel enrollment = await GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
-#pragma warning disable CS4014 
-                        _notificationService.SendNotificationAsync(enrollment, NotificationType.Confirmation);
-#pragma warning restore CS4014 
+
+                        await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Confirmation);
+
                     }
                 }
             }

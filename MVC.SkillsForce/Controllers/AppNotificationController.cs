@@ -27,15 +27,15 @@ namespace MVC.SkillsForce.Controllers
 
         public async Task<JsonResult> GetAll()
         {
-            IEnumerable<AppNotificationModel> departments = await _appNotificationService.GetAllAsync();
+            IEnumerable<AppNotificationModel> notifications = await _appNotificationService.GetAllAsync();
            // IEnumerable<AppNotificationModel> departments = await _appNotificationService.GetByUserIdAsync(1);
-            return Json(departments, JsonRequestBehavior.AllowGet);
+            return Json(notifications, JsonRequestBehavior.AllowGet);
         }
 
         public async Task<JsonResult> GetByUserId(int id)
         {
-            IEnumerable<AppNotificationModel> departments = await _appNotificationService.GetByUserIdAsync(id);
-            return Json(departments, JsonRequestBehavior.AllowGet);
+            IEnumerable<AppNotificationModel> notifications = await _appNotificationService.GetByUserIdAsync(id);
+            return Json(notifications, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

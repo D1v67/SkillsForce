@@ -4,6 +4,7 @@
     {
         Approval,
         Rejection,
-        Confirmation
+        Confirmation,
+        Enrollment
     }
 }

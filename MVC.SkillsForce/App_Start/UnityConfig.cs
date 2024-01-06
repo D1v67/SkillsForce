@@ -3,8 +3,10 @@ using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.AppLogger;
 using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
+using System.ComponentModel;
 using System.Web.Mvc;
 using Unity;
+using Unity.Injection;
 using Unity.Mvc5;
 
 namespace MVC.SkillsForce
@@ -52,6 +54,18 @@ namespace MVC.SkillsForce
             Container.RegisterType<IAppNotificationService, AppNotificationService>();
             Container.RegisterType<IAppNotificationDAL, AppNotificationDAL>();
 
+            Container.RegisterInstance<INotificationService>( "Email Notification", new NotificationService());
+            Container.RegisterInstance<INotificationService>("In App Notification", new AppNotificationService(Container.Resolve<IAppNotificationDAL>()));
+            //Container.RegisterType(typeof(INotificationHandler), typeof(NotificationHandler),
+            //    new InjectionConstructor(new ResolveArray)
+
+            //    );
+
+            Container.RegisterType(typeof(INotificationHandler), typeof(NotificationHandler),
+            new InjectionConstructor(new ResolvedArrayParameter<INotificationService>(
+                new ResolvedParameter<INotificationService>("Email Notification"),
+                new ResolvedParameter<INotificationService>("In App Notification")
+            )));
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(Container));
         }

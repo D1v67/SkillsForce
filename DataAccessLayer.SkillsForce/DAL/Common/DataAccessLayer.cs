@@ -36,7 +36,12 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public void OpenConnection()
         {
-            Task.Run(() => OpenConnectionAsync()).Wait();
+            //Task.Run(() => OpenConnectionAsync()).Wait();
+            if (_databaseConnection.State == System.Data.ConnectionState.Open)
+            {
+                _databaseConnection.Close();
+            }
+            _databaseConnection.Open();
         }
 
         public void CloseConnection()

@@ -15,5 +15,7 @@ namespace Common.SkillsForce.ViewModel
         public string EnrollmentStatus { get; set; }
         public string TrainingDepartmentName { get; set; }//Training Department}
         public bool IsSelected { get; set; }
+        public int ApprovedByUserId { get; set; }
+        public int DeclinedByUserId { get; set; }
     }
 }

@@ -1,7 +1,18 @@
 ﻿
 @{
     ViewBag.Title = "InternalServerError";
+    Layout = "";
 }
 
 <h2>InternalServerError</h2>
 
+<h2>InternalServerError</h2>
+
+@if (TempData["Message"] != null)
+{
+    <p>@TempData["Message"]</p>
+}
+else
+{
+    <p>An internal server error occurred.</p>
+}

@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Security.Authentication;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace MVC.SkillsForce.Custom
 {
@@ -27,11 +28,16 @@ namespace MVC.SkillsForce.Custom
 
             filterContext.ExceptionHandled = true;
             filterContext.HttpContext.Response.StatusCode = 500;
-            filterContext.Result = new ViewResult()
+           // filterContext.Result = new ViewResult { ViewName = "InternalServerError", TempData = new TempDataDictionary() { { "Message", filterContext.Exception.Message } } };
+
+           // filterContext.Result = Redirectto("InternalServerError", new { message = filterContext.Exception.Message });
+            filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary
             {
-                ViewName = "InternalServerError",
-                TempData = filterContext.Controller.TempData
-            };
+                { "controller", "Common" },
+                { "action", "InternalServerError" },
+                { "message", filterContext.Exception.Message }
+            });
+
         }
     }
 }

@@ -3,6 +3,7 @@ using Common.SkillsForce.EmailSender;
 using Common.SkillsForce.Enums;
 using Common.SkillsForce.ViewModel;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.SkillsForce.Services
@@ -13,15 +14,27 @@ namespace BusinessLayer.SkillsForce.Services
         public async Task<string> SendNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
+            Debug.WriteLine("hello my name mail sending");
             try
             {
                 string result = enrollment.EnrollmentStatus;
                 string htmlBody = GenerateHtmlBody(enrollment, notificationType);
 
                 // Modify the subject based on NotificationType
-                string subject = (notificationType == NotificationType.Confirmation)
-                    ? $"Training Confirmed - {enrollment.TrainingName}"
-                    : $"Training Request - {result} - {enrollment.TrainingName}";
+                string subject;
+
+                switch (notificationType)
+                {
+                    case NotificationType.Confirmation:
+                        subject = $"Training Confirmed - {enrollment.TrainingName}";
+                        break;
+                    case NotificationType.Enrollment:
+                        subject = $"Training Enrollment - {enrollment.TrainingName}";
+                        break;
+                    default:
+                        subject = $"Training Request - {result} - {enrollment.TrainingName}";
+                        break;
+                }
 
 
                 #pragma warning disable CS4014
@@ -41,12 +54,12 @@ namespace BusinessLayer.SkillsForce.Services
 
         private string GenerateHtmlBody(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
-            string actionVerb = GetActionVerb(notificationType);
-            string htmlBody;
+                    string actionVerb = GetActionVerb(notificationType);
+                    string htmlBody;
 
-            if (notificationType == NotificationType.Confirmation)
-            {
-                htmlBody = $@"
+                    if (notificationType == NotificationType.Confirmation)
+                    {
+                        htmlBody = $@"
                 <html>
                 <head>
                     <title>HTML Email</title>
@@ -58,10 +71,25 @@ namespace BusinessLayer.SkillsForce.Services
                     <p>Please check your email for further details.</p>
                 </body>
                 </html>";
-            }
-            else
-            {
-                htmlBody = $@"
+                    }
+                    else if (notificationType == NotificationType.Enrollment)
+                    {
+                        htmlBody = $@"
+                <html>
+                <head>
+                    <title>HTML Email</title>
+                </head>
+                <body>
+                    <p>Hello <strong>{enrollment.ManagerFirstName}</strong>.</p>
+                    <p>Your employee <strong>{enrollment.AppUserFirstName} {enrollment.AppUserLastName}</strong> has enrolled for the training <strong>{enrollment.TrainingName}</strong>.</p>
+                    <br/>
+                    <p>Please take necessary actions.</p>
+                </body>
+                </html>";
+                    }
+                    else
+                    {
+                        htmlBody = $@"
                 <html>
                 <head>
                     <title>HTML Email</title>
@@ -71,19 +99,19 @@ namespace BusinessLayer.SkillsForce.Services
                     <p>Your training <strong>{enrollment.TrainingName}</strong> has been {actionVerb} by your
                         manager <strong>{enrollment.ManagerFirstName}</strong>.</p>";
 
-                if (notificationType == NotificationType.Rejection && !string.IsNullOrEmpty(enrollment.DeclineReason))
-                {
-                    htmlBody += $"<p>Decline Reason: <strong>{enrollment.DeclineReason}</strong></p>";
-                }
+                        if (notificationType == NotificationType.Rejection && !string.IsNullOrEmpty(enrollment.DeclineReason))
+                        {
+                            htmlBody += $"<p>Decline Reason: <strong>{enrollment.DeclineReason}</strong></p>";
+                        }
 
-                htmlBody += @"
+                        htmlBody += @"
                     <br/>
                     <p>Please liaise with your manager for further information.</p>
                 </body>
                 </html>";
-            }
+                    }
 
-            return htmlBody;
+                    return htmlBody;
         }
 
 

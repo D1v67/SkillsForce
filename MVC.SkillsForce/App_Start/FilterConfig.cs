@@ -8,10 +8,13 @@ namespace MVC.SkillsForce
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
+            var mylogger = DependencyResolver.Current.GetService<ILogger>();
+
+            filters.Add(new GlobalExceptionHandler(mylogger));
+
             filters.Add(new HandleErrorAttribute());
 
-            var mylogger = DependencyResolver.Current.GetService<ILogger>();
-            filters.Add(new GlobalExceptionHandler(mylogger));
+
         }
     }
 }
