@@ -1,7 +1,9 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
 using Common.SkillsForce.ViewModel;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,23 +22,28 @@ namespace MVC.SkillsForce.Controllers
             _prerequisiteService = prerequisiteService;
         }
 
+        [AuthorizePermission(Permissions.GetTraining)]
         public async Task<ActionResult> Index()
         {
             IEnumerable<TrainingModel> trainings = await _trainingService.GetAllAsync();
             return View(trainings);
         }
+
+        [AuthorizePermission(Permissions.GetTraining)]
         public async Task<JsonResult> GetAll()
         {
             IEnumerable<TrainingModel> trainings = await _trainingService.GetAllAsync();
             return Json(trainings, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthorizePermission(Permissions.GetTraining)]
         public async Task<ActionResult> GetAllTrainingWithPrerequisites()
         {
             IEnumerable<TrainingViewModel> trainings = await _trainingService.GetAllTrainingWithPrerequisitesAsync();
             return View(trainings);
         }
 
+        [AuthorizePermission(Permissions.GetTraining)]
         public async Task<JsonResult> GetCapacityById(int id)
         {
             int capacity = await _trainingService.GetCapacityIDAsync(id);
@@ -51,6 +58,7 @@ namespace MVC.SkillsForce.Controllers
             }
         }
 
+        [AuthorizePermission(Permissions.GetTraining)]
         public async Task<JsonResult> GetRemainingCapacityById(int id)
         {
             int capacity = await _trainingService.GetRemainingCapacityIDAsync(id);
@@ -65,12 +73,14 @@ namespace MVC.SkillsForce.Controllers
             }
         }
 
+        [AuthorizePermission(Permissions.AddTraining)]
         public ActionResult CreateTraining()
         {
             return View();
         }
 
         [HttpPost]
+        [AuthorizePermission(Permissions.AddTraining)]
         public async Task<JsonResult> CreateTraining(TrainingViewModel model)
         {
             var result = await _trainingService.AddAsync(model);
@@ -83,12 +93,14 @@ namespace MVC.SkillsForce.Controllers
             return Json(new { errorMessage = errors });
         }
 
+        [AuthorizePermission(Permissions.EditTraining)]
         public async Task<ActionResult> Edit(int id)
         {
             var training = await _trainingService.GetTrainingWithPrerequisitesAsync(id);
             return View(training);
         }
 
+        [AuthorizePermission(Permissions.GetTraining)]
         public async Task<JsonResult> GetTrainingDetails(int id)
         {
             var training = await _trainingService.GetTrainingWithPrerequisitesAsync(id);
@@ -96,6 +108,7 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
+        [AuthorizePermission(Permissions.EditTraining)]
         public async Task<JsonResult> Edit(TrainingViewModel model)
         {
             var result = await _trainingService.UpdateAsync(model);
@@ -110,6 +123,7 @@ namespace MVC.SkillsForce.Controllers
 
         }
 
+        [AuthorizePermission(Permissions.DeleteTraining)]
         public ActionResult Delete(int id)
         {
             bool isDeletionSuccessful =  _trainingService.Delete(id);

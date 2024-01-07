@@ -49,11 +49,11 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.UserID, u.FirstName, u.LastName, u.Email, u.NIC, u.MobileNumber, 
                                                               u.DepartmentID, d.DepartmentName, u.ManagerID, r.RoleName, r.RoleID
-                                                            FROM [User] u
-                                                            LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
-                                                            LEFT JOIN UserRole ur ON u.UserID = ur.UserID
-                                                            LEFT JOIN Role r ON ur.RoleID = r.RoleID
-                                                            WHERE u.Email = @Email";
+                                                                FROM [User] u
+                                                                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
+                                                                LEFT JOIN UserRole ur ON u.UserID = ur.UserID
+                                                                LEFT JOIN Role r ON ur.RoleID = r.RoleID
+                                                                WHERE u.Email = @Email";
             AccountModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@Email", account.Email));

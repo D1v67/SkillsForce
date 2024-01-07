@@ -1,6 +1,8 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
 using Common.SkillsForce.ViewModel;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,8 +35,6 @@ namespace MVC.SkillsForce.Controllers
         [HttpPost]
         public async Task<JsonResult> Authenticate(AccountModel account)
         {
-            try
-            {
                 bool isUserValid = await _accountService.IsUserAuthenticatedAsync(account);
                 if (isUserValid)
                 {
@@ -44,14 +44,7 @@ namespace MVC.SkillsForce.Controllers
                     var (redirectController, redirectAction) = GetRedirectInfo(userDetailsWithRoles.listOfRoles);
                     return Json(new { result = isUserValid, url = Url.Action(redirectAction, redirectController) });
                 }
-                
-            }catch (Exception ex)
-            {
-                Debug.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-                Debug.WriteLine(ex);
-            }
             return Json(new { result = false, url = Url.Action("Login", "Account") });
-
         }
 
         public ActionResult Register()
@@ -91,6 +84,7 @@ namespace MVC.SkillsForce.Controllers
             return Json(managers, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthorizePermission(Permissions.RoleSelection)]
         public ActionResult RoleSelection()
         {
             List<string> userRoles = (List<string>)Session["UserRoles"];
@@ -144,77 +138,3 @@ namespace MVC.SkillsForce.Controllers
 
     }
 }
-
-
-//public JsonResult Authenticate(AccountModel account)
-//{
-//    bool IsUserValid = _loginService.IsUserAuthenticated(account);
-//    if (IsUserValid)
-//    {
-//        AccountModel userDetailsWithRoles = _loginService.GetUserDetailsWithRoles(account);
-//        this.Session["UserID"] = userDetailsWithRoles.UserID;
-//        //this.Session["CurrentRole"] = userDetailsWithRoles.RoleName;
-//        this.Session["Email"] = userDetailsWithRoles.Email;
-//        this.Session["FirstName"] = userDetailsWithRoles.FirstName;
-
-//        List<string> userRoles = userDetailsWithRoles.listOfRoles.Select(r => r.RoleName).ToList();
-//        this.Session["UserRoles"] = userRoles;
-
-//        // If the user has only one role, set it as the CurrentRole
-//        if (userRoles.Count == 1)
-//        {
-//            this.Session["CurrentRole"] = userRoles[0];
-//        }
-//    }
-//    return Json(new { result = IsUserValid, url = Url.Action("Index", "Home") });
-//}
-
-
-
-//public async Task<bool> Trial()
-//{
-//    StorageService storage = new StorageService();
-//    byte[] fileContent = Encoding.UTF8.GetBytes("This is some fake file content.");
-
-
-//    using (MemoryStream stream = new MemoryStream(fileContent))
-//    {
-
-//        int fakeTrainingId = 123;
-
-//        string fakeFileName = "fakeFile.txt";
-
-
-//        string result = await storage.UploadFileAsync(stream, fakeTrainingId, fakeFileName);
-
-//    }
-//    return true;
-//}
-
-//public JsonResult Authenticate(AccountModel account)
-//{
-//    bool IsUserValid = _loginService.IsUserAuthenticated(account);
-//    if (IsUserValid)
-//    {
-//        AccountModel userDetailsWithRoles = _loginService.GetUserDetailsWithRoles(account);
-//        this.Session["UserID"] = userDetailsWithRoles.UserID;
-//        this.Session["Email"] = userDetailsWithRoles.Email;
-//        this.Session["FirstName"] = userDetailsWithRoles.FirstName;
-
-//        List<string> userRoles = userDetailsWithRoles.listOfRoles.Select(r => r.RoleName).ToList();
-//        this.Session["UserRoles"] = userRoles;
-
-//        // If the user has only one role, set it as the CurrentRole and redirect to the home page
-//        if (userRoles.Count == 1)
-//        {
-//            this.Session["CurrentRole"] = userRoles[0];
-//            return Json(new { result = IsUserValid, url = Url.Action("Index", "Home") });
-//        }
-//        else
-//        {
-//            // If the user has multiple roles, redirect to the role selection page
-//            return Json(new { result = IsUserValid, url = Url.Action("RoleSelection", "Account") });
-//        }
-//    }
-//    return Json(new { result = IsUserValid, url = Url.Action("Login", "Account") });
-//}

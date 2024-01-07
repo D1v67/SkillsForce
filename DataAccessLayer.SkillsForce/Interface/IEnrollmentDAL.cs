@@ -15,5 +15,7 @@ namespace DataAccessLayer.SkillsForce.Interface
         Task<EnrollmentNotificationViewModel> GetEnrollmentNotificationDetailsByIDAsync(int id);
         Task<IEnumerable<EnrollmentViewModel>> GetAllApprovedEnrollmentsAsync();
         Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int trainingID);
+        Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredEnrollmentsWithDetailsAsync(int trainingId, string statusFilter);
+        Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredConfirmedEnrollmentsWithDetailsAsync(int trainingId);
     }
 }

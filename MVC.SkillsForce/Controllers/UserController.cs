@@ -18,11 +18,13 @@ namespace MVC.SkillsForce.Controllers
             _userService = userService;
         }
 
+        [AuthorizePermission(Permissions.GetUser)]
         public async Task<ActionResult> Index()
         {
             IEnumerable<UserModel> users = await _userService.GetAllAsync();
             return View(users);
         }
+
 
         public async Task<JsonResult> GetManagers()
         {

@@ -1,5 +1,7 @@
 ﻿using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,6 +9,7 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
+    [UserSession]
     public class AttachmentController : Controller
     {
         private readonly IAttachmentService _attachmentService;
@@ -16,6 +19,7 @@ namespace MVC.SkillsForce.Controllers
             _attachmentService = attachmentService;
         }
 
+        [AuthorizePermission(Permissions.GetAttachment)]
         public async Task<ActionResult> Index()
         {
             IEnumerable<AttachmentModel> attachments = await _attachmentService.GetAllAsync();

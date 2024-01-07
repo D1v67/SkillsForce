@@ -14,8 +14,6 @@ using System.Web.Mvc;
 namespace MVC.SkillsForce.Controllers
 {
     [UserSession]
-
-    //[SessionTimeout]
     public class EnrollmentController : Controller
     {
         private readonly IEnrollmentService _enrollmentService;
@@ -36,20 +34,12 @@ namespace MVC.SkillsForce.Controllers
             _notificationHandler = notificationHandler;
         }
 
-        [AuthorizePermission("GetAllEnrollment")]
+        [AuthorizePermission(Permissions.GetEnrollment)]
         public async Task<ActionResult> Index()
         {
             IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllEnrollmentsWithDetailsAsync();
             return View(enrollments);
         }
-
-        //public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments()
-        //{
-        //    bool isCronJob = false;
-        //    await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(isCronJob);
-
-        //    return RedirectToAction("/GetAllApprovedEnrollments");
-        //}
 
         [HttpPost]
         public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments()
@@ -63,7 +53,7 @@ namespace MVC.SkillsForce.Controllers
             return Json(new { success, url = Url.Action("GetAllApprovedEnrollments", "Enrollment") });
         }
 
-        [AuthorizePermission("GetAllEnrollment")]
+        [AuthorizePermission(Permissions.GetEnrollmentByManager)]
         public async Task<ActionResult> GetEnrollments()
         {
             if (Session == null || Session["UserID"] == null || Session["CurrentRole"] == null)
@@ -80,6 +70,7 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
+        [AuthorizePermission(Permissions.GetEnrollmentByManager)]
         public async Task<ActionResult> GetEnrollmentsData()
         {
             if (Session == null || Session["UserID"] == null || Session["CurrentRole"] == null)
@@ -96,29 +87,28 @@ namespace MVC.SkillsForce.Controllers
             return Json(enrollments ?? Enumerable.Empty<EnrollmentViewModel>(), JsonRequestBehavior.AllowGet);
         }
 
-
+        [AuthorizePermission(Permissions.GetEnrollmentByManager)]
         public async Task<ActionResult> GetEnrollmentsForManager(int managerId)
         {
             IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllEnrollmentsWithDetailsByManagerAsync(managerId);
             return View(enrollments);
         }
 
+        [AuthorizePermission(Permissions.GetEnrollment)]
         public async Task<ActionResult> GetAllApprovedEnrollments()
         {
             var approvedEnrollments = await _enrollmentService.GetAllApprovedEnrollmentsAsync();
             return View(approvedEnrollments);
         }
 
+        [AuthorizePermission(Permissions.ViewTraining)]
         public ActionResult ViewTraining()
         {
-            var x = 0;
-            x = x / 0;
-        
             return View();
-
         }
 
         [HttpPost]
+        [AuthorizePermission(Permissions.ViewTraining)]
         public async Task<JsonResult> ViewTrainingData(int id)
         {
             IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingsNotEnrolledByUserAsync(id);
@@ -126,28 +116,22 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
+        [AuthorizePermission(Permissions.ViewTraining)]
         public async Task<JsonResult> GetTrainingsAlreadyEnrolledByUser(int id)
         {
-            //IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingsEnrolledByUserAsync(id);
-            //return Json(trainings, JsonRequestBehavior.AllowGet);
-
             IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingsEnrolledByUserAsync(id);
             return Json(trainings ?? Enumerable.Empty<TrainingModel>(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
+        [AuthorizePermission(Permissions.ViewTraining)]
         public async Task<ActionResult> SaveEnrollment(EnrollmentViewModel model)
         {
             try
             {
                 int generatedEnrollmentId = await _enrollmentService.AddAsync(model);
-
                 EnrollmentNotificationViewModel enrollment = await _enrollmentService.GetEnrollmentNotificationDetailsByIDAsync(generatedEnrollmentId);
-
-                // await _notificationService.SendNotificationAsync(enrollment, NotificationType.Approval);
-
                 await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Enrollment);
-
                 return Json(new { success = true, message = "Enrollment successful!", EnrollmentID = generatedEnrollmentId });
             }
             catch (Exception ex)
@@ -156,6 +140,7 @@ namespace MVC.SkillsForce.Controllers
             }
         }
 
+        [AuthorizePermission(Permissions.ViewTraining)]
         public async Task<JsonResult> GetPrerequisiteByTrainingID(int TrainigID)
         {
             IEnumerable<PrerequisiteModel> prerequisites = await _prerequisiteService.GetPrerequisiteByTrainingIDAsync(TrainigID);
@@ -166,12 +151,12 @@ namespace MVC.SkillsForce.Controllers
             }
             else
             {
-                // Return an empty array as a valid response when there are no prerequisites
                 return Json(new List<PrerequisiteModel>(), JsonRequestBehavior.AllowGet);
             }
         }
 
         [HttpPost]
+        [AuthorizePermission(Permissions.ApproveEnrollment)]
         public async Task<JsonResult> ApproveEnrollment(int enrollmentId, int approvedByUserId)
         {
             try
@@ -192,6 +177,7 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
+        [AuthorizePermission(Permissions.RejectEnrollment)]
         public async Task<JsonResult> RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId)
         {
             try
@@ -214,6 +200,42 @@ namespace MVC.SkillsForce.Controllers
         {
             await _attachmentService.UploadFileAsync(files, EnrollmentID, PrerequisiteIDs);
             return Json(new { success = true });
+        }
+
+
+        [HttpGet]
+        [AuthorizePermission(Permissions.GetEnrollment)]
+        public JsonResult GetEnrollmentStatusOptions()
+        {
+            var enrollmentStatusOptions = Enum.GetNames(typeof(EnrollmentStatusEnum));
+            var enrollmentStatusList = new List<string>(enrollmentStatusOptions);
+            return Json(enrollmentStatusList, JsonRequestBehavior.AllowGet);
+        }
+
+        [AuthorizePermission(Permissions.GetEnrollment)]
+        public async Task<ActionResult> GetAllEnrollmentsData()
+        {
+            IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllEnrollmentsWithDetailsAsync();
+            return Json(enrollments ?? Enumerable.Empty<EnrollmentViewModel>(), JsonRequestBehavior.AllowGet);
+        }
+
+
+
+        [HttpPost]
+        [AuthorizePermission(Permissions.GetEnrollment)]
+        public async Task<JsonResult> FilterEnrollments(int trainingId, string status)
+        {
+            try
+            {
+                IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllFilteredEnrollmentsWithDetailsAsync(trainingId, status);
+                return Json(enrollments);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+
+
         }
     }
 }

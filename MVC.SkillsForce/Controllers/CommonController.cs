@@ -10,6 +10,11 @@ namespace MVC.SkillsForce.Controllers
             return View();
         }
 
+        public ActionResult UnauthorizedAccessAttempt()
+        {
+            return View();
+        }
+
         public ActionResult NotFound()
         {
             return View();

@@ -55,7 +55,9 @@
     <Compile Include="Entity\UserRoleModel.cs" />
     <Compile Include="Entity\TrainingModel.cs" />
     <Compile Include="Entity\UserModel.cs" />
+    <Compile Include="Enums\EnrollmentStatusEnum.cs" />
     <Compile Include="Enums\NotificationType.cs" />
+    <Compile Include="Enums\Permissions.cs" />
     <Compile Include="Enums\RolesEnum.cs" />
     <Compile Include="Helpers\PasswordHasher.cs" />
     <Compile Include="Helpers\ValidationResult.cs" />

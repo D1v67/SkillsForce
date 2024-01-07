@@ -1,6 +1,8 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,7 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
+    [UserSession]
     public class AppNotificationController : Controller
     {
 
@@ -20,18 +23,20 @@ namespace MVC.SkillsForce.Controllers
             _appNotificationService = appNotificationService;
         }
 
+        [AuthorizePermission(Permissions.ViewNotification)]
         public ActionResult Index()
         {
             return View();
         }
 
+        [AuthorizePermission(Permissions.ViewNotification)]
         public async Task<JsonResult> GetAll()
         {
             IEnumerable<AppNotificationModel> notifications = await _appNotificationService.GetAllAsync();
-           // IEnumerable<AppNotificationModel> departments = await _appNotificationService.GetByUserIdAsync(1);
             return Json(notifications, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthorizePermission(Permissions.ViewNotification)]
         public async Task<JsonResult> GetByUserId(int id)
         {
             IEnumerable<AppNotificationModel> notifications = await _appNotificationService.GetByUserIdAsync(id);
@@ -39,6 +44,7 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
+        [AuthorizePermission(Permissions.ViewNotification)]
         public async Task<ActionResult> MarkNotificationAsRead(int notificationId, int userId)
         {
              await _appNotificationService.MarkNotificationAsReadAsync(notificationId);
@@ -49,7 +55,7 @@ namespace MVC.SkillsForce.Controllers
 
         }
 
-
+        [AuthorizePermission(Permissions.ViewNotification)]
         public async Task<JsonResult> GetUnreadNotificationCount(int id)
         {
             int capacity = await _appNotificationService.GetUnreadNotificationCountAsync(id);

@@ -20,19 +20,19 @@
             crossorigin="anonymous"></script>
 
     <script>
-        var timeoutWarning;
+        //var timeoutWarning;
 
-            // Reset the timer on any user activity
-            $(document).on('mousemove keydown scroll', function () {
-                clearTimeout(timeoutWarning);
-                timeoutWarning = setTimeout(sessionTimeoutWarning, 600000); // 30 minutes in milliseconds
-            });
+        //    // Reset the timer on any user activity
+        //    $(document).on('mousemove keydown scroll', function () {
+        //        clearTimeout(timeoutWarning);
+        //        timeoutWarning = setTimeout(sessionTimeoutWarning, 600000); // 30 minutes in milliseconds
+        //    });
 
-            function sessionTimeoutWarning() {
-                // Display your modal here
-                //alert('Timeout')
-                $('#timeoutModal').modal('show');
-            }
+        //    function sessionTimeoutWarning() {
+        //        // Display your modal here
+        //        //alert('Timeout')
+        //        $('#timeoutModal').modal('show');
+        //    }
       </script>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">

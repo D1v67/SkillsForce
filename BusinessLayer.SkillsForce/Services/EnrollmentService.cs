@@ -4,6 +4,7 @@ using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -91,6 +92,19 @@ namespace BusinessLayer.SkillsForce.Services
 
                     }
                 }
+            }
+        }
+
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredEnrollmentsWithDetailsAsync(int trainingId, string statusFilter)
+        {
+           // Debug.WriteLine(trainingId, statusFilter);
+            if (statusFilter == "IsSelected")
+            {
+                return await _enrollmentDAL.GetAllFilteredConfirmedEnrollmentsWithDetailsAsync(trainingId);
+            }
+            else
+            {
+                return await _enrollmentDAL.GetAllFilteredEnrollmentsWithDetailsAsync(trainingId, statusFilter);
             }
         }
     }

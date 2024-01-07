@@ -1,11 +1,14 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
+using Common.SkillsForce.Enums;
+using MVC.SkillsForce.Custom;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
+    [UserSession]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;
@@ -15,6 +18,7 @@ namespace MVC.SkillsForce.Controllers
             _departmentService = departmentService;
         }
 
+        [AuthorizePermission(Permissions.GetDepartment)]
         public async Task<JsonResult> GetListOfDepartments()
         {
             IEnumerable<DepartmentModel> departments = await _departmentService.GetAllAsync();
