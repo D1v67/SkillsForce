@@ -20,9 +20,9 @@ namespace DataAccessLayer.SkillsForce.DAL
         public async Task<IEnumerable<PrerequisiteModel>> GetPrerequisiteByTrainingIDAsync(int TrainingID)
         {
             const string GET_PREREQUISITE_BY_TRAINING_ID_QUERY = @"SELECT P.PrerequisiteID, P.PrerequisiteName
-                                                            FROM TrainingPrerequisite TP
-                                                            JOIN Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID
-                                                            WHERE TP.TrainingID = @TrainingID";
+                                                                    FROM TrainingPrerequisite TP
+                                                                    JOIN Prerequisite P ON TP.PrerequisiteID = P.PrerequisiteID
+                                                                    WHERE TP.TrainingID = @TrainingID";
             List<PrerequisiteModel> prerequisites = new List<PrerequisiteModel>();
 
             var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", TrainingID) };
@@ -67,9 +67,6 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
 
 
-
-
-
         public IEnumerable<PrerequisiteModel> GetPrerequisiteByTrainingID(int TrainingID)
         {
             const string GET_PREREQUISITE_BY_TRAINING_ID_QUERY = @"SELECT P.PrerequisiteID, P.PrerequisiteName
@@ -89,11 +86,9 @@ namespace DataAccessLayer.SkillsForce.DAL
                         PrerequisiteID = reader.GetByte(reader.GetOrdinal("PrerequisiteID")),
                         PrerequisiteName = reader.GetString(reader.GetOrdinal("PrerequisiteName"))
                     };
-
                     prerequisites.Add(prerequisite);
                 }
             }
-
             return prerequisites.Count > 0 ? prerequisites : null;
         }
 

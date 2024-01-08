@@ -136,5 +136,12 @@ namespace MVC.SkillsForce.Controllers
             return ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
         }
 
+        [HttpGet]
+        public JsonResult GetRoles()
+        {
+            List<string> userRoles = (List<string>)Session["UserRoles"];
+            return Json(userRoles, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

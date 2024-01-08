@@ -25,10 +25,7 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             int relevantUserId = GetRelevantUserId(enrollment, notificationType);
 
-            // Construct the notification message based on the notification type
             string notificationMessage = ConstructNotificationMessage(enrollment, notificationType);
-
-            // Insert the notification into the database
             AppNotificationModel appNotification = new AppNotificationModel
             {
                 UserID = relevantUserId,
@@ -37,19 +34,17 @@ namespace DataAccessLayer.SkillsForce.DAL
                 NotificationMessage = notificationMessage,
                 Status = GetNotificationStatus(notificationType),
                 HasRead = false,
-                //SenderName = $"{enrollment.ManagerFirstName} {enrollment.ManagerLastName}",
-
+                NotificationSender = "SkillsForce"
+                //NotificationSender = $"{enrollment.ManagerFirstName} {enrollment.ManagerLastName}",
             };
-
             return await AddAsync(appNotification);
         }
-
 
         public async Task<int> AddAsync(AppNotificationModel appNotification)
         {
             const string INSERT_NOTIFICATION_QUERY = @"
-            INSERT INTO [dbo].[AppNotification] ([UserID], [EnrollmentID], [NotificationSubject], [NotificationMessage], [Status], [HasRead])
-            VALUES (@UserID, @EnrollmentID, @NotificationSubject, @NotificationMessage, @Status, @HasRead)";
+            INSERT INTO [dbo].[AppNotification] ([UserID], [EnrollmentID], [NotificationSubject], [NotificationMessage], [Status], [HasRead], [NotificationSender])
+            VALUES (@UserID, @EnrollmentID, @NotificationSubject, @NotificationMessage, @Status, @HasRead, @NotificationSender)";
 
             List<SqlParameter> parameters = new List<SqlParameter>
             {
@@ -59,9 +54,8 @@ namespace DataAccessLayer.SkillsForce.DAL
                 new SqlParameter("@NotificationMessage", appNotification.NotificationMessage),
                 new SqlParameter("@Status", appNotification.Status),
                 new SqlParameter("@HasRead", appNotification.HasRead),
-  
+                new SqlParameter("@NotificationSender", appNotification.NotificationSender),
             };
-
             return await _dbCommand.InsertUpdateDataAsync(INSERT_NOTIFICATION_QUERY, parameters);
         }
 
@@ -69,7 +63,6 @@ namespace DataAccessLayer.SkillsForce.DAL
         {
             const string GET_ALL_NOTIFICATIONS_QUERY = @"SELECT * FROM [dbo].[AppNotification]";
             List<AppNotificationModel> notifications = new List<AppNotificationModel>();
-
             using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_ALL_NOTIFICATIONS_QUERY))
             {
                 while (await reader.ReadAsync())
@@ -83,14 +76,13 @@ namespace DataAccessLayer.SkillsForce.DAL
                         NotificationMessage = reader.IsDBNull(reader.GetOrdinal("NotificationMessage")) ? string.Empty : reader.GetString(reader.GetOrdinal("NotificationMessage")),
                         Status = reader.IsDBNull(reader.GetOrdinal("Status")) ? string.Empty : reader.GetString(reader.GetOrdinal("Status")),
                         HasRead = reader.GetBoolean(reader.GetOrdinal("HasRead")),
+                        NotificationSender = reader.GetString(reader.GetOrdinal("NotificationSender")),
                     };
                     notifications.Add(notification);
                 }
             }   
-
             return notifications;
         }
-
 
         public async Task<IEnumerable<AppNotificationModel>> GetByUserIdAsync(int userId)
         {
@@ -99,9 +91,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             {
                 new SqlParameter("@UserID", userId),
             };
-
             List<AppNotificationModel> notifications = new List<AppNotificationModel>();
-
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_NOTIFICATION_BY_ID_QUERY, parameters))
             {
                 while (await reader.ReadAsync())
@@ -116,37 +106,28 @@ namespace DataAccessLayer.SkillsForce.DAL
                         Status = reader.IsDBNull(reader.GetOrdinal("Status")) ? string.Empty : reader.GetString(reader.GetOrdinal("Status")),
                         HasRead = reader.GetBoolean(reader.GetOrdinal("HasRead")),
                         CreateTimeStamp = reader.GetDateTime(reader.GetOrdinal("CreateTimeStamp")),
+                        NotificationSender = reader.GetString(reader.GetOrdinal("NotificationSender")),
                     };
                     notifications.Add(notification);
                 }
             }
-
             return notifications;
         }
 
         public async Task<int> MarkNotificationAsReadAsync(int notificationId)
         {
-            const string UPDATE_NOTIFICATION_QUERY = @"
-        UPDATE [dbo].[AppNotification] 
-        SET [HasRead] = 1
-        WHERE [AppNotificationID] = @AppNotificationID";
-
+            const string UPDATE_NOTIFICATION_QUERY = @"UPDATE [dbo].[AppNotification] SET [HasRead] = 1 WHERE [AppNotificationID] = @AppNotificationID";
             List<SqlParameter> parameters = new List<SqlParameter>
             {
                 new SqlParameter("@AppNotificationID", notificationId),
             };
-
             return await _dbCommand.InsertUpdateDataAsync(UPDATE_NOTIFICATION_QUERY, parameters);
         }
 
         public async Task<int> GetUnreadNotificationCountAsync(int userId)
         {
-            const string GET_UNREAD_NOTIFICATION_COUNT_QUERY = @"
-                                                                SELECT COUNT(*) As UnreadNotifications
-                                                                FROM [dbo].[AppNotification] 
-                                                                WHERE UserID = @UserID AND HasRead = 0";
+            const string GET_UNREAD_NOTIFICATION_COUNT_QUERY = @"SELECT COUNT(*) As UnreadNotifications FROM [dbo].[AppNotification] WHERE UserID = @UserID AND HasRead = 0";
             var parameters = new List<SqlParameter> { new SqlParameter("@UserID", userId) };
-
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_UNREAD_NOTIFICATION_COUNT_QUERY, parameters))
             {
                 if (await reader.ReadAsync())
@@ -154,7 +135,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                     return reader.GetInt32(reader.GetOrdinal("UnreadNotifications"));
                 }
             }
-
             return -1;
         }
 
@@ -170,7 +150,6 @@ namespace DataAccessLayer.SkillsForce.DAL
 
                 case NotificationType.Enrollment:
                     return enrollment.ManagerID;
-                // Add more cases for other notification types if needed
 
                 default:
                     return enrollment.ManagerID;
@@ -191,15 +170,13 @@ namespace DataAccessLayer.SkillsForce.DAL
                 case NotificationType.Confirmation:
                     return "Enrollment Confirmed";
 
-                case NotificationType.Enrollment: // Handle the new Enrollment type
+                case NotificationType.Enrollment: 
                     return "Training Enrollment";
-
 
                 default:
                     return "New Notification";
             }
         }
-
 
         private string GetNotificationStatus(NotificationType notificationType)
         {
@@ -214,17 +191,15 @@ namespace DataAccessLayer.SkillsForce.DAL
                 case NotificationType.Confirmation:
                     return "Confirmed";
 
-                case NotificationType.Enrollment: // Handle the new Enrollment type
+                case NotificationType.Enrollment: 
                     return "Enrolled";
-                // Add more cases for other notification types if needed
-
+  
                 default:
                     return "New";
             }
         }
 
-
-        public string ConstructNotificationMessage(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
+        private string ConstructNotificationMessage(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
             int relevantUserId = GetRelevantUserId(enrollment, notificationType);
 
@@ -234,7 +209,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                     return $"Your enrollment for '{enrollment.TrainingName}' has been approved by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}.";
 
                 case NotificationType.Rejection:
-                    return $"Your Rejection for '{enrollment.TrainingName}' has been rejected. Reason: {enrollment.DeclineReason}";
+                    return $"Your enrollment for '{enrollment.TrainingName}' has been rejected. Reason: {enrollment.DeclineReason}";
 
                 case NotificationType.Confirmation:
                     return $"Your enrollment for '{enrollment.TrainingName}' has been confirmed by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}.";

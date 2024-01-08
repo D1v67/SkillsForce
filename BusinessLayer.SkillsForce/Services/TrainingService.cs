@@ -88,7 +88,7 @@ namespace BusinessLayer.SkillsForce.Services
             return await _trainingDAL.GetAllTrainingsByRegistrationDeadlineAsync(registrationDeadline, isCronJob);
         }
 
-        public async Task<IEnumerable<TrainingModel>> GetAllTrainingsEnrolledByUserAsync(int id)
+        public async Task<IEnumerable<TrainingEnrollmentViewModel>> GetAllTrainingsEnrolledByUserAsync(int id)
         {
             return await _trainingDAL.GetAllTrainingsEnrolledByUserAsync(id);
         }

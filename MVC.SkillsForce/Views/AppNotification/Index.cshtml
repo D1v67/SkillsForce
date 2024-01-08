@@ -19,7 +19,7 @@
 
     .notification:hover {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        background-color: #f9f9f9; /* Hover effect color */
+        background-color: #ffd583; /* Hover effect color */
     }
 
     .notification h5 {
@@ -45,6 +45,33 @@
         max-height: 600px;
         overflow-y: auto;
     }
+
+    .sender-text {
+        font-weight: bold;
+        font-size: 16px; /* Adjust the size as needed */
+    }
+
+    .subject-text {
+        margin-left: 60px;
+        font-weight: bold;
+        font-size: 14px; /* Adjust the size as needed */
+    }
+
+    .received-text {
+        float: right;
+        font-size: 12px; /* Adjust the size as needed */
+
+
+    }
+
+    .message-text {
+        margin-left: 20px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        color: #555;
+    }
 </style>
 
 @if (Session["FirstName"] != null)
@@ -66,6 +93,24 @@
 
     <div id="notificationList">
         <!-- Notifications will be dynamically added here -->
+    </div>
+</div>
+
+
+<!-- Bootstrap Modal for displaying full notification message -->
+<div class="modal fade " id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="notificationModalLabel">Notification Message</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="notificationMessage"></p>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -96,35 +141,37 @@
             success: function (notifications) {
                 notifications.forEach(function (notification) {
                     var notificationDiv = $('<div>').attr('id', 'notification_' + notification.AppNotificationID)
-                        .addClass('notification');
+                        .addClass('notification list-group-item');
+                    var senderSubjectTimeDiv = $('<div>').addClass('sender-subject-time');
 
-                    var title = $('<h5>').text(notification.NotificationMessage);
-                    var time = $('<p>').text('Received at: ' + formatDateTime(notification.CreateTimeStamp));
+                    var sender = $('<span>').text(notification.NotificationSender).addClass('sender-text');
+                    var subject = $('<span>').text(' ' + notification.NotificationSubject).addClass('subject-text');
+                    var message = $('<span>').text(truncateText(notification.NotificationMessage, 30)).addClass('message-text');
+                    var time = $('<span>').text(formatDateTime(notification.CreateTimeStamp)).addClass('received-text');
 
-                    notificationDiv.append(title, time);
+                    senderSubjectTimeDiv.append(sender, subject, message, time);
+                    notificationDiv.append(senderSubjectTimeDiv);
+
+
 
                     if (notification.HasRead === false) {
                         notificationDiv.addClass('unread-notification');
                         notificationDiv.click(function () {
-                            $.ajax({
-                                url: '/AppNotification/MarkNotificationAsRead',
-                                method: 'POST',
-                                data: { notificationId: notification.AppNotificationID, userId: userId },
-                                success: async function (response) {
-                                    // Notification marked as read
-                                    notificationDiv.removeClass('unread-notification');
-                                    // Update session variable for unread notification count
-                                    //await updateUnreadNotificationCount();
+                            $('#notificationMessage').text(notification.NotificationMessage);
+                            $('#notificationModal').modal('show');
 
-                                    window.location.href = response.redirectUrl;
-                                },
-                                error: function (error) {
-                                    console.error('Error marking notification as read:', error);
-                                }
+                            // Set a callback for when the modal is hidden
+                            $('#notificationModal').on('hidden.bs.modal', function () {
+                                // Mark the notification as read
+                                markNotificationAsRead(notification.AppNotificationID, notificationDiv);
                             });
                         });
                     } else {
                         notificationDiv.addClass('read-notification');
+                        notificationDiv.click(function () {
+                            $('#notificationMessage').text(notification.NotificationMessage);
+                            $('#notificationModal').modal('show');
+                        });
                     }
 
                     $('#notificationList').append(notificationDiv);
@@ -134,5 +181,31 @@
                 console.error('Error fetching notifications:', error);
             }
         });
+
+        function markNotificationAsRead(notificationId, notificationDiv) {
+            $.ajax({
+                url: '/AppNotification/MarkNotificationAsRead',
+                method: 'POST',
+                data: { notificationId: notificationId, userId: userId },
+                success: function (response) {
+                    // Update session variable for unread notification count
+                    //await updateUnreadNotificationCount();
+                    notificationDiv.removeClass('unread-notification');
+                    window.location.href = response.redirectUrl;
+                },
+                error: function (error) {
+                    console.error('Error marking notification as read:', error);
+                }
+            });
+        }
+
+
+        // Function to truncate text to a specified length
+        function truncateText(text, maxLength) {
+            if (text.length > maxLength) {
+                return text.substring(0, maxLength) + '  . . . ';
+            }
+            return text;
+        }
     });
 </script>

@@ -51,23 +51,24 @@
                 line-height: 30px;
             }
 
-        .navbar-toggler-icon {
+/*        .navbar-toggler-icon {
             background-color: #ffffff !important; 
-        }
+        }*/
 
         .navbar {
             background-color: #0047AB !important; 
         }
 
         .gradient-background {
-            background: linear-gradient(90deg, rgba(70,150,191,1) 0%, rgba(65,126,193,1) 50%, rgba(22,95,217,1) 100%, rgba(0,212,255,1) 100%); 
-            padding: 20px; 
-            padding-left:150px;
-            color: #fff; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+            background: linear-gradient(90deg, rgba(70,150,191,1) 0%, rgba(65,126,193,1) 50%, rgba(22,95,217,1) 100%, rgba(0,212,255,1) 100%);
+            padding: 20px;
+            padding-left: 60px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            min-height: 70px;
         }
 
         .greeting-text {
@@ -77,7 +78,7 @@
             position: relative;
             z-index: 1;
             min-height: 50px;
-            padding:0px;
+            padding:2px;
         }
 
             .overlay-container::before {
@@ -90,8 +91,68 @@
                 background: rgba(0, 0, 0, 0.5); 
                 z-index: -1;
                 
-                border-radius: 15px;
+                border-radius: 10px;
             }
+
+        .custom-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding: 5px 30px 5px 10px; /* Adjust padding as needed */
+            border: 1px solid #ccc; /* Add border styling as needed */
+            background-color: transparent; /* Set background-color to transparent */
+        }
+
+        .arrow-down {
+            position: absolute;
+            top: 50%;
+            right: 10px; /* Adjust the position of the arrow as needed */
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent; /* Adjust the size of the arrow as needed */
+            border-right: 6px solid transparent;
+            border-top: 6px solid #333; /* Adjust the color of the arrow as needed */
+            pointer-events: none; /* Make sure the arrow doesn't interfere with the dropdown */
+        }
+
+        .custom-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding: 5px 30px 5px 10px; /* Adjust padding as needed */
+            border: 1px solid transparent; /* Add border styling as needed */
+            background-color: transparent; /* Set background-color to transparent */
+            color: white;
+        }
+
+        .arrow-down {
+            position: absolute;
+            top: 50%;
+            right: 10px; /* Adjust the position of the arrow as needed */
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent; /* Adjust the size of the arrow as needed */
+            border-right: 6px solid transparent;
+            border-top: 6px solid #333; /* Adjust the color of the arrow as needed */
+            pointer-events: none; /* Make sure the arrow doesn't interfere with the dropdown */
+        }
+
+        select option {
+            background-color: white; /* Set background-color of options to black */
+            color: black; /* Set text color of options to white */
+        }
     </style>
 
 
@@ -109,10 +170,8 @@
                 </div>
                 <div class="modal-body">
                     <p>Your session has expired due to inactivity. Please log in again.</p>
-                    <!-- Add any additional friendly message content here -->
                 </div>
                 <div class="modal-footer">
-                    <!-- Add a login button that redirects to the login controller method -->
                     <button type="button" class="btn btn-primary" onclick="redirectToLogin()">Login</button>
                 </div>
             </div>
@@ -120,35 +179,34 @@
     </div>
 
     <script>
-        // Function to redirect to the login controller method
         function redirectToLogin() {
-            window.location.href = '/Account/Index'; // Adjust the URL based on your application's routing
+            window.location.href = '/Account/Index';
         }
     </script>
 
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-md navbar-toggleable-md navbar-dark bg-dark">
         <div class="container-fluid">
             <button class="btn btn-link nav-link" data-bs-toggle="offcanvas" data-bs-target="#userProfileCanvas">
-                <!-- User Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="white" class="bi bi-person-circle" viewBox="0 0 16 16">
-                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                <!-- Hamburger Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-list" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
                 </svg>
 
             </button>
 
             <strong>@Html.ActionLink("SkillsForce", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })</strong>
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
 
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav">
+            <div class="collapse navbar-collapse d-md-inline-flex justify-content-between">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li class="nav-item">@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li class="nav-item">@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+
+
 
                     @if (Session["CurrentRole"] != null && (Session["CurrentRole"].ToString() == "Admin" || Session["CurrentRole"].ToString() == "Manager"))
                     {
@@ -156,32 +214,30 @@
                     }
                 </ul>
 
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav">
+
                     @if (Session["UserId"] != null)
                     {
+                        <li class="nav-item">
 
-
-                        if (Session["CurrentRole"].ToString() == "Admin")
+                            <button type="button" class="btn btn-link nav-link position-relative" id="inboxButton">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
+                                </svg>
+                                <span class="position-absolute top-10 start-90 translate-middle badge rounded-pill bg-danger" style="top: 10px; transform: translateX(-50%);">
+                                    @Session["UnreadNotificationCount"]
+                                    <span class="visually-hidden">unread messages</span>
+                                </span>
+                            </button>
+                        </li>
+                        <li class="ml-2"></li>
+                        <li class="ml-2"></li>
+                        if (Session["UserId"] != null && (Session["CurrentRole"].ToString() == "Admin"))
                         {
-                            @*<li class="nav-item">
-                       
-                                <button type="button" class="btn btn-primary position-relative" id="inboxButton">
-                                    Inbox
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-
-                                        @Session["UnreadNotificationCount"]
-
-                                        <span class="visually-hidden">unread messages</span>
-                                    </span>
-                                </button>
-                            </li>*@
-
 
                             <li class="nav-item">@Html.ActionLink("Dashboard", "Index", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
                         }
 
-
-                        <li class="nav-item">@Html.ActionLink("Logout", "Logout", "Account", new { area = "" }, new { @class = "nav-link" })</li>
                         <li class="ml-2"></li>
                         <li class="ml-2"></li>
                         <li class="ml-2"></li>
@@ -191,7 +247,7 @@
                             <!-- User Profile Button -->
                             <button class="btn btn-link nav-link" data-bs-toggle="offcanvas" data-bs-target="#userProfileCanvas">
                                 <!-- User Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="white" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="white" class="bi bi-person-circle" viewBox="0 0 16 16">
                                     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
                                     <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
                                 </svg>
@@ -200,6 +256,8 @@
                         <li class="nav-item no-hover">
                             <span class="nav-link">@Session["FirstName"]  @Session["LastName"]</span>
                         </li>
+
+                        <li class="nav-item">@Html.ActionLink("Logout", "Logout", "Account", new { area = "" }, new { @class = "nav-link" })</li>
                     }
                     else
                     {
@@ -211,6 +269,8 @@
             </div>
         </div>
     </nav>
+
+    <!-- Off-canvas menu content -->
     <!-- Off-canvas menu content -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="userProfileCanvas" aria-labelledby="userProfileCanvasLabel">
         <div class="offcanvas-header">
@@ -218,28 +278,28 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <!-- Add user profile content here -->
-            <p>@Session["FirstName"] @Session["LastName"]</p>
+
+            <p class="fw-bold ">@Session["FirstName"] @Session["LastName"]</p>
             <p>Other user details...</p>
 
             @if (Session["FirstName"] != null)
             {
-                <button type="button" class="btn btn-primary position-relative" id="inboxButton">
-                    Inbox
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                @*<button type="button" class="btn btn-primary position-relative" id="inboxButton">
+                        Inbox
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 
-                        @Session["UnreadNotificationCount"]
+                            @Session["UnreadNotificationCount"]
 
-                        <span class="visually-hidden">unread messages</span>
-                    </span>
-                </button>
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    </button>*@
             }
 
-            @Html.ActionLink("Notifications", "Index", "AppNotification", new { area = "" }, new { @class = "nav-link" })
-
+            @*@Html.ActionLink("Notifications", "Index", "AppNotification", new { area = "" }, new { @class = "btn btn-link" })*@
 
         </div>
     </div>
+
 
     <script>
     // Add click event listener to the button if it exists
@@ -253,20 +313,90 @@
     </script>
 
 
-
     <div class="gradient-background container-fluid">
-        <div class="overlay-container ">
-            @if (Session["FirstName"] != null)
-            {
+
+        @if (Session["FirstName"] != null)
+        {
+            <div class="overlay-container ">
                 <h1>Hello, @Session["FirstName"].</h1>
 
+                <p class="greeting-text"></p>
 
+            </div>
+        }
+        @if (Session["FirstName"] != null)
+        {
+            <div class="d-flex align-items-center">
+                @if (((List<string>)Session["UserRoles"]).Count == 1)
+                {
+                    <div>
+                        <!-- Display current role directly if there is only one role -->
+                        <strong> @Session["CurrentRole"]</strong> 
+                    </div>
+                }
+                else
+                {
+                    <div class="custom-dropdown">
+                        <select id="roleDropdown" onchange="changeRole(this)">
+                            <!-- Populate dropdown options with roles using Ajax -->
+                        </select>
+                        <div class="arrow-down"></div>
+                    </div>
+                }
+            </div>
+        }
+
+        <script>
+    // Function to populate roles and set the current role on page load
+    $(document).ready(function () {
+        // Make an Ajax call to retrieve roles from session
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetRoles", "Account")',
+            success: function (roles) {
+                // Populate dropdown options with roles
+                var dropdown = $("#roleDropdown");
+                $.each(roles, function (index, role) {
+                    dropdown.append($("<option />").val(role).text(role));
+                });
+
+                // Set the current role in the dropdown
+                var currentRole = '@Session["CurrentRole"]';
+                if (currentRole) {
+                    dropdown.val(currentRole);
+                }
+            },
+            error: function (error) {
+                // Handle error if needed
+                console.error("Error retrieving roles");
             }
+        });
+    });
 
-            <p class="greeting-text"></p>
+    // Function to handle role change
+    function changeRole(select) {
+        var selectedRole = select.value;
 
-        </div>
-        <h6> @Session["CurrentRole"]</h6>
+        // Make an Ajax call to set the current role in the controller
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SetRole", "Account")',
+            data: { selectedRole: selectedRole },
+            success: function (result) {
+                // Handle success if needed
+                console.log("Role changed successfully");
+
+                location.reload();
+            },
+            error: function (error) {
+                // Handle error if needed
+                console.error("Error changing role");
+            }
+        });
+    }
+        </script>
+
+
     </div>
 
     <div class="container-fluid">

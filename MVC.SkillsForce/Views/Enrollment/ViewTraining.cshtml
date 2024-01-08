@@ -240,6 +240,24 @@
 </div>
 
 
+<div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registrationModalLabel">View Prerequisite Attachment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body" id="attachmentModalBody"></div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
@@ -470,14 +488,19 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         }
 
 
+
+
+
         function updateTableAlreadyEnrolled(data) {
             var cardContainer = document.querySelector('#trainingCardContainerAlreadyEnrolled');
             cardContainer.innerHTML = '';
 
             data.forEach(function (item) {
-                let currentDate = new Date().toJSON().slice(0, 10);
-                var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
-                var isEnrollmentOpen = registrationDeadlineDate >= new Date();
+                //let currentDate = new Date().toJSON().slice(0, 10);
+                //var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
+                //var isEnrollmentOpen = registrationDeadlineDate >= new Date();
+
+                //var startDate = new Date(parseInt(item.StartDate.substr(6)));
 
                 var col = document.createElement('div');
                 col.className = 'col-md-4 mb-3';
@@ -491,7 +514,9 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                         </div>
                         <div class="card-body">
                             <p class="card-text">${item.TrainingDescription}</p>
-                            <p class="card-text"><strong>Start Date :</strong> </p>
+                            <p class="card-text"><strong>Registration Deadline:</strong> ${formatDateTime(item.RegistrationDeadline)}</p>
+                            <p class="card-text"><strong>Start Date:</strong> ${formatDateTime(item.StartDate)}</p>
+                             ${true ? `<button type="button"  class="btn btn-info view-attachments-btn" data-bs-toggle="modal" data-bs-target="#attachmentModal"  data-training-id="${item.EnrollmentID}" onclick="showAttachments(${item.EnrollmentID})">View More</button>` : '<span style="color: red;">Enrollment Closed</span>'}
                         </div>
                      `;
                 // ...
@@ -502,6 +527,18 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         }
 
 
+        function formatDateTime(timestamp) {
+            // Extracting only unix timestamp
+            var match = timestamp.match(/\d+/);
+            var numericPart = match ? match[0] : null;
+
+            // Make sure to treat as millisecond
+            const dateObject = new Date(parseInt(numericPart, 10))
+            const day = String(dateObject.getDate()).padStart(2, '0')
+            const month = String(dateObject.getMonth() + 1).padStart(2, '0')
+            const year = dateObject.getFullYear()
+            return `${year}-${month}-${day}`
+        }
         // format date in 'YYYY-MM-DD'
         function formatDate(date) {
             var year = date.getFullYear();
@@ -510,11 +547,60 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             return year + '-' + month + '-' + day;
         }
 
+
+
     });
 </script>
 
 
 <script>
+    function showAttachments(enrollmentId) {
+
+        console.log(enrollmentId)
+        $.ajax({
+            url: '/Attachment/GetAllAttachmentByEnrollmentID',
+            type: 'GET',
+            data: { enrollmentID: parseInt(enrollmentId) },
+            dataType: "json",
+            success: function (result) {
+                var attachments = result.result;
+                var modalBody = $('#attachmentModalBody');
+                modalBody.empty();
+
+                for (let i = 0; i < attachments.length; i++) {
+                    var attachmentInfo = attachments[i];
+                    var viewButton = $('<button class="btn btn-info view-attachment-btn" data-attachment-id="' + attachmentInfo.AttachmentID + '">View</button>');
+                    var downloadButton = $('<button class="btn btn-success download-attachment-btn ml-2" data-attachment-id="' + attachmentInfo.AttachmentID + '">Download</button>');
+
+                    var attachmentInfoContainer = $('<div class="attachment-info-container"></div>');
+                    attachmentInfoContainer.append('<p class="prerequisite-name">Prerequisite Name: ' + attachmentInfo.PrerequisiteName + '</p>');
+                    attachmentInfoContainer.append('<p class="file-name">File Name: ' + attachmentInfo.FileName + '</p>');
+                    attachmentInfoContainer.append(viewButton);
+                    attachmentInfoContainer.append(downloadButton);
+
+                    modalBody.append(attachmentInfoContainer);
+
+                    viewButton.click(function () {
+                        var attachmentId = $(this).data("attachment-id");
+                        window.open('/Attachment/ViewAttachmentByAttachmentID/' + attachmentId, '_blank');
+                    });
+
+                    downloadButton.click(function () {
+                        var attachmentId = $(this).data("attachment-id");
+                        window.location.href = '/Attachment/DownloadAttachmentByAttachmentID/' + attachmentId;
+                    });
+                }
+
+                $('#attachmentModal').modal('show');
+            },
+            error: function (e) {
+                alert('Error fetching attachments.');
+            }
+        });
+    }
+
+
+
     function enroll(trainingId) {
 
         /*$("#trainingInfo").text("Enroll in Training: " + trainingId);*/

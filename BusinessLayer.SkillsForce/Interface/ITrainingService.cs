@@ -19,7 +19,7 @@ namespace BusinessLayer.SkillsForce.Interface
         Task<int> GetCapacityIDAsync(int id);
         Task<int> GetRemainingCapacityIDAsync(int trainingID);
         Task<IEnumerable<TrainingModel>> GetAllTrainingsByRegistrationDeadlineAsync(DateTime registrationDeadline, bool isCronJob);
-        Task<IEnumerable<TrainingModel>> GetAllTrainingsEnrolledByUserAsync(int id);
+        Task<IEnumerable<TrainingEnrollmentViewModel>> GetAllTrainingsEnrolledByUserAsync(int id);
         Task<IEnumerable<TrainingModel>> GetAllTrainingsNotEnrolledByUserAsync(int id);
         Task<bool> IsTrainingNameAlreadyExistsAsync(string trainingName);
         Task<TrainingViewModel> GetTrainingWithPrerequisitesAsync(int trainingId);

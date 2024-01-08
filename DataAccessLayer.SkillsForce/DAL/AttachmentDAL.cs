@@ -46,7 +46,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                     A.EnrollmentID, 
                     A.PrerequisiteID, 
                     A.FileName,
-                    P.PrerequisiteName -- Add the PrerequisiteName field
+                    P.PrerequisiteName
                 FROM Attachment A
                 JOIN Prerequisite P ON A.PrerequisiteID = P.PrerequisiteID
                 WHERE A.EnrollmentID = @EnrollmentID";

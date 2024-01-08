@@ -17,5 +17,6 @@ namespace BusinessLayer.SkillsForce.Interface
         Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int trainingID);
         Task RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob);
         Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredEnrollmentsWithDetailsAsync(int trainingId, string statusFilter);
+        Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsAsync(int userId);
     }
 }

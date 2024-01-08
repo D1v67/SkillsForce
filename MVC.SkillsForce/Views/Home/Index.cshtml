@@ -43,7 +43,7 @@
         <div class="col-md-4">
             <div class="card shadow">
                 <div class="card-body">
-                    <h2 class="card-title" id="gettingStartedTitle">Getting Started</h2>
+                    <h2 class="card-title" id="gettingStartedTitle">Start Learning</h2>
                     <p class="card-text">
                         Start Learning Today
                     </p>
@@ -68,23 +68,28 @@
                     <div class="card-body">
                         <h2 class="card-title" id="librariesTitle"> Trainings</h2>
                         <p class="card-text">View your Selected Trainings</p>
-                       <a class="btn btn-primary" href="@Url.Action("ViewTraining", "Enrollment", new { area = "" })">View &raquo;</a>
+                        <a class="btn btn-primary" href="@Url.Action("ViewTraining", "Enrollment", new { area = "" })">View &raquo;</a>
                     </div>
                 </div>
             </div>
 
+            if (Session["CurrentRole"].ToString() == "Employee")
+            {
+                <div class="col-md-4">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h2 class="card-title" id="librariesTitle"> My Enrollments</h2>
+                            <p class="card-text">View your Confirmed Enrollments</p>
+                            <a class="btn btn-primary" href="@Url.Action("ViewConfirmedEnrollments", "Enrollment", new { area = "" })">View &raquo;</a>
+                        </div>
+                    </div>
+                </div>
+
+            }
         }
 
 
-        <div class="col-md-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h2 class="card-title" id="hostingTitle">Web Hosting</h2>
-                    <p class="card-text">Find reliable and affordable web hosting .</p>
-                    <a class="btn btn-outline-primary" href="https://go.microsoft.com/fwlink/?LinkId=301867">Try Now &raquo;</a>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <div class="row mt-5">

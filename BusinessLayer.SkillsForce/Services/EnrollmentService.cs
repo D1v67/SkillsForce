@@ -107,5 +107,10 @@ namespace BusinessLayer.SkillsForce.Services
                 return await _enrollmentDAL.GetAllFilteredEnrollmentsWithDetailsAsync(trainingId, statusFilter);
             }
         }
+
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsAsync(int userId)
+        {
+           return await _enrollmentDAL.GetAllConfirmedEnrollmentsAsync(userId);
+        }
     }
 }

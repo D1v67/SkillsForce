@@ -119,8 +119,8 @@ namespace MVC.SkillsForce.Controllers
         [AuthorizePermission(Permissions.ViewTraining)]
         public async Task<JsonResult> GetTrainingsAlreadyEnrolledByUser(int id)
         {
-            IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingsEnrolledByUserAsync(id);
-            return Json(trainings ?? Enumerable.Empty<TrainingModel>(), JsonRequestBehavior.AllowGet);
+            IEnumerable<TrainingEnrollmentViewModel> trainings = await _trainingService.GetAllTrainingsEnrolledByUserAsync(id);
+            return Json(trainings ?? Enumerable.Empty<TrainingEnrollmentViewModel>(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -234,8 +234,20 @@ namespace MVC.SkillsForce.Controllers
             {
                 return Json(new { error = ex.Message });
             }
+        }
 
+        [AuthorizePermission(Permissions.ViewTraining)]
+        public ActionResult ViewConfirmedEnrollments()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        [AuthorizePermission(Permissions.ViewTraining)]
+        public async Task<JsonResult> ViewConfirmedEnrollmentsData(int id)
+        {
+            IEnumerable<EnrollmentViewModel> confirmedEnrollments = await _enrollmentService.GetAllConfirmedEnrollmentsAsync(id);
+            return Json(confirmedEnrollments, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -18,6 +18,6 @@ namespace Common.SkillsForce.Entity
 
         public DateTime CreateTimeStamp { get; set; }
 
-        public string SenderName { get; set; }
+        public string NotificationSender { get; set; }
     }
 }

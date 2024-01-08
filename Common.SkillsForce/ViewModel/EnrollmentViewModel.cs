@@ -17,5 +17,7 @@ namespace Common.SkillsForce.ViewModel
         public bool IsSelected { get; set; }
         public int ApprovedByUserId { get; set; }
         public int DeclinedByUserId { get; set; }
+        public DateTime TrainingRegistrationDeadline { get; set; }
+        public DateTime TrainingStartDate { get; set; }
     }
 }
