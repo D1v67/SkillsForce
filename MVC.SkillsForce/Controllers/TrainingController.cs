@@ -36,7 +36,7 @@ namespace MVC.SkillsForce.Controllers
             return Json(trainings, JsonRequestBehavior.AllowGet);
         }
 
-        [AuthorizePermission(Permissions.GetTraining)]
+        [AuthorizePermission(Permissions.ViewTrainingDetails)]
         public async Task<ActionResult> GetAllTrainingWithPrerequisites()
         {
             IEnumerable<TrainingViewModel> trainings = await _trainingService.GetAllTrainingWithPrerequisitesAsync();

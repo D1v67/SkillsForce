@@ -3,6 +3,19 @@
     ViewBag.Title = "Enrollment Page";
 }
 
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="text/javascript" src="
+    https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+@*
+    https://codeseven.github.io/toastr/*@
+<script type="text/javascript" src="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link rel="stylesheet" href="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
 
 <div class="container-fluid mt-3">
     <div class="row justify-content-center">
@@ -33,6 +46,9 @@
 
 
 <br />
+
+<button class="btn btn-success export-btn">Export CSV</button>
+
 
 <div class="container-fluid mt-3">
     <div id="enrollmentTableContainer">
@@ -90,7 +106,9 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             viewAllEnrollments();
         });
 
-
+        $('.export-btn').on('click', function () {
+            exportSelectedEmployeeByTrainingCSV();
+        });
 
         $('#enrollmentTable').DataTable({
             "ajax": {
@@ -251,6 +269,10 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             console.log(selectedTraining)
             console.log(selectedStatus)
 
+
+
+            $('#enrollmentTable').attr('data-selected-training', selectedTraining);
+
             $.ajax({
                 url: '/Enrollment/FilterEnrollments', // Update the URL with your actual controller method
                 type: 'POST',
@@ -259,6 +281,10 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
                     console.log(data)
                     updateDataTable(data);
+                    // Save selected training ID as a data attribute
+
+
+                    console.log('in filter succes ' + selectedTraining)
                 },
                 error: function (xhr, textStatus, errorThrown) {
                     console.error('Filter error:', textStatus, errorThrown);
@@ -276,6 +302,9 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         }
 
         function viewAllEnrollments() {
+            $('#enrollmentTable').attr('data-selected-training', null);
+
+
             $.ajax({
                 url: '/Enrollment/GetAllEnrollmentsData',
                 type: 'POST',
@@ -285,14 +314,67 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
                     // Update the DataTable with all enrollments
                     updateDataTable(data);
+
+                    //$('.export-btn').prop('disabled', false);
                 },
                 error: function (error) {
                     // Handle errors if necessary
                     console.error('Error:', error.responseText);
+
+                    //$('.export-btn').prop('disabled', false);
                 }
             });
         }
 
+
+        function exportSelectedEmployeeByTrainingCSV() {
+            var selectedTraining = $('#enrollmentTable').attr('data-selected-training');
+
+            console.log('in expor tfunc ' + selectedTraining)
+            // Check if the selectedTraining is -1 (set when "View All" is selected)
+            if (selectedTraining === -1) {
+                // Handle the case where "View All" is selected
+                console.log('View All is selected. Do appropriate handling.');
+                return;
+            }
+
+
+            if (!selectedTraining) {
+                // Handle the case where no training is selected
+                console.log('No training selected for export.');
+                toastr.error('No training selected for export.')
+                return;
+            }
+
+            // Disable the export button to prevent multiple clicks
+            //$('.export-btn').prop('disabled', true);
+
+            $.ajax({
+                url: '/ExportData/ExportSelectedEmployeeByTrainingCSV', // Update the URL with your actual controller method
+                type: 'POST',
+                data: { trainingId: selectedTraining },
+                success: function () {
+                    console.log('Export successful.');
+                    // You can handle success actions here if needed
+
+                    //$('.export-btn').prop('disabled', false);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Export error:', textStatus, errorThrown);
+
+                    // Handle the error here, you can display a message or perform any other action
+                    if (xhr.status === 400) {
+                        // Bad Request - Handle validation errors
+                        console.log('Validation errors:', xhr.responseJSON);
+                    } else {
+                        // Handle other errors
+                        console.log('Unexpected error. Please try again later.');
+                    }
+
+                    //$('.export-btn').prop('disabled', false);
+                }
+            });
+        }
 
     });
 </script>

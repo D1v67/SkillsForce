@@ -399,6 +399,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                     }
                 })
                 .then(data => {
+                    console.log(data)
                     if (searchTerm) {
                         data = _.filter(data, training => training.TrainingName.toLowerCase().includes(searchTerm.toLowerCase()));
                     }
@@ -461,6 +462,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             data.forEach(function (item) {
                 let currentDate = new Date().toJSON().slice(0, 10);
                 var registrationDeadlineDate = new Date(parseInt(item.RegistrationDeadline.substr(6)));
+                var startDate = new Date(parseInt(item.StartDate.substr(6)));
                 var isEnrollmentOpen = registrationDeadlineDate >= new Date();
 
                 var col = document.createElement('div');
@@ -475,6 +477,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                         </div>
                         <div class="card-body">
                             <p class="card-text">${item.TrainingDescription}</p>
+                            <p class="card-text"><strong>Start Date:</strong> ${formatDate(startDate)}</p>
                             <p class="card-text"><strong>Registration Deadline:</strong> ${formatDate(registrationDeadlineDate)}</p>
 
                             ${isEnrollmentOpen ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${item.TrainingID}" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}

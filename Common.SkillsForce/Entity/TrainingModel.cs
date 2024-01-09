@@ -12,5 +12,6 @@ namespace Common.SkillsForce.Entity
         public DateTime RegistrationDeadline { get; set; }
         public int Capacity { get; set; }
         public int DepartmentID { get; set; }
+        public DateTime StartDate { get; set; }
     }
 }

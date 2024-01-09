@@ -26,6 +26,9 @@
             {
                 <h3>@group.Key  <span id="@group.First().TrainingID" class="capacity"></span> </h3> <!-- Display the TrainingName as a heading for the group -->
 
+                <button class="btn btn-success export-btn" data-training-id="@group.First().TrainingID">Export CSV</button>
+
+
                 <script>
                     var trainingId = @group.First().TrainingID;
 
@@ -195,5 +198,35 @@
                     }
                 });
             });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('.export-btn').click(function () {
+                var trainingId = $(this).data('training-id');
+
+                $.ajax({
+                    url: '/ExportData/ExportSelectedEmployeeByTrainingCSV',
+                    type: 'POST',
+                    data: { trainingId: trainingId },
+                    success: function (data) {
+                        if (data.success) {
+                            // Display success message using Toastr or any other method
+                            toastr.success(data.message);
+                        } else {
+                            // Display error message using Toastr or any other method
+                            toastr.error(data.message);
+                        }
+                    },
+                    error: function () {
+                        // Handle the AJAX error
+                        console.error('Error exporting CSV');
+                    }
+                });
+            });
+
+            // Existing script for automaticSelectionBtn click event ...
         });
     </script>

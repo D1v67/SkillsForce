@@ -52,6 +52,8 @@ namespace Common.SkillsForce.Enums
         ViewConfirmedEnrollments,
 
         ViewNotification,
-        GetAllNotification
+        GetAllNotification,
+
+        ViewTrainingDetails
     }
 }

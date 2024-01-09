@@ -400,7 +400,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                         TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
                         TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
                         RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
-                        //StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                        StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
                         Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
                         DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
                     };
@@ -474,7 +474,8 @@ ORDER BY T.TrainingName";
                         TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
                         RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
                         Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
-                        DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
+                        DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID")),
+                        StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
                     };
 
                     trainings.Add(training);

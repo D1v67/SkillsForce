@@ -10,7 +10,6 @@
         align-items: center;
         justify-content: center;
     }
-
 </style>
 <h2>Dashboard</h2>
 
@@ -50,3 +49,46 @@
 
     </div>
 </div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Get the user ID from the session or wherever it's stored
+        var userId = parseInt("@HttpContext.Current.Session["UserID"]");
+
+        // List of permissions to check
+        var permissionsToCheck = ['EditTraining', 'ViewTraining', 'DeleteTraining', 'DeleteEnrollment'];
+
+        // Hide all buttons by default
+        $("button").hide();
+
+        // Make an AJAX call to check the permissions
+        $.ajax({
+            url: "/UserAuthorization/CheckPermissions",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ userId: userId, permissions: permissionsToCheck }),
+            success: function (result) {
+                // Iterate through the result and show buttons accordingly
+                $.each(result, function (permission, hasPermission) {
+                    if (hasPermission) {
+                        // Show the buttons since the user has the permission
+                        $("#" + permission + "Button").show();
+                    }
+                });
+            },
+            error: function (error) {
+                // Handle the error if the AJAX call fails
+                console.error(error.responseText);
+            }
+        });
+    });
+</script>
+
+<!-- Your buttons with corresponding IDs -->
+<button id="EditTrainingButton">Edit Training</button>
+<button id="ViewTrainingButton">View Training</button>
+<button id="DeleteTrainingButton">Delete Training</button>
+<button id="DeleteEnrollmentButton">Delete Enrollment</button>

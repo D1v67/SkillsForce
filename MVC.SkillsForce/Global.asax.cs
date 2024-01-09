@@ -46,10 +46,10 @@ namespace MVC.SkillsForce
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            HangfireAspNet.Use(GetHangfireServers);
+           HangfireAspNet.Use(GetHangfireServers);
 
-            // Let's also create a sample background job
-            // BackgroundJob.Enqueue(() => Debug.WriteLine("Hello world from Hangfire!"));
+            // Let's also Schedule a sample background job
+             BackgroundJob.Enqueue(() => Debug.WriteLine("Hello world from Hangfire!"));
 
             //BackgroundJob.Schedule<IEnrollmentService>(x => x.RunAutomaticSelectionOfApprovedEnrollmentsAsync(true), TimeSpan.FromMinutes(1));
         }
