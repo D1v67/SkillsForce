@@ -159,10 +159,17 @@
                 </div>
             </div>
 
+
+            <!-- Training Cards and Table -->
+            <div id="EnrollmentsMessage" class="alert alert-info mt-3">
+                Trainings you have not enrolled in...
+
+            </div>
+
             <!-- Search and View Buttons -->
             <div class="row mb-3">
                 <div class="col-md-10 d-flex align-items-center">
-                    <div class="input-group">
+                    <div class="input-group searchDiv">
                         <span class="input-group-text" id="searchIcon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
@@ -181,11 +188,7 @@
                 </div>
             </div>
 
-            <!-- Training Cards and Table -->
-            <div id="EnrollmentsMessage" class="alert alert-info mt-3">
-                Trainings you have not enrolled in...
 
-            </div>
 
 
             <div id="trainingCardContainer" class="card-deck mt-5"></div>
@@ -358,6 +361,14 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             console.log("View changed to:", newValue);
 
             $(this).text(newValue === "grid" ? "Grid View" : "List View");
+
+            // Disable or enable the search button based on the current view
+            if (newValue === "grid") {
+                $(".searchDiv").show();
+            } else {
+                $(".searchDiv").hide();
+            }
+
 
             if (newValue === "grid") {
                 $("#trainingCardContainer").show();
