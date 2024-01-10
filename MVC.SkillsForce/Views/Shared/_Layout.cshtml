@@ -346,32 +346,38 @@
             </div>
         }
 
-        <script>
+    <script>
     // Function to populate roles and set the current role on page load
     $(document).ready(function () {
-        // Make an Ajax call to retrieve roles from session
-        $.ajax({
-            type: "GET",
-            url: '@Url.Action("GetRoles", "Account")',
-            success: function (roles) {
-                // Populate dropdown options with roles
-                var dropdown = $("#roleDropdown");
-                $.each(roles, function (index, role) {
-                    dropdown.append($("<option />").val(role).text(role));
-                });
+        // Check if the session is not null before making the AJAX request
+        var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
-                // Set the current role in the dropdown
-                var currentRole = '@Session["CurrentRole"]';
-                if (currentRole) {
-                    dropdown.val(currentRole);
+        if (userId) {
+            // Make an Ajax call to retrieve roles from session
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetRoles", "Account")',
+                success: function (roles) {
+                    // Populate dropdown options with roles
+                    var dropdown = $("#roleDropdown");
+                    $.each(roles, function (index, role) {
+                        dropdown.append($("<option />").val(role).text(role));
+                    });
+
+                    // Set the current role in the dropdown
+                    var currentRole = '@Session["CurrentRole"]';
+                    if (currentRole) {
+                        dropdown.val(currentRole);
+                    }
+                },
+                error: function (error) {
+                    // Handle error if needed
+                    console.error("Error retrieving roles");
                 }
-            },
-            error: function (error) {
-                // Handle error if needed
-                console.error("Error retrieving roles");
-            }
-        });
+            });
+        }
     });
+
 
     // Function to handle role change
     function changeRole(select) {
@@ -394,7 +400,7 @@
             }
         });
     }
-        </script>
+    </script>
 
 
     </div>

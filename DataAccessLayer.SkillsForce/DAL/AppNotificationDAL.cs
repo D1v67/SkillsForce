@@ -199,6 +199,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
         }
 
+
         private string ConstructNotificationMessage(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
             int relevantUserId = GetRelevantUserId(enrollment, notificationType);
@@ -206,22 +207,48 @@ namespace DataAccessLayer.SkillsForce.DAL
             switch (notificationType)
             {
                 case NotificationType.Approval:
-                    return $"Your enrollment for '{enrollment.TrainingName}' has been approved by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}.";
+                    return $"Hello {enrollment.AppUserFirstName} {enrollment.AppUserLastName},\n\nCongratulations! Your enrollment for the '{enrollment.TrainingName}' training program has been approved by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}. We're delighted to share this exciting news with you. Your commitment to continuous learning is truly commendable.";
 
                 case NotificationType.Rejection:
-                    return $"Your enrollment for '{enrollment.TrainingName}' has been rejected. Reason: {enrollment.DeclineReason}";
+                    return $"Hello {enrollment.AppUserFirstName} {enrollment.AppUserLastName},\n\nWe regret to inform you that your enrollment for the '{enrollment.TrainingName}' training program has been rejected. The reason for the rejection is: {enrollment.DeclineReason}. We understand that this might be disappointing, and we encourage you to reach out if you have any questions or if there's anything we can assist you with.";
 
                 case NotificationType.Confirmation:
-                    return $"Your enrollment for '{enrollment.TrainingName}' has been confirmed by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}.";
+                    return $"Hello {enrollment.AppUserFirstName} {enrollment.AppUserLastName},\n\nGreat news! Your enrollment for the '{enrollment.TrainingName}' training program has been confirmed by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}. We're thrilled to have you on board and look forward to your active participation. If you have any further queries or need additional information, feel free to let us know.";
 
-                case NotificationType.Enrollment: // Handle the new Enrollment type
-                    return $"Your employee {enrollment.AppUserFirstName} {enrollment.AppUserLastName} has enrolled for '{enrollment.TrainingName}'.";
+                case NotificationType.Enrollment:
+                    return $"Hello {enrollment.ManagerFirstName} {enrollment.ManagerLastName},\n\nWe are pleased to inform you that your employee, {enrollment.AppUserFirstName} {enrollment.AppUserLastName}, has enrolled for the '{enrollment.TrainingName}' training program. This initiative reflects the dedication to professional development within your team. If you have any specific requirements or would like to offer further support, please don't hesitate to reach out.";
+
                 // Add more cases for other notification types if needed
 
                 default:
                     return "New notification received.";
             }
         }
+
+
+        //private string ConstructNotificationMessage(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
+        //{
+        //    int relevantUserId = GetRelevantUserId(enrollment, notificationType);
+
+        //    switch (notificationType)
+        //    {
+        //        case NotificationType.Approval:
+        //            return $"Your enrollment for '{enrollment.TrainingName}' has been approved by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}.";
+
+        //        case NotificationType.Rejection:
+        //            return $"Your enrollment for '{enrollment.TrainingName}' has been rejected. Reason: {enrollment.DeclineReason}";
+
+        //        case NotificationType.Confirmation:
+        //            return $"Your enrollment for '{enrollment.TrainingName}' has been confirmed by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}.";
+
+        //        case NotificationType.Enrollment: // Handle the new Enrollment type
+        //            return $"Your employee {enrollment.AppUserFirstName} {enrollment.AppUserLastName} has enrolled for '{enrollment.TrainingName}'.";
+        //        // Add more cases for other notification types if needed
+
+        //        default:
+        //            return "New notification received.";
+        //    }
+        //}
 
     }
 }

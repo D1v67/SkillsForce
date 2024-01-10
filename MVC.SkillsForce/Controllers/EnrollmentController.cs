@@ -203,6 +203,29 @@ namespace MVC.SkillsForce.Controllers
         }
 
 
+        //[HttpPost]
+        //public async Task<ActionResult> UploadFiles(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
+        //{
+        //    try
+        //    {
+        //        var validationResult = await _attachmentService.UploadFileAsync(files, EnrollmentID, PrerequisiteIDs);
+
+        //        if (validationResult.IsSuccessful)
+        //        {
+        //            return Json(new { success = true });
+        //        }
+        //        else
+        //        {
+        //            return Json(new { success = false, errors = validationResult.Errors });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle any unexpected exception
+        //        return Json(new { success = false, errors = new List<string> { "An error occurred during file upload." } });
+        //    }
+        //}
+
         [HttpGet]
         [AuthorizePermission(Permissions.GetEnrollment)]
         public JsonResult GetEnrollmentStatusOptions()

@@ -15,6 +15,7 @@
 
     .read-notification {
         background-color: #f2f2f2; /* Light gray for read notifications */
+
     }
 
     .notification:hover {
@@ -74,47 +75,59 @@
     }
 </style>
 
-@if (Session["FirstName"] != null)
-{
-    <button type="button" class="btn btn-primary position-relative" id="inboxButton">
-        Unread
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 
-            @Session["UnreadNotificationCount"]
+<div class="table-responsive container-fluid mt-5 mb-5">
 
-            <span class="visually-hidden">unread messages</span>
-        </span>
-    </button>
-}
+    <div class="container mt-5">
+        @if (Session["FirstName"] != null)
+        {
+            <button type="button" class="btn btn-primary position-relative" id="inboxButton">
+                Unread
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 
+                    @Session["UnreadNotificationCount"]
 
-<div class="container mt-5">
-    <h2>Notifications</h2>
+                    <span class="visually-hidden">unread messages</span>
+                </span>
+            </button>
+        }
 
-    <div id="notificationList">
-        <!-- Notifications will be dynamically added here -->
     </div>
-</div>
 
 
-<!-- Bootstrap Modal for displaying full notification message -->
-<div class="modal fade " id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="notificationModalLabel">Notification Message</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="notificationMessage"></p>
+
+
+    <div class="container mt-5">
+        <h2>Notifications</h2>
+
+        <div id="notificationList">
+            <!-- Notifications will be dynamically added here -->
+        </div>
+    </div>
+
+
+    <!-- Bootstrap Modal for displaying full notification message -->
+    <div class="modal fade " id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notificationModalLabel">Notification Message</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="notificationMessage"></p>
+                </div>
             </div>
         </div>
     </div>
+
 </div>
 
-<script>
+
+
+    <script>
     $(document).ready(function () {
         var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
@@ -132,7 +145,7 @@
             const minutes = String(dateObject.getMinutes()).padStart(2, '0');
             const seconds = String(dateObject.getSeconds()).padStart(2, '0');
 
-            return `${year}-${month}-${day} ${hours}:${minutes}`;
+            return `${year}/${month}/${day},  ${hours}:${minutes}`;
         }
 
         $.ajax({
@@ -142,6 +155,11 @@
                 notifications.forEach(function (notification) {
                     var notificationDiv = $('<div>').attr('id', 'notification_' + notification.AppNotificationID)
                         .addClass('notification list-group-item');
+                    // Add a checkbox
+                    var checkbox = $('<input>').attr('type', 'checkbox').addClass('notification-checkbox');
+                    notificationDiv.append(checkbox);
+
+
                     var senderSubjectTimeDiv = $('<div>').addClass('sender-subject-time');
 
                     var sender = $('<span>').text(notification.NotificationSender).addClass('sender-text');
@@ -208,4 +226,4 @@
             return text;
         }
     });
-</script>
+    </script>
