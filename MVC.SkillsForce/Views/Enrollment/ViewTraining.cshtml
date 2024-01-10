@@ -224,6 +224,7 @@
             <div id="enrollmentsMessage" class="alert alert-info mt-3">
                 <!-- The message will be dynamically updated here -->
             </div>
+
             <!-- Training Cards and Table -->
             <div id="trainingCardContainerAlreadyEnrolled" class="card-deck mt-5"></div>
 
@@ -324,6 +325,9 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                         },
                     },
                 ],
+
+                stateSave: true,
+                "bDestroy": true
                 // Add any additional options you need
             });
         }

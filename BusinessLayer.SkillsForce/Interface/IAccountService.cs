@@ -10,5 +10,6 @@ namespace BusinessLayer.SkillsForce.Interface
         Task<bool> IsUserAuthenticatedAsync(AccountModel model);
         Task<AccountModel> GetUserDetailsWithRolesAsync(AccountModel model);
         Task<ValidationResult> RegisterUserAsync(RegisterViewModel model);
+
     }
 }

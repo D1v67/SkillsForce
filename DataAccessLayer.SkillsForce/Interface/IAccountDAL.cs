@@ -9,5 +9,7 @@ namespace DataAccessLayer.SkillsForce.Interface
         Task<bool> IsUserAuthenticatedAsync(AccountModel model);
         Task<AccountModel> GetUserDetailsWithRolesAsync(AccountModel model);
         Task RegisterAsync(RegisterViewModel model);
+
+        Task<AccountModel> GetUserCredentialsAsync(string email);
     }
 }

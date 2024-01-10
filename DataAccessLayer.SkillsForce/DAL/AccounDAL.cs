@@ -18,6 +18,38 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand = dbCommand;
         }
 
+
+        public async Task<AccountModel> GetUserCredentialsAsync(string email)
+        {
+            const string GET_USER_CREDENTIALS_QUERY = @"SELECT a.HashedPassword, a.SaltValue FROM [User] u INNER JOIN Account a ON u.UserID = a.UserID WHERE u.Email = @Email";
+
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentNullException("Email cannot be null or empty.");
+            }
+
+            List<SqlParameter> parameters = new List<SqlParameter>
+        {
+            new SqlParameter("@Email", email)
+        };
+
+            using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_USER_CREDENTIALS_QUERY, parameters))
+            {
+                if (await reader.ReadAsync())
+                {
+                    byte[] storedHash = (byte[])reader["HashedPassword"];
+                    byte[] storedSalt = (byte[])reader["SaltValue"];
+
+                    return new AccountModel
+                    {
+                        HashedPassword = storedHash,
+                        SaltValue = storedSalt
+                    };
+                }
+            }
+
+            return null;
+        }
         public async Task<bool> IsUserAuthenticatedAsync(AccountModel account)
         {
             const string AUTHENTICATE_USER_QUERY = @"SELECT a.HashedPassword, a.SaltValue FROM [User] u INNER JOIN Account a ON u.UserID = a.UserID WHERE u.Email = @Email";

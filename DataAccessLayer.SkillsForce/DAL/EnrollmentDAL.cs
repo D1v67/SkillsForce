@@ -462,6 +462,63 @@ namespace DataAccessLayer.SkillsForce.DAL
             return enrollments;
         }
 
+
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsWithDetailsAsync()
+        {
+            const string GET_FILTERED_CONFIRMED_ENROLLMENTS_WITH_DETAILS_QUERY =
+                @"SELECT
+                        E.EnrollmentID,
+                        U.UserID,
+                        U.FirstName,
+                        U.LastName,
+                        T.TrainingID,
+                        T.TrainingName,
+                        U.DepartmentID AS UserDepartmentID,
+                        UD.DepartmentName AS UserDepartmentName,
+                        T.DepartmentID AS TrainingDepartmentID,
+                        TD.DepartmentName AS TrainingDepartmentName,
+                        E.EnrollmentDate,
+                        E.EnrollmentStatus,
+                        E.IsSelected
+                    FROM
+                        Enrollment E
+                    JOIN
+                        [User] U ON E.UserID = U.UserID
+                    JOIN
+                        Training T ON E.TrainingID = T.TrainingID
+                    JOIN
+                        Department UD ON U.DepartmentID = UD.DepartmentID -- User's department
+                    JOIN
+                        Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
+                    WHERE            
+                         E.IsSelected = 1";
+
+            List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
+            using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_FILTERED_CONFIRMED_ENROLLMENTS_WITH_DETAILS_QUERY))
+            {
+                while (await reader.ReadAsync())
+                {
+                    EnrollmentViewModel enrollment = new EnrollmentViewModel
+                    {
+                        EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
+                        UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        DepartmentName = reader.GetString(reader.GetOrdinal("UserDepartmentName")),
+                        TrainingDepartmentName = reader.GetString(reader.GetOrdinal("TrainingDepartmentName")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus")),
+                        IsSelected = reader.GetBoolean(reader.GetOrdinal("IsSelected")),
+                    };
+                    enrollments.Add(enrollment);
+                }
+            }
+            return enrollments;
+        }
+
+
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsAsync(int userId)
         {
             const string GET_FILTERED_CONFIRMED_ENROLLMENTS_WITH_DETAILS_QUERY =

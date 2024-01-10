@@ -228,6 +228,7 @@ namespace MVC.SkillsForce.Controllers
             try
             {
                 IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllFilteredEnrollmentsWithDetailsAsync(trainingId, status);
+                //IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllConfirmedEnrollmentsWithDetailsAsync();
                 return Json(enrollments);
             }
             catch (Exception ex)

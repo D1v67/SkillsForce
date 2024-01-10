@@ -25,7 +25,16 @@ namespace BusinessLayer.SkillsForce.Services
 
         public async Task<bool> IsUserAuthenticatedAsync(AccountModel model)
         {
-            return await _accountDAL.IsUserAuthenticatedAsync(model);
+            // return await _accountDAL.IsUserAuthenticatedAsync(model);
+
+            AccountModel storedAccount = await _accountDAL.GetUserCredentialsAsync(model.Email);
+
+            if (storedAccount != null)
+            {
+                return PasswordHasher.VerifyPassword(model.Password, storedAccount.HashedPassword, storedAccount.SaltValue);
+            }
+
+            return false;
         }
 
         public async Task<AccountModel> GetUserDetailsWithRolesAsync(AccountModel model)
