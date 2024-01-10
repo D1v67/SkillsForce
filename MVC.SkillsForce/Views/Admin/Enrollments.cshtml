@@ -98,6 +98,10 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         populateStatusDropdown();
         loadTrainings();
 
+        // Initially hide the export button
+
+        $('.export-btn').hide();
+
         var selectedTrainingName; 
 
         $('#filterButton').on('click', function () {
@@ -271,6 +275,8 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             console.log(selectedTraining)
             console.log(selectedStatus)
 
+
+            $('.export-btn').show();
 
 
             $('#enrollmentTable').attr('data-selected-training', selectedTraining);

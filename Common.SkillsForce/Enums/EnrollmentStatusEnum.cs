@@ -10,7 +10,7 @@ namespace Common.SkillsForce.Enums
     {
         Approved,
         Rejected,
-        IsSelected,
+        Selected,
         Pending
     }
 }

@@ -98,7 +98,7 @@ namespace BusinessLayer.SkillsForce.Services
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredEnrollmentsWithDetailsAsync(int trainingId, string statusFilter)
         {
            // Debug.WriteLine(trainingId, statusFilter);
-            if (statusFilter == "IsSelected")
+            if (statusFilter == EnrollmentStatusEnum.Selected.ToString())
             {
                 return await _enrollmentDAL.GetAllFilteredConfirmedEnrollmentsWithDetailsAsync(trainingId);
             }
