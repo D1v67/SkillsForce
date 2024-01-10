@@ -96,9 +96,29 @@ namespace MVC.SkillsForce.Controllers
         [AuthorizePermission(Permissions.EditTraining)]
         public async Task<ActionResult> Edit(int id)
         {
-            var training = await _trainingService.GetTrainingWithPrerequisitesAsync(id);
-            return View(training);
+            bool isEnrollemntExist = await _trainingService.IsTrainingHaveEnrollment(id);
+
+            if (isEnrollemntExist)
+            {
+                TempData["ErrorMessage"] = $"Cannot edit the training because it has enrolled users: ";
+                return RedirectToAction("Index");
+
+            }
+            else
+            {
+                var training = await _trainingService.GetTrainingWithPrerequisitesAsync(id);
+                return View(training);
+            }
+
+   ;
         }
+
+        //[AuthorizePermission(Permissions.EditTraining)]
+        //public async Task<ActionResult> Edit(int id)
+        //{
+        //    var training = await _trainingService.GetTrainingWithPrerequisitesAsync(id);
+        //    return View(training);
+        //}
 
         [AuthorizePermission(Permissions.GetTraining)]
         public async Task<JsonResult> GetTrainingDetails(int id)
@@ -126,18 +146,17 @@ namespace MVC.SkillsForce.Controllers
         [AuthorizePermission(Permissions.DeleteTraining)]
         public ActionResult Delete(int id)
         {
-            bool isDeletionSuccessful =  _trainingService.Delete(id);
+                bool isDeletionSuccessful = _trainingService.Delete(id);
 
             if (isDeletionSuccessful)
             {
-                TempData["SuccessMessage"] = "Training deleted successfully.";
-                return RedirectToAction("Index");
+                return Json(new { success = true, message = "Training deleted successfully." }, JsonRequestBehavior.AllowGet);
             }
             else
             {
-                TempData["ErrorMessage"] = $"Cannot delete the training because it has enrolled users: ";
-                return RedirectToAction("Index");
+                return Json(new { success = false, message = "Cannot delete the training because it has enrolled users." }, JsonRequestBehavior.AllowGet);
             }
+
         }
 
         private void AddErrorsToModelState(List<string> errors)

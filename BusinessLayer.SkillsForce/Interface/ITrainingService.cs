@@ -27,5 +27,7 @@ namespace BusinessLayer.SkillsForce.Interface
 
 
         bool Delete(int id);
+
+        Task<bool> IsTrainingHaveEnrollment(int trainingId);
     }
 }

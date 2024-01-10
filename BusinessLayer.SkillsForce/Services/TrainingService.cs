@@ -216,6 +216,10 @@ namespace BusinessLayer.SkillsForce.Services
             return false;
         }
 
+        public async Task<bool> IsTrainingHaveEnrollment(int trainingId)
+        {
+            return await _trainingDAL.IsTrainingHaveEnrollment(trainingId);   
+        }
 
         public enum ValidationType
         {

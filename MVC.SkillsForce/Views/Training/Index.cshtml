@@ -57,33 +57,33 @@
 
 @if (TempData["ErrorMessage"] != null)
 {
-<div id="error-alert" class="alert alert-danger">
-    <strong>Error:</strong> @TempData["ErrorMessage"]
-</div>
+    <div id="error-alert" class="alert alert-danger">
+        <strong>Error:</strong> @TempData["ErrorMessage"]
+    </div>
 
-<script>
-    // Display error message for 5 seconds (5000 milliseconds)
-    setTimeout(function () {
-        $("#error-alert").fadeOut("slow", function () {
-            $(this).remove();
-        });
-    }, 5000);
-</script>
+    <script>
+        // Display error message for 5 seconds (5000 milliseconds)
+        setTimeout(function () {
+            $("#error-alert").fadeOut("slow", function () {
+                $(this).remove();
+            });
+        }, 5000);
+    </script>
 }
 else if (TempData["SuccessMessage"] != null)
 {
-<div id="success-alert" class="alert alert-success">
-    <strong>Success:</strong> @TempData["SuccessMessage"]
-</div>
+    <div id="success-alert" class="alert alert-success">
+        <strong>Success:</strong> @TempData["SuccessMessage"]
+    </div>
 
-<script>
-    // Display success message for 5 seconds (5000 milliseconds)
-    setTimeout(function () {
-        $("#success-alert").fadeOut("slow", function () {
-            $(this).remove();
-        });
-    }, 5000);
-</script>
+    <script>
+        // Display success message for 5 seconds (5000 milliseconds)
+        setTimeout(function () {
+            $("#success-alert").fadeOut("slow", function () {
+                $(this).remove();
+            });
+        }, 5000);
+    </script>
 }
 
 @*<button id="AddTrainingButton">Add Training</button>*@
@@ -102,6 +102,11 @@ else if (TempData["SuccessMessage"] != null)
     @*<p>
             <button id="AddTraining" class="btn btn-primary me-2" onclick="redirectToCreateTraining()">Add Training</button>
         </p>*@
+
+
+    <div id="errorDiv" class="alert alert-danger" style="display: none;"></div>
+
+
 
     <a id="AddTrainingButton" href="/Training/CreateTraining/" class="btn btn-info btn-sm me-2">Add Training</a>
     <!-- ... other buttons ... -->
@@ -137,25 +142,25 @@ else if (TempData["SuccessMessage"] != null)
             </div>
 
 
-                <div class="modal-body" id="modalBody">
-              
-          
+            <div class="modal-body" id="modalBody">
 
-                    <div class="training-details">
-                        <p><strong>Training Name:</strong> <span id="trainingName"></span></p>
-                        <p><strong>TrainingDescription:</strong> <span id="trainingDesc"></span></p>
-                        <p><strong>Registration Deadline:</strong> <span id="registrationDeadline"></span></p>
-                        <p><strong>Start Date:</strong> <span id="startDate"></span></p>
-                        <p><strong>Capacity:</strong> <span id="capacity"></span></p>
-                        <p><strong>Department ID:</strong> <span id="departmentID"></span></p>
-                        <p><strong>Prerequisites:</strong> <span id="prerequisites"></span></p>
-                    </div>
 
-                    <input type="hidden" id="currentEnrollmentId" value="" />
 
-                    @*<button type="submit" class="btn btn-primary" id="saveBtn">Save</button>*@
+                <div class="training-details">
+                    <p><strong>Training Name:</strong> <span id="trainingName"></span></p>
+                    <p><strong>TrainingDescription:</strong> <span id="trainingDesc"></span></p>
+                    <p><strong>Registration Deadline:</strong> <span id="registrationDeadline"></span></p>
+                    <p><strong>Start Date:</strong> <span id="startDate"></span></p>
+                    <p><strong>Capacity:</strong> <span id="capacity"></span></p>
+                    <p><strong>Department ID:</strong> <span id="departmentID"></span></p>
+                    <p><strong>Prerequisites:</strong> <span id="prerequisites"></span></p>
                 </div>
-       
+
+                <input type="hidden" id="currentEnrollmentId" value="" />
+
+                @*<button type="submit" class="btn btn-primary" id="saveBtn">Save</button>*@
+            </div>
+
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -163,6 +168,31 @@ else if (TempData["SuccessMessage"] != null)
         </div>
     </div>
 </div>
+
+
+
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this training?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <link href="
@@ -194,6 +224,54 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script>
 
     $(document).ready(function () {
+
+
+        // Handle delete button click
+        $(document).on('click', 'a[id^="DeleteTrainingButton"]', function () {
+            var trainingID = $(this).data('training-id');
+
+            console.log(trainingID)
+            // Set the training ID to the confirmation modal
+            $('#confirmationModal').data('training-id', trainingID);
+
+            // Show the confirmation modal
+            $('#confirmationModal').modal('show');
+        });
+
+        // Handle confirm delete button click
+        $(document).on('click', '#confirmDelete', function () {
+            // Get the training ID from the confirmation modal
+            var trainingID = $('#confirmationModal').data('training-id');
+            console.log(trainingID)
+            // Make an AJAX call to delete the training
+            $.ajax({
+                url: "/Training/Delete/" + trainingID,
+                type: 'GET', // Change to the appropriate HTTP method for your application
+                success: function (result) {
+                    // Handle success (e.g., reload the DataTable)
+                   // $('#trainingTable').DataTable().ajax.reload();
+
+                    if (result.success) {
+                        $('#trainingTable').DataTable().ajax.reload();
+                        $('#errorDiv').html(result.message).removeClass('alert-danger').addClass('alert alert-success').show();
+                    } else {
+                        $('#errorDiv').html(result.message).removeClass('alert-success').addClass('alert alert-danger').show();
+
+                        console.log(result.message)
+                    }
+                },
+                error: function () {
+                    $('#errorDiv').html("An error occurred while processing your request.").addClass('alert alert-danger').show();
+                }
+
+
+              
+            });
+
+            // Hide the confirmation modal
+            $('#confirmationModal').modal('hide');
+        });
+
 
 
         // Additional click event for "Details" link
@@ -308,7 +386,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                     "render": function (data) {
                         return '<a id="EditTrainingButton" href="/Training/Edit/' + data.TrainingID + '" class="btn btn-info btn-sm me-2">Edit</a>' +
                             '<a href="javascript:void(0);" class="btn btn-secondary btn-sm me-2 details-btn" data-training-id="' + data.TrainingID + '">Details</a>' +
-                            '<a id="DeleteTrainingButton" href="/Training/Delete/' + data.TrainingID + '" class="btn btn-danger btn-sm">Delete</a>';
+                            '<a id="DeleteTrainingButton"  class="btn btn-danger btn-sm" data-training-id="' + data.TrainingID + '">Delete</a>';
                     }
                 }
             ]

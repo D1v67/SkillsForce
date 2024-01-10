@@ -171,6 +171,8 @@ namespace DataAccessLayer.SkillsForce.DAL
         
         DELETE FROM [dbo].[TrainingPrerequisite] WHERE [TrainingID] = @TrainingID;";
 
+            bool isTrainingHaveEnrollments = await IsTrainingHaveEnrollment(training.TrainingID);
+
             List<SqlParameter> parameters = new List<SqlParameter>
             {
                 new SqlParameter("@TrainingID", training.TrainingID),
@@ -533,6 +535,18 @@ ORDER BY T.TrainingName";
             int affectedRows = _dbCommand.InsertUpdateData(DELETE_TRAINING_QUERY, parameters);
             // If no rows were affected, it means there are enrollments
             return affectedRows > 0;
+        }
+
+        public async Task<bool> IsTrainingHaveEnrollment(int trainingId)
+        {
+            const string CHECK_ENROLLMENTS_QUERY = @"SELECT 1 FROM [dbo].[Enrollment] WHERE [TrainingID] = @TrainingID;";
+            var parameters = new List<SqlParameter> { new SqlParameter("@TrainingID", trainingId) };
+
+            using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(CHECK_ENROLLMENTS_QUERY, parameters))
+            {
+                return await reader.ReadAsync();
+            }
+
         }
 
     }

@@ -25,6 +25,9 @@ namespace DataAccessLayer.SkillsForce.Interface
 
 
         bool Delete(int trainingId);
-        
+
+        Task<bool> IsTrainingHaveEnrollment(int trainingId);
+
+
     }
 }
