@@ -1,10 +1,14 @@
-﻿using System.Web.Mvc;
+﻿using MVC.SkillsForce.Custom;
+using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
-   // [UserSession]
+    // [UserSession]
+
+
     public class HomeController : Controller
     {
+
         public ActionResult Index()
         {
             return View();

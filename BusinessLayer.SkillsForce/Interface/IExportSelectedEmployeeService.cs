@@ -11,5 +11,7 @@ namespace BusinessLayer.SkillsForce.Interface
     {
         Task<IEnumerable<ExportEmployeeEnrollmentViewModel>> GetAllAsync();
         Task<IEnumerable<ExportEmployeeEnrollmentViewModel>> GetSelectedEmployeeByTrainingAsync(int trainingId);
+
+        Task<byte[]> ExportToExcel(int trainingId, string trainingName);
     }
 }

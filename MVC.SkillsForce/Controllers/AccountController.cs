@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
+
 namespace MVC.SkillsForce.Controllers
 {    
     public class AccountController : Controller
@@ -35,7 +36,8 @@ namespace MVC.SkillsForce.Controllers
         [HttpPost]
         public async Task<JsonResult> Authenticate(AccountModel account)
         {
-                bool isUserValid = await _accountService.IsUserAuthenticatedAsync(account);
+            
+            bool isUserValid = await _accountService.IsUserAuthenticatedAsync(account);
                 if (isUserValid)
                 {
                     var userDetailsWithRoles = await _accountService.GetUserDetailsWithRolesAsync(account);

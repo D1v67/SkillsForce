@@ -322,8 +322,10 @@
 
                         //    window.location.reload();
                         //}, 500)
+                        setTimeout(() => {
 
-                        //window.location.reload();
+                            window.location.reload();
+                        }, 2000)
 
                     } else {
                         alert('Error approving enrollment: ' + result.message);
@@ -376,7 +378,7 @@
                             setTimeout(() => {
 
                             window.location.reload();
-                            }, 4000)
+                            }, 2000)
 
                         } else {
                             alert('Error rejecting enrollment: ' + result.message);

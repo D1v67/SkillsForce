@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+
 
 namespace MVC.SkillsForce.Controllers
 {
@@ -25,46 +27,126 @@ namespace MVC.SkillsForce.Controllers
             return View();
         }
 
-
-
         [HttpPost]
-        public async Task<ActionResult> ExportSelectedEmployeeByTrainingCSV(int trainingId)
+        public  async Task<ActionResult> ExportSelectedEmployeeByTrainingCSV(int trainingId, string trainingName)
         {
             try
             {
-                var list = await _selectedEmployeeService.GetSelectedEmployeeByTrainingAsync(trainingId);
+                byte[] dummyExcelData = Encoding.UTF8.GetBytes("Dummy Excel Data");
+                byte[] excelData = await _selectedEmployeeService.ExportToExcel(trainingId, trainingName);
+                //string fileName = $"ExportedSelectedEmployees_{DateTime.Now:f}.csv";
+                string fileName = $"{trainingName}SelectedEmployees_{DateTime.Now:f}.xlsx";
 
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    using (StreamWriter strwApproved = new StreamWriter(memoryStream))
-                    {
-                        strwApproved.WriteLine("Approved");
-                        strwApproved.WriteLine("FirstName, LastName,TotalPoints,Status");
-
-                        foreach (var item in list)
-                        {
-                            strwApproved.WriteLine(string.Format("{0},  {1},   {2},  {3}", item.FirstName, item.LastName, item.DepartmentName, item.MobileNumber));
-                        }
-
-                        // Don't write an empty line here, if not needed
-                    }
-
-                    Response.ClearContent();
-                    Response.AddHeader("content-disposition", string.Format("attachment;filename=Summary{0}.csv", DateTime.Now));
-                    Response.ContentType = "text/csv";
-                    memoryStream.Position = 0;
-                    memoryStream.CopyTo(Response.OutputStream);
-                }
-
-                // Return the file path
-                return Json(new { success = true, message = "Excel exported successfully" });
+                Response.Clear();
+                string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", $"attachment; filename={fileName}");
+                return File(excelData, contentType);
             }
             catch (Exception ex)
             {
-                // Log the exception or handle it accordingly
-                return Json(new { success = false, message = "Error exporting Excel" });
+                Debug.WriteLine($"Error exporting data: {ex.Message}");
+                return new HttpStatusCodeResult(500, "Internal Server Error");
             }
         }
+
+
+        //[HttpPost]
+        //public async Task<ActionResult> ExportSelectedEmployeeByTrainingCSV(int trainingId)
+        //{
+        //    try
+        //    {
+
+        //        byte[] excelData = await _selectedEmployeeService.ExportToExcel(trainingId);
+        //        Response.AddHeader("content-disposition", "attachment;filename=ExportedSelectedUsers.xslx");
+        //        return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExportedSelectedUsers.xslx");
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        Debug.WriteLine($"Error exporting data: {ex.Message}");
+
+
+        //        return new HttpStatusCodeResult(500, "Internal Server Error");
+        //    }
+        //}
+        //[HttpPost]
+        //public async Task<ActionResult> ExportSelectedEmployeeByTrainingCSV(int trainingId)
+        //{
+        //    try
+        //    {
+
+        //        byte[] excelData = await _selectedEmployeeService.ExportToExcel(trainingId);
+        //        Response.AddHeader("content-disposition", "attachment;filename=ExportedSelectedUsers.xslx");
+        //        return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExportedSelectedUsers.xslx");
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        Debug.WriteLine($"Error exporting data: {ex.Message}");
+
+
+        //        return new HttpStatusCodeResult(500, "Internal Server Error");
+        //    }
+        //}
+
+        //public async Task<ActionResult> DownloadAttachmentByAttachmentID(int id)
+        //{
+        //    var result = await _attachmentService.GetByAttachmentIDAsync(id);
+
+        //    byte[] binaryData = result.FileData;
+        //    string filename = result.FileName;
+        //    string contentType = "application/pdf";
+
+        //    return File(binaryData, contentType, filename);
+        //}        //public async Task<ActionResult> DownloadAttachmentByAttachmentID(int id)
+        //{
+        //    var result = await _attachmentService.GetByAttachmentIDAsync(id);
+
+        //    byte[] binaryData = result.FileData;
+        //    string filename = result.FileName;
+        //    string contentType = "application/pdf";
+
+        //    return File(binaryData, contentType, filename);
+        //}
+
+        //[HttpPost]
+        //public async Task<ActionResult> ExportSelectedEmployeeByTrainingCSV(int trainingId)
+        //{
+        //    try
+        //    {
+        //        var list = await _selectedEmployeeService.GetSelectedEmployeeByTrainingAsync(trainingId);
+
+        //        using (MemoryStream memoryStream = new MemoryStream())
+        //        {
+        //            using (StreamWriter strwApproved = new StreamWriter(memoryStream))
+        //            {
+        //                strwApproved.WriteLine("Approved");
+        //                strwApproved.WriteLine("FirstName, LastName,TotalPoints,Status");
+
+        //                foreach (var item in list)
+        //                {
+        //                    strwApproved.WriteLine(string.Format("{0},  {1},   {2},  {3}", item.FirstName, item.LastName, item.DepartmentName, item.MobileNumber));
+        //                }
+
+        //                // Don't write an empty line here, if not needed
+        //            }
+
+        //            Response.ClearContent();
+        //            Response.AddHeader("content-disposition", string.Format("attachment;filename=Summary{0}.csv", DateTime.Now));
+        //            Response.ContentType = "text/csv";
+        //            memoryStream.Position = 0;
+        //            memoryStream.CopyTo(Response.OutputStream);
+        //        }
+
+        //        // Return the file path
+        //        return Json(new { success = true, message = "Excel exported successfully" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception or handle it accordingly
+        //        return Json(new { success = false, message = "Error exporting Excel" });
+        //    }
+        //}
 
         //[HttpPost]
         //public async Task<ActionResult> ExportSelectedEmployeeByTrainingCSV(int trainingId)

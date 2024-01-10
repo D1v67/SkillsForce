@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.SkillsForce", "Fr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.SkillsForce", "Common.SkillsForce\Common.SkillsForce.csproj", "{FA0ECD98-320F-4FE5-8ED6-27A24467F266}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLayerNUnitTest", "BusinessLayerNUnitTest\BusinessLayerNUnitTest.csproj", "{193D476E-494B-4C57-A5D0-86507E18D168}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLUNnitTest", "BLUNnitTest\BLUNnitTest.csproj", "{00E9AC1B-4D2D-4EFD-93AB-F72D6A5C4731}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{FA0ECD98-320F-4FE5-8ED6-27A24467F266}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA0ECD98-320F-4FE5-8ED6-27A24467F266}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA0ECD98-320F-4FE5-8ED6-27A24467F266}.Release|Any CPU.Build.0 = Release|Any CPU
-		{193D476E-494B-4C57-A5D0-86507E18D168}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{193D476E-494B-4C57-A5D0-86507E18D168}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{193D476E-494B-4C57-A5D0-86507E18D168}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{193D476E-494B-4C57-A5D0-86507E18D168}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00E9AC1B-4D2D-4EFD-93AB-F72D6A5C4731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00E9AC1B-4D2D-4EFD-93AB-F72D6A5C4731}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00E9AC1B-4D2D-4EFD-93AB-F72D6A5C4731}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00E9AC1B-4D2D-4EFD-93AB-F72D6A5C4731}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -47,7 +47,7 @@
 
 <br />
 
-<button class="btn btn-success export-btn">Export CSV</button>
+<button class="btn btn-success export-btn">Export Selected Employees to CSV</button>
 
 
 <div class="container-fluid mt-3">
@@ -97,6 +97,8 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
         populateStatusDropdown();
         loadTrainings();
+
+        var selectedTrainingName; 
 
         $('#filterButton').on('click', function () {
             filterEnrollments();
@@ -273,6 +275,10 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
             $('#enrollmentTable').attr('data-selected-training', selectedTraining);
 
+            selectedTrainingName = $('#training option:selected').text();  
+
+            console.log('training name  ' + selectedTrainingName)
+
             $.ajax({
                 url: '/Enrollment/FilterEnrollments', // Update the URL with your actual controller method
                 type: 'POST',
@@ -346,34 +352,91 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                 return;
             }
 
+
+            //var currentUrl = window.location.href
+            //var url = new URL(currentUrl)
+           // var trainingId = url.searchParams.get("trainingId")
+            fetch(`/ExportData/ExportSelectedEmployeeByTrainingCSV?trainingId=${selectedTraining}&trainingName=${selectedTrainingName}`, {
+                method: 'POST'
+            })
+                .then(response => {
+                    var fileName = response.headers.get('content-disposition').split('filename=')[1]
+
+                    return response.blob().then(blob => {
+                        const downloadLink = document.createElement('a')
+                        downloadLink.href = URL.createObjectURL(blob)
+
+                        downloadLink.download = fileName || 'ExportedUsers'
+
+                        document.body.appendChild(downloadLink)
+                        downloadLink.click()
+                        document.body.removeChild(downloadLink)
+                    })
+               
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+
+
             // Disable the export button to prevent multiple clicks
             //$('.export-btn').prop('disabled', true);
 
-            $.ajax({
-                url: '/ExportData/ExportSelectedEmployeeByTrainingCSV', // Update the URL with your actual controller method
-                type: 'POST',
-                data: { trainingId: selectedTraining },
-                success: function () {
-                    console.log('Export successful.');
-                    // You can handle success actions here if needed
+            //$.ajax({
+            //    url: '/ExportData/ExportSelectedEmployeeByTrainingCSV', // Update the URL with your actual controller method
+            //    type: 'POST',
+            //    data: { trainingId: selectedTraining },
+            //    success: function () {
+            //        console.log('Export successful.');
+            //        // You can handle success actions here if needed
 
-                    //$('.export-btn').prop('disabled', false);
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    console.error('Export error:', textStatus, errorThrown);
+            //        //$('.export-btn').prop('disabled', false);
+            //    },
+            //    error: function (xhr, textStatus, errorThrown) {
+            //        console.error('Export error:', textStatus, errorThrown);
 
-                    // Handle the error here, you can display a message or perform any other action
-                    if (xhr.status === 400) {
-                        // Bad Request - Handle validation errors
-                        console.log('Validation errors:', xhr.responseJSON);
-                    } else {
-                        // Handle other errors
-                        console.log('Unexpected error. Please try again later.');
-                    }
+            //        // Handle the error here, you can display a message or perform any other action
+            //        if (xhr.status === 400) {
+            //            // Bad Request - Handle validation errors
+            //            console.log('Validation errors:', xhr.responseJSON);
+            //        } else {
+            //            // Handle other errors
+            //            console.log('Unexpected error. Please try again later.');
+            //        }
 
-                    //$('.export-btn').prop('disabled', false);
-                }
-            });
+            //        //$('.export-btn').prop('disabled', false);
+            //    }
+            //});
+
+
+            //function downloadExcelFile() {
+            //    var currentUrl = window.location.href
+            //    var url = new URL(currentUrl)
+            //    var trainingId = url.searchParams.get("trainingId")
+            //    fetch(`/ExportData/DownloadSelectedUsers?ExportSelectedEmployeeByTrainingCSV=${trainingId}`, {
+            //        method: 'POST'
+            //    })
+            //        .then(response => {
+            //            var fileName = response.headers.get('content-disposition').split('filename=')[1]
+
+            //            return response.blob().then(blob => {
+            //                //const downloadLink = document.createElement('a')
+            //                //downloadLink.href = URL.createObjectURL(blob)
+
+            //                //downloadLink.download = fileName || 'ExportedUsers'
+
+            //                //document.body.appendChild(downloadLink)
+            //                //downloadLink.click()
+            //                //document.body.removeChild(downloadLink)
+            //            })
+            //        })
+            //        .catch((error) => {
+            //            console.error(error)
+            //        })
+            //}
+
+
+            //downloadExcelFile() 
         }
 
     });
