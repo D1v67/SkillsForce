@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using Common.SkillsForce.ViewModel;
 using System.Threading.Tasks;
+using Common.SkillsForce.Helpers;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
@@ -29,16 +30,16 @@ namespace DataAccessLayer.SkillsForce.DAL
                 {
                     while (await reader.ReadAsync())
                     {
-                        TrainingModel training = new TrainingModel
-                        {
-                            TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
-                            TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
-                            TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
-                            RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
-                            Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
-                            DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
-                        };
-
+                        //TrainingModel training = new TrainingModel
+                        //{
+                        //    TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        //    TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        //    TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
+                        //    RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
+                        //    Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+                        //    DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
+                        //};
+                        TrainingModel training = DataReaderMapper.MapToObject<TrainingModel>(reader);
                         trainings.Add(training);
                     }
                 }

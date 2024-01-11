@@ -9,10 +9,10 @@
 
 //namespace MVC.SkillsForce.Custom
 //{
-//    public class CustomAuthorizationAttribute: ActionFilterAttribute
+//    public class CustomAuthorizationAttribute : ActionFilterAttribute
 //    {
 //        public string Roles { get; set; }
-//       // public string[] AuthorizedRoles { get; set; }
+//        // public string[] AuthorizedRoles { get; set; }
 
 //        public List<RolesEnum> AuthorizedRoles { get; set; }
 //        //public CustomAuthorizationAttribute(string roles)
@@ -29,7 +29,7 @@
 //        public override void OnActionExecuting(ActionExecutingContext filterContext)
 //        {
 //            var dfController = filterContext.Controller as Controller;
-//            if(dfController != null && dfController.Session["CurrentRole"] != null) 
+//            if (dfController != null && dfController.Session["CurrentRole"] != null)
 //            {
 //                // var currentRole = dfController.Session["CurrentRole"] as string;
 //                var currentRole = (RolesEnum)Enum.Parse(typeof(RolesEnum), dfController.Session["CurrentRole"].ToString());

@@ -59,6 +59,7 @@
     <Compile Include="Enums\NotificationType.cs" />
     <Compile Include="Enums\Permissions.cs" />
     <Compile Include="Enums\RolesEnum.cs" />
+    <Compile Include="Helpers\DataReaderMapper.cs" />
     <Compile Include="Helpers\ExecutionResult.cs" />
     <Compile Include="Helpers\PasswordHasher.cs" />
     <Compile Include="Helpers\ValidationResult.cs" />
