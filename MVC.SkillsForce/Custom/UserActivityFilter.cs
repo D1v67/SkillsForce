@@ -1,20 +1,13 @@
-﻿using BusinessLayer.SkillsForce.Interface;
-using Common.SkillsForce.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
-using System.Web.Http.Controllers;
-using System.Web.Http.Filters;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Custom
 {
     //[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-    public class UserActivityFilter : System.Web.Http.Filters.ActionFilterAttribute
+    public class UserActivityFilter : ActionFilterAttribute
     {
 
 
@@ -23,20 +16,41 @@ namespace MVC.SkillsForce.Custom
           
         }
 
-        public void OnActionExecuted(ActionExecutedContext context)
+        //public void OnActionExecuted(ActionExecutedContext context)
+        //{
+
+        //}
+
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            // Get the user ID from the session
+            var controllerName = filterContext.RouteData.Values["controller"].ToString();
+            var actionName = filterContext.RouteData.Values["action"].ToString();
 
-        }
-
-        public void OnActionExecuting(ActionExecutedContext context)
-        {
-            var controllerName = context.RouteData.Values["controller"].ToString();
-            var actionName = context.RouteData.Values["action"].ToString();
-
+            int userId = GetUserIdFromSession(filterContext.HttpContext);
             var url = $"{controllerName}/{actionName}";
 
-            //var ipAddress = HttpContext.Request.UserHostAddress;
+            var httpMethod = filterContext.HttpContext.Request.HttpMethod;
+            var ipAddress = filterContext.HttpContext.Request.UserHostAddress;
+
+            var actionParameters = GetActionParameters(filterContext);
+
         }
+
+        private string GetActionParameters(ActionExecutingContext filterContext)
+        {
+            // Extract data from action parameters
+            var parameters = filterContext.ActionParameters;
+
+            if (parameters != null && parameters.Count > 0)
+            {
+                var parameterData = parameters.Select(kv => $"{kv.Key}: {kv.Value?.ToString()}");
+                return string.Join(", ", parameterData);
+            }
+
+            return null;
+        }
+
 
 
         private int GetUserIdFromSession(HttpContextBase httpContext)

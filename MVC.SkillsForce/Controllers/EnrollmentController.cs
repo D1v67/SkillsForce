@@ -14,6 +14,8 @@ using System.Web.Mvc;
 namespace MVC.SkillsForce.Controllers
 {
     [UserSession]
+
+    [UserActivityFilter]
     public class EnrollmentController : Controller
     {
         private readonly IEnrollmentService _enrollmentService;

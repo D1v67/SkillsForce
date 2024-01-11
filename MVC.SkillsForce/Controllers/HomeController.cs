@@ -14,6 +14,7 @@ namespace MVC.SkillsForce.Controllers
             return View();
         }
 
+        [UserActivityFilter]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
