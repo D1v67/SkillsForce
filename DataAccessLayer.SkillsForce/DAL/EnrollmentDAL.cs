@@ -326,6 +326,16 @@ namespace DataAccessLayer.SkillsForce.DAL
                WHERE
                    RowNum <= (SELECT Capacity FROM Training WHERE TrainingID = @TrainingID);
 
+                -- Update IsSelectionOver in Training table
+                UPDATE
+                    Training
+                SET
+                    IsSelectionOver = 1,
+                    LastSelectionTimeStamp = GETDATE()
+                WHERE
+                    TrainingID = @TrainingID;
+
+
                -- Get the Enrollment IDs
                SELECT EnrollmentID FROM @EnrollmentIDs AS AffectedEnrollments;
                ";
@@ -518,7 +528,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             return enrollments;
         }
 
-
+        //Get an Employee's all confirmed training enrollments 
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsAsync(int userId)
         {
             const string GET_FILTERED_CONFIRMED_ENROLLMENTS_WITH_DETAILS_QUERY =
@@ -551,6 +561,71 @@ namespace DataAccessLayer.SkillsForce.DAL
                     WHERE
                         E.UserID = @UserID
                         AND E.IsSelected = 1";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@UserID", userId)
+            };
+
+            List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
+            using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_FILTERED_CONFIRMED_ENROLLMENTS_WITH_DETAILS_QUERY, parameters))
+            {
+                while (await reader.ReadAsync())
+                {
+                    EnrollmentViewModel enrollment = new EnrollmentViewModel
+                    {
+                        EnrollmentID = reader.GetInt16(reader.GetOrdinal("EnrollmentID")),
+                        UserID = reader.GetInt16(reader.GetOrdinal("UserID")),
+                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        DepartmentName = reader.GetString(reader.GetOrdinal("UserDepartmentName")),
+                        TrainingDepartmentName = reader.GetString(reader.GetOrdinal("TrainingDepartmentName")),
+                        EnrollmentDate = reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+                        EnrollmentStatus = reader.GetString(reader.GetOrdinal("EnrollmentStatus")),
+                        IsSelected = reader.GetBoolean(reader.GetOrdinal("IsSelected")),
+                        TrainingRegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
+                        TrainingStartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                    };
+                    enrollments.Add(enrollment);
+                }
+            }
+            return enrollments;
+        }
+
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllEnrollmentsByUserIdAsync(int userId)
+        {
+            const string GET_FILTERED_CONFIRMED_ENROLLMENTS_WITH_DETAILS_QUERY =
+                @"SELECT
+                        E.EnrollmentID,
+                        U.UserID,
+                        U.FirstName,
+                        U.LastName,
+                        T.TrainingID,
+                        T.TrainingName,
+                        U.DepartmentID AS UserDepartmentID,
+                        UD.DepartmentName AS UserDepartmentName,
+                        T.DepartmentID AS TrainingDepartmentID,
+                        TD.DepartmentName AS TrainingDepartmentName,
+                        E.EnrollmentDate,
+                        E.EnrollmentStatus,
+                        E.IsSelected,
+                        E.DeclineReason,
+		                T.RegistrationDeadline,
+                        T.StartDate
+                    FROM
+                        Enrollment E
+                    JOIN
+                        [User] U ON E.UserID = U.UserID
+                    JOIN
+                        Training T ON E.TrainingID = T.TrainingID
+                    JOIN
+                        Department UD ON U.DepartmentID = UD.DepartmentID -- User's department
+                    JOIN
+                        Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
+                    WHERE
+                        E.UserID = @UserID";
 
             var parameters = new List<SqlParameter>
             {

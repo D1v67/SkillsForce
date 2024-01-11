@@ -15,10 +15,28 @@
     https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <link rel="stylesheet" href="
     https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+<style>
+    #toast-container > div {
+        opacity: 1;
+    }
+
+
+</style>
+
 
 
 
 <div class="table-responsive container-fluid mt-5 mb-5">
+
+
+    @if (Session["CurrentRole"].ToString() == "Admin")
+    {
+        <p>
+            <button id="automaticSelectionBtn" class="btn btn-primary">Automatic Selection</button>
+        </p>
+    }
+
+
 
     <div class="container-fluid mt-3">
         <div class="row justify-content-center">
@@ -76,6 +94,7 @@
     </div>
 
 
+
 </div>
 
 
@@ -103,6 +122,59 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 
 <script>
+
+
+
+    $(document).ready(function () {
+
+        //toastr.options = {
+        //    "positionClass": "toast-top-right",
+        //    "hideMethod": false, // Prevent fading out
+        //    "timeOut": 2000 // Set the duration for how long the toastr stays visible
+        //    // Add other options as needed
+
+        //};
+
+
+        $('#automaticSelectionBtn').click(function () {
+            $.ajax({
+                url: '/Enrollment/RunAutomaticSelectionOfApprovedEnrollments',
+                type: 'POST',
+                success: function (data) {
+                    if (data.success) {
+                        toastr.success('Automatic processing successful');
+
+
+                        if (data.messages && data.messages.length > 0) {
+                            data.messages.forEach(message => {
+                                toastr.success(message);
+                            });
+                        }
+                        setTimeout(() => {
+
+                            window.location = data.url;
+                        }, 2000)
+
+                        //window.location = data.url;
+                    } else {
+                        // toastr.error('Automatic processing failed');
+
+                        if (data.errors && data.errors.length > 0) {
+                            data.errors.forEach(error => {
+                                toastr.error(error);
+                            });
+                        }
+                    }
+                },
+                error: function () {
+                    toastr.error('Error in the automatic processing');
+                }
+            });
+        });
+    });
+</script>
+
+<script>
     $(document).ready(function () {
 
         populateStatusDropdown();
@@ -114,7 +186,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
         $('.export-btn').hide();
 
-        var selectedTrainingName; 
+        var selectedTrainingName;
 
         $('#filterButton').on('click', function () {
             isFilterButtonClicked = true;
@@ -277,7 +349,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 
 
-    
+
 
 
         //$('#statusDropdown').on('change', function () {
@@ -306,7 +378,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             //if (selectedStatus == 'Selected') {
             //    $('.export-btn').show();
             //}
-           
+
             var selectedStatus = $('#statusDropdown').val();
 
             if (selectedStatus === 'Selected') {
@@ -319,7 +391,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
             $('#enrollmentTable').attr('data-selected-training', selectedTraining);
 
-            selectedTrainingName = $('#training option:selected').text();  
+            selectedTrainingName = $('#training option:selected').text();
 
             console.log('training name  ' + selectedTrainingName)
 
@@ -404,7 +476,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
             //var currentUrl = window.location.href
             //var url = new URL(currentUrl)
-           // var trainingId = url.searchParams.get("trainingId")
+            // var trainingId = url.searchParams.get("trainingId")
             fetch(`/ExportData/ExportSelectedEmployeeByTrainingCSV?trainingId=${selectedTraining}&trainingName=${selectedTrainingName}`, {
                 method: 'POST'
             })
@@ -421,7 +493,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                         downloadLink.click()
                         document.body.removeChild(downloadLink)
                     })
-               
+
                 })
                 .catch((error) => {
                     console.error(error)
@@ -485,7 +557,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             //}
 
 
-            //downloadExcelFile() 
+            //downloadExcelFile()
         }
 
     });

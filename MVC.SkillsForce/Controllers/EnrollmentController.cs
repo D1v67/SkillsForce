@@ -43,17 +43,42 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
+        //[HttpPost]
+        //public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments()
+        //{
+        //    bool isCronJob = false;
+        //    await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(isCronJob);
+
+        //    // Assuming your enrollment service sets a success flag
+        //    var success = true;
+
+        //    return Json(new { success, url = Url.Action("GetAllApprovedEnrollments", "Enrollment") });
+        //}
+
+
         [HttpPost]
         public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments()
         {
             bool isCronJob = false;
-            await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(isCronJob);
+            var result = await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(isCronJob);
+            var X = result.SuccessMessages;
+            var y = result.Errors;
 
-            // Assuming your enrollment service sets a success flag
-            var success = true;
 
-            return Json(new { success, url = Url.Action("GetAllApprovedEnrollments", "Enrollment") });
+            if (result.IsSuccessful)
+            {
+                //toastr.success('Automatic processing successful');
+                return Json(new { success = true, url = Url.Action("GetAllApprovedEnrollments", "Enrollment"), messages = result.SuccessMessages });
+            }
+            else
+            {
+                //toastr.error('Automatic processing failed');
+                return Json(new { success = false, errors = result.Errors });
+            }
         }
+
+
+
 
         [AuthorizePermission(Permissions.GetEnrollmentByManager)]
         public async Task<ActionResult> GetEnrollments()

@@ -379,12 +379,12 @@ namespace DataAccessLayer.SkillsForce.DAL
             const string GET_TRAININGS_BY_DEADLINE_QUERY = @"
             SELECT TrainingID, TrainingName, TrainingDescription, RegistrationDeadline, StartDate, Capacity, DepartmentID
             FROM [dbo].[Training]
-            WHERE RegistrationDeadline = @RegistrationDeadline";
+            WHERE RegistrationDeadline = @RegistrationDeadline AND  IsSelectionOver = 0";
 
             const string GET_TRAININGS_UPTO_DEADLINE_QUERY = @"
             SELECT TrainingID, TrainingName, TrainingDescription, RegistrationDeadline, StartDate, Capacity, DepartmentID
             FROM [dbo].[Training]
-            WHERE RegistrationDeadline <= @RegistrationDeadline";
+            WHERE RegistrationDeadline <= @RegistrationDeadline AND IsSelectionOver = 0";
 
             string query = isCronJob ? GET_TRAININGS_BY_DEADLINE_QUERY : GET_TRAININGS_UPTO_DEADLINE_QUERY;
 

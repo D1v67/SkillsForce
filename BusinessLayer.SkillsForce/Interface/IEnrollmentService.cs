@@ -1,4 +1,5 @@
-﻿using Common.SkillsForce.ViewModel;
+﻿using Common.SkillsForce.Helpers;
+using Common.SkillsForce.ViewModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,7 +16,8 @@ namespace BusinessLayer.SkillsForce.Interface
         Task<EnrollmentNotificationViewModel> GetEnrollmentNotificationDetailsByIDAsync(int id);
         Task<IEnumerable<EnrollmentViewModel>> GetAllApprovedEnrollmentsAsync();
         Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int trainingID);
-        Task RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob);
+        //Task RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob);
+        Task<ExecutionResult> RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob);
         Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredEnrollmentsWithDetailsAsync(int trainingId, string statusFilter);
         Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsAsync(int userId);
         Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsWithDetailsAsync();

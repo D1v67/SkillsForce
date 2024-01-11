@@ -188,9 +188,27 @@
                     success: function (data) {
                         if (data.success) {
                             toastr.success('Automatic processing successful');
-                            window.location = data.url;
+
+                            if (data.messages && data.messages.length > 0) {
+                                data.messages.forEach(message => {
+                                    toastr.success(message);
+                                });
+                            }
+
+                            setTimeout(() => {
+
+                                window.location = data.url;
+                            }, 2000)
+
+                            //window.location = data.url;
                         } else {
-                            toastr.error('Automatic processing failed');
+                           // toastr.error('Automatic processing failed');
+
+                            if (data.errors && data.errors.length > 0) {
+                                data.errors.forEach(error => {
+                                    toastr.error(error);
+                                });
+                            }
                         }
                     },
                     error: function () {
