@@ -305,6 +305,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                        U.FirstName,
                        U.LastName,
                        E.IsSelected,
+                       E.SelectedTimestamp,
                        ROW_NUMBER() OVER (ORDER BY IIF(U.DepartmentID = (SELECT T.DepartmentID FROM Training T WHERE T.TrainingID = E.TrainingID), 0, 1), E.EnrollmentDate) AS RowNum
                    FROM
                        Enrollment E
@@ -318,7 +319,8 @@ namespace DataAccessLayer.SkillsForce.DAL
                UPDATE
                    OrderedEnrollments
                SET
-                   IsSelected = 1
+                   IsSelected = 1,
+                   SelectedTimestamp = GETDATE()
                OUTPUT
                    INSERTED.EnrollmentID
                INTO

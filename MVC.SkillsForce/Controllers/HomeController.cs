@@ -5,7 +5,7 @@ namespace MVC.SkillsForce.Controllers
 {
     // [UserSession]
 
-
+    //[SessionTimeout]
     public class HomeController : Controller
     {
 
@@ -14,7 +14,8 @@ namespace MVC.SkillsForce.Controllers
             return View();
         }
 
-        [UserActivityFilter]
+        //[SessionTimeout]
+       // [UserActivityFilter]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

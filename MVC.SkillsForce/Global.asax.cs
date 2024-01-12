@@ -55,6 +55,18 @@ namespace MVC.SkillsForce
         }
 
 
+        //protected void Session_Start(object sender, EventArgs e)
+        //{
+        //    // Session started
+        //}
+
+        //protected void Session_End(object sender, EventArgs e)
+        //{
+        //    // Session ended (either due to timeout or explicitly calling Session.Abandon())
+        //    // Redirect to the login page
+        //    HttpContext.Current.Response.Redirect("~/Account/Index");
+        //}
+
 
     }
 }
