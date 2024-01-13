@@ -32,17 +32,17 @@ namespace DataAccessLayer.SkillsForce.DAL
             throw new NotImplementedException();
         }
 
-        public IEnumerable<PrerequisiteModel> GetAll()
+        public IEnumerable<UserRoleModel> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public PrerequisiteModel GetByID(int id)
+        public UserRoleModel GetByID(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(PrerequisiteModel prerequisite)
+        public void Update(UserRoleModel prerequisite)
         {
             throw new NotImplementedException();
         }

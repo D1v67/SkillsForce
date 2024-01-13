@@ -68,6 +68,8 @@
     <Compile Include="DAL\DepartmentDAL.cs" />
     <Compile Include="DAL\EnrollmentDAL.cs" />
     <Compile Include="DAL\ExportSelectedEmployeeDAL.cs" />
+    <Compile Include="Interface\IUserActivityDAL.cs" />
+    <Compile Include="DAL\UserActivityDAL.cs" />
     <Compile Include="DAL\UserAuthorizationDAL.cs" />
     <Compile Include="Interface\IAppNotificationDAL.cs" />
     <Compile Include="Interface\IExportSelectedEmployeeDAL.cs" />

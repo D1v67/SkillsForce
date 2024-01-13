@@ -25,6 +25,12 @@ namespace MVC.SkillsForce.Controllers
             return View(users);
         }
 
+        [AuthorizePermission(Permissions.GetUser)]
+        public async Task<JsonResult> GetUsers()
+        {
+            IEnumerable<UserModel> users = await _userService.GetAllAsync();
+            return Json(users, JsonRequestBehavior.AllowGet);
+        }
 
         public async Task<JsonResult> GetManagers()
         {

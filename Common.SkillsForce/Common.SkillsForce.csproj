@@ -52,6 +52,7 @@
     <Compile Include="Entity\DepartmentModel.cs" />
     <Compile Include="Entity\EnrollmentModel.cs" />
     <Compile Include="Entity\PrerequisiteModel.cs" />
+    <Compile Include="Entity\UserActivityModel.cs" />
     <Compile Include="Entity\UserRoleModel.cs" />
     <Compile Include="Entity\TrainingModel.cs" />
     <Compile Include="Entity\UserModel.cs" />

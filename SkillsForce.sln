@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.SkillsForce", "Fr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.SkillsForce", "Common.SkillsForce\Common.SkillsForce.csproj", "{FA0ECD98-320F-4FE5-8ED6-27A24467F266}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLUNnitTest", "BLUNnitTest\BLUNnitTest.csproj", "{00E9AC1B-4D2D-4EFD-93AB-F72D6A5C4731}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLayerNUnitTest", "BLUNnitTest\BusinessLayerNUnitTest.csproj", "{00E9AC1B-4D2D-4EFD-93AB-F72D6A5C4731}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

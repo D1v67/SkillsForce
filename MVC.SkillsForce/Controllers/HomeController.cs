@@ -15,7 +15,7 @@ namespace MVC.SkillsForce.Controllers
         }
 
         //[SessionTimeout]
-       // [UserActivityFilter]
+        [UserActivityFilter]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

@@ -208,6 +208,7 @@
     <Compile Include="Interface\IPrerequisteService.cs" />
     <Compile Include="Interface\ISessionService.cs" />
     <Compile Include="Interface\ITrainingService.cs" />
+    <Compile Include="Interface\IUserActivityService.cs" />
     <Compile Include="Interface\IUserAuthorizationService.cs" />
     <Compile Include="Interface\IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -225,6 +226,7 @@
     <Compile Include="Services\StorageService.cs" />
     <Compile Include="Services\TrainingService.cs" />
     <Compile Include="Services\AttachmentService.cs" />
+    <Compile Include="Services\UserActivityService.cs" />
     <Compile Include="Services\UserAuthorizationService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\ValidationService.cs" />

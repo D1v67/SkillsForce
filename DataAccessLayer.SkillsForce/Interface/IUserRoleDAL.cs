@@ -7,8 +7,8 @@ namespace DataAccessLayer.SkillsForce.DAL
     {
         void Add(UserRoleModel userRole);
         void Delete(int id);
-        IEnumerable<PrerequisiteModel> GetAll();
-        PrerequisiteModel GetByID(int id);
-        void Update(PrerequisiteModel prerequisite);
+        IEnumerable<UserRoleModel> GetAll();
+        UserRoleModel GetByID(int id);
+        void Update(UserRoleModel prerequisite);
     }
 }

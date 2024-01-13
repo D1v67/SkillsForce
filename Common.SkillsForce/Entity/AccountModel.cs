@@ -13,10 +13,16 @@ namespace Common.SkillsForce.Entity
         public int RoleId { get; set; }
         public List<UserRoleModel> listOfRoles { get; set; }
 
-        public byte[] SaltValue { get; set; }
+       
 
-        public byte[] StringPassword { get; set; }
+       // public string Password { get; set; }
 
         public byte[] HashedPassword { get; set; }
+        public byte[] SaltValue { get; set; }
+
+        //public string HashedPassword { get; set; }
+        //public string SaltValue { get; set; }
+
+
     }
 }

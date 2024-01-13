@@ -29,7 +29,10 @@ namespace MVC.SkillsForce
 
             Container.RegisterType<IUserAuthorizationDAL, UserAuthorizationDAL>();
             Container.RegisterType<IUserAuthorizationService, UserAuthorizationService>();
-          
+
+            Container.RegisterType<IUserActivityService, UserActivityService>();
+            Container.RegisterType<IUserActivityDAL, UserActivityDAL>();
+
 
             Container.RegisterType<ITrainingDAL, TrainingDAL>();
             Container.RegisterType<ITrainingService, TrainingService>();

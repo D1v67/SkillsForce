@@ -4,12 +4,13 @@ using System.Data.SqlClient;
 using System.Data;
 using DataAccessLayer.SkillsForce.Interface;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace DataAccessLayer.SkillsForce.DAL
 {
     public class DBCommand : IDBCommand
     {
-
+        #region ASync DB Commands
         public async Task<SqlDataReader> GetDataReaderAsync(string query)
         {
             DataAccessLayer dataAccess = new DataAccessLayer();
@@ -115,8 +116,9 @@ namespace DataAccessLayer.SkillsForce.DAL
             return generatedIdentity;
         }
 
+        #endregion
 
-
+        #region Sync DB Commands
         public SqlDataReader GetDataReader(string query)
         {
             DataAccessLayer dataAccess = new DataAccessLayer();
@@ -247,5 +249,43 @@ namespace DataAccessLayer.SkillsForce.DAL
             dataAccess.CloseConnection();
             return resultTable;
         }
+
+        #endregion
+
+        #region Mapper Helper methods
+        public static T MapToObject<T>(SqlDataReader reader) where T : new()
+        {
+            T obj = new T();
+
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                string propertyName = reader.GetName(i);
+                object value = reader[i];
+
+                SetProperty(obj, propertyName, value);
+            }
+
+            return obj;
+        }
+
+        private static void SetProperty(object obj, string propertyName, object value)
+        {
+            var property = obj.GetType().GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            if (property != null && value != DBNull.Value)
+            {
+                Type targetType = property.PropertyType;
+
+                if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    targetType = Nullable.GetUnderlyingType(targetType);
+                }
+
+                object convertedValue = Convert.ChangeType(value, targetType);
+                property.SetValue(obj, convertedValue, null);
+            }
+        }
+
+        #endregion
     }
 }
