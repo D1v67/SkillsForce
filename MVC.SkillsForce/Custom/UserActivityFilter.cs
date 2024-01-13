@@ -72,6 +72,30 @@ namespace MVC.SkillsForce.Custom
 
         }
 
+        //public override void OnActionExecuted(ActionExecutedContext filterContext)
+        //{
+        //    var userActivityModel = filterContext.HttpContext.Items["UserActivityModel"] as UserActivityModel;
+
+        //    if (userActivityModel != null)
+        //    {
+        //        var result = filterContext.Result;
+
+        //        if (result is JsonResult jsonResult)
+        //        {
+        //            // Extract the data from the JsonResult and determine if it's a successful login
+        //            var isLoginSuccessful = jsonResult.Data;
+
+        //            // Save login activity separately with the login result
+        //           // SaveLoginActivity(userActivityModel, isLoginSuccessful);
+        //        }
+        //        else
+        //        {
+        //            // If it's not a JsonResult, assume it's another type of action and save the user activity
+        //            Add(userActivityModel);
+        //        }
+        //    }
+        //}
+
         private bool Add(UserActivityModel model)
         {
             return Task.Run(async () => await _userActivityService.AddUserActivity(model)).Result;

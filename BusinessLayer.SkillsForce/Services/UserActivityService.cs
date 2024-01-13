@@ -25,5 +25,10 @@ namespace BusinessLayer.SkillsForce.Services
         {
             return await _userActivityDAL.AddUserActivity(userActivity);
         }
+
+        public async Task<bool> AddUserLoginActivity(UserActivityModel userActivity)
+        {
+            return await _userActivityDAL.AddUserLoginActivity(userActivity);
+        }
     }
 }

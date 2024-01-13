@@ -10,5 +10,7 @@ namespace BusinessLayer.SkillsForce.Interface
     public interface IUserActivityService
     {
         Task<bool> AddUserActivity(UserActivityModel userActivity);
+        Task<bool> AddUserLoginActivity(UserActivityModel userActivity);
+
     }
 }

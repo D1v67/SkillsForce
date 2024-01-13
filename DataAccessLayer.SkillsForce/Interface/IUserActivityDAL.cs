@@ -6,5 +6,6 @@ namespace DataAccessLayer.SkillsForce.DAL
     public interface IUserActivityDAL
     {
         Task<bool> AddUserActivity(UserActivityModel userActivity);
+        Task<bool> AddUserLoginActivity(UserActivityModel userActivity);
     }
 }

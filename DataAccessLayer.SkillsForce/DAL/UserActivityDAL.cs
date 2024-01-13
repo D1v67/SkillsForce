@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,6 +50,28 @@ namespace DataAccessLayer.SkillsForce.DAL
             };
 
             return await _dbCommand.InsertUpdateDataAsync(INSERT_USER_ACTIVITY_QUERY, parameters)>0;
+        }
+
+        public async Task<bool> AddUserLoginActivity(UserActivityModel userActivity)
+        {
+            const string INSERT_LOGIN_HISTORY_QUERY = @"
+            INSERT INTO [dbo].[LoginHistory] (
+                [UserID], [LoginTime], [IPAddress], [UserAgent], [IsMobileDevice]
+            )
+            VALUES (
+                @UserID, @LoginTime, @IPAddress, @UserAgent, @IsMobileDevice
+            )";
+
+            List<SqlParameter> parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@UserID", userActivity.UserID),
+                new SqlParameter("@LoginTime", userActivity.LoginTimestamp),
+                new SqlParameter("@IpAddress", userActivity.IpAddress),
+                new SqlParameter("@UserAgent", userActivity.UserAgent),
+                new SqlParameter("@IsMobileDevice", userActivity.IsMobileDevice ?? (object)DBNull.Value),
+            };
+
+            return await _dbCommand.InsertUpdateDataAsync(INSERT_LOGIN_HISTORY_QUERY, parameters) > 0;
         }
     }
 }

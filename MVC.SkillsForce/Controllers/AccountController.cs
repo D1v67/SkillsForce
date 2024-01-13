@@ -12,7 +12,8 @@ using System.Web.Mvc;
 
 
 namespace MVC.SkillsForce.Controllers
-{    
+{
+    
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
@@ -28,12 +29,14 @@ namespace MVC.SkillsForce.Controllers
             _appNotificationService = appNotificationService;
         }
 
+
         public ActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
+        [LoginActivityFilter]
         public async Task<JsonResult> Authenticate(AccountModel account)
         {
             

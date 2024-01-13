@@ -26,6 +26,9 @@ namespace Common.SkillsForce.Entity
         public string UserLocation { get; set; }
         public bool? IsMobileDevice { get; set; }
 
+        public DateTime LoginTimestamp { get; set; }
+        public DateTime LogoutTimestamp { get; set; }
+
 
     }
 }
