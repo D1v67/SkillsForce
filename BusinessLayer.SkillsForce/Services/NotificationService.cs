@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.SkillsForce.Services
 {
+    /// <summary>
+    /// This class handles Email Notification. Fire and Forget has been used to avoid waiting for sending the email when a batch of email is sent as it can
+    /// be time consuming and some emails used in this project are dummy emails. Hence an In-App Notification is also implemented
+    /// </summary>
+    /// 
+
     public class NotificationService : INotificationService
     {
         #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously

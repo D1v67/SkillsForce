@@ -62,6 +62,7 @@
     <Compile Include="Enums\RolesEnum.cs" />
     <Compile Include="Helpers\DataReaderMapper.cs" />
     <Compile Include="Helpers\ExecutionResult.cs" />
+    <Compile Include="Helpers\FileExtensions.cs" />
     <Compile Include="Helpers\PasswordHasher.cs" />
     <Compile Include="Helpers\ValidationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

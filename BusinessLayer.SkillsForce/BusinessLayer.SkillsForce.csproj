@@ -204,6 +204,7 @@
     <Compile Include="Interface\IDepartmentService.cs" />
     <Compile Include="Interface\IEnrollmentService.cs" />
     <Compile Include="Interface\IExportSelectedEmployeeService.cs" />
+    <Compile Include="Interface\IFileExtensionValidation.cs" />
     <Compile Include="Interface\INotificationService.cs" />
     <Compile Include="Interface\IPrerequisteService.cs" />
     <Compile Include="Interface\ISessionService.cs" />
@@ -217,6 +218,7 @@
     <Compile Include="Services\AppNotificationService.cs" />
     <Compile Include="Interface\INotificationHandler.cs" />
     <Compile Include="Services\ExportSelectedEmployeeService.cs" />
+    <Compile Include="Services\FileExtensionValidation.cs" />
     <Compile Include="Services\NotificationHandler.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\DepartmentService.cs" />
