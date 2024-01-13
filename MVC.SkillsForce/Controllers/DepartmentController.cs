@@ -9,6 +9,7 @@ using System.Web.Mvc;
 namespace MVC.SkillsForce.Controllers
 {
     [UserSession]
+    [UserActivityFilter]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;

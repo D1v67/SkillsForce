@@ -14,7 +14,6 @@ namespace MVC.SkillsForce.Custom
     //[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class UserActivityFilter : ActionFilterAttribute
     {
-
         private IUserActivityService _userActivityService = DependencyResolver.Current.GetService<IUserActivityService>();
 
         public UserActivityFilter()
@@ -24,33 +23,26 @@ namespace MVC.SkillsForce.Custom
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            // Get the user ID from the session
+            int userId = GetUserIdFromSession(filterContext.HttpContext);
+
+            if (userId == -1)
+            {
+                return;
+            }
+
             var controllerName = filterContext.RouteData.Values["controller"].ToString();
             var actionName = filterContext.RouteData.Values["action"].ToString();
 
-            int userId = GetUserIdFromSession(filterContext.HttpContext);
             var url = $"{controllerName}/{actionName}";
-
             var httpMethod = filterContext.HttpContext.Request.HttpMethod;
             var ipAddress = filterContext.HttpContext.Request.UserHostAddress;
-
             var currentRole = GetUserCurrentRoleFromSession(filterContext.HttpContext);
-
             var actionParameters = GetActionParameters(filterContext);
-
             var userAgent = filterContext.HttpContext.Request.UserAgent;
-
             var sessionId = filterContext.HttpContext.Session?.SessionID;
             var referer = filterContext.HttpContext.Request.UrlReferrer?.AbsoluteUri;
             var statusCode = filterContext.HttpContext.Response.StatusCode;
-
-            //svar responseSize = filterContext.HttpContext.Response.Filter.Length;
-
             var isMobileDevice = filterContext.HttpContext.Request.Browser.IsMobileDevice;
-
-            //var requestHeaders = filterContext.HttpContext.Request.Headers;
-            //var responseHeaders = filterContext.HttpContext.Response.Headers;
-
 
             var userActivityModel = new UserActivityModel
             {
@@ -69,32 +61,7 @@ namespace MVC.SkillsForce.Custom
             };
 
             Add(userActivityModel);
-
         }
-
-        //public override void OnActionExecuted(ActionExecutedContext filterContext)
-        //{
-        //    var userActivityModel = filterContext.HttpContext.Items["UserActivityModel"] as UserActivityModel;
-
-        //    if (userActivityModel != null)
-        //    {
-        //        var result = filterContext.Result;
-
-        //        if (result is JsonResult jsonResult)
-        //        {
-        //            // Extract the data from the JsonResult and determine if it's a successful login
-        //            var isLoginSuccessful = jsonResult.Data;
-
-        //            // Save login activity separately with the login result
-        //           // SaveLoginActivity(userActivityModel, isLoginSuccessful);
-        //        }
-        //        else
-        //        {
-        //            // If it's not a JsonResult, assume it's another type of action and save the user activity
-        //            Add(userActivityModel);
-        //        }
-        //    }
-        //}
 
         private bool Add(UserActivityModel model)
         {
@@ -103,7 +70,6 @@ namespace MVC.SkillsForce.Custom
 
         private string GetActionParameters(ActionExecutingContext filterContext)
         {
-            // Extract data from action parameters
             var parameters = filterContext.ActionParameters;
 
             if (parameters != null && parameters.Count > 0)
@@ -114,8 +80,6 @@ namespace MVC.SkillsForce.Custom
 
             return null;
         }
-
-
 
         private int GetUserIdFromSession(HttpContextBase httpContext)
         {

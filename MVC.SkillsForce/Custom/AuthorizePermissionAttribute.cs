@@ -17,9 +17,7 @@ namespace MVC.SkillsForce.Custom
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class AuthorizePermissionAttribute:  ActionFilterAttribute
     {
-        //private readonly string _permission;
         private readonly Permissions _permission;
-
         private IUserAuthorizationService _authorizationService= DependencyResolver.Current.GetService<IUserAuthorizationService>();
 
         public AuthorizePermissionAttribute(Permissions permission)
@@ -29,7 +27,6 @@ namespace MVC.SkillsForce.Custom
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            // Get the user ID from the session
             var userID = GetUserIdFromSession(filterContext.HttpContext);
 
             // Fail fast if user ID is -1
@@ -38,11 +35,8 @@ namespace MVC.SkillsForce.Custom
                 filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Common", action = "NotFound" }));
                 return;
             }
-
-            // Check if the user doesn't have the required permission
             if (!IsUserHavePermission(userID, _permission))
             {
-                // Redirect to the custom error action in your controller
                 filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Common", action = "AccessDenied" }));
             }
             else
@@ -63,21 +57,9 @@ namespace MVC.SkillsForce.Custom
             }
         }
 
-
         private bool IsUserHavePermission(int userID, Permissions permission)
         {
             return Task.Run(async () => await _authorizationService.IsUserHavePermissionAsync(userID, permission.ToString())).Result;
         }
-
-        //private void RedirectToErrorAction(ActionExecutingContext filterContext)
-        //{
-        //    // Redirect to a custom error action in your controller
-        //    var controllerName = "YourController"; // Adjust the controller name
-        //    var actionName = "PermissionError";    // Adjust the action name
-        //    var routeValues = new { controller = controllerName, action = actionName };
-
-        //    filterContext.Result = new RedirectToRouteResult(routeValues);
-        //}
-
     }
 }

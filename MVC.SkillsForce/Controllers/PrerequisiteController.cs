@@ -8,6 +8,8 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
+    [UserSession]
+    [UserActivityFilter]
     public class PrerequisiteController : Controller
     {
         private readonly PrerequisiteService _prerequisiteService;

@@ -14,7 +14,6 @@ using System.Web.Mvc;
 namespace MVC.SkillsForce.Controllers
 {
     [UserSession]
-
     [UserActivityFilter]
     public class EnrollmentController : Controller
     {
@@ -43,42 +42,19 @@ namespace MVC.SkillsForce.Controllers
             return View(enrollments);
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments()
-        //{
-        //    bool isCronJob = false;
-        //    await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(isCronJob);
-
-        //    // Assuming your enrollment service sets a success flag
-        //    var success = true;
-
-        //    return Json(new { success, url = Url.Action("GetAllApprovedEnrollments", "Enrollment") });
-        //}
-
-
         [HttpPost]
         public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments()
         {
-            bool isCronJob = false;
-            var result = await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(isCronJob);
-            var X = result.SuccessMessages;
-            var y = result.Errors;
+            var result = await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(false);
 
-
-            if (result.IsSuccessful)
+            return Json(new
             {
-                //toastr.success('Automatic processing successful');
-                return Json(new { success = true, url = Url.Action("GetAllApprovedEnrollments", "Enrollment"), messages = result.SuccessMessages });
-            }
-            else
-            {
-                //toastr.error('Automatic processing failed');
-                return Json(new { success = false, errors = result.Errors });
-            }
+                success = result.IsSuccessful,
+                url = result.IsSuccessful ? Url.Action("GetAllApprovedEnrollments", "Enrollment") : null,
+                messages = result.IsSuccessful ? result.SuccessMessages : null,
+                errors = result.IsSuccessful ? null : result.Errors
+            });
         }
-
-
-
 
         [AuthorizePermission(Permissions.GetEnrollmentByManager)]
         public async Task<ActionResult> GetEnrollments()
@@ -170,88 +146,44 @@ namespace MVC.SkillsForce.Controllers
         [AuthorizePermission(Permissions.ViewTraining)]
         public async Task<JsonResult> GetPrerequisiteByTrainingID(int TrainigID)
         {
-            IEnumerable<PrerequisiteModel> prerequisites = await _prerequisiteService.GetPrerequisiteByTrainingIDAsync(TrainigID);
-
-            if (prerequisites != null)
-            {
-                return Json(prerequisites, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new List<PrerequisiteModel>(), JsonRequestBehavior.AllowGet);
-            }
+            var prerequisites = await _prerequisiteService.GetPrerequisiteByTrainingIDAsync(TrainigID);
+            return Json(prerequisites ?? new List<PrerequisiteModel>(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         [AuthorizePermission(Permissions.ApproveEnrollment)]
         public async Task<JsonResult> ApproveEnrollment(int enrollmentId, int approvedByUserId)
         {
-            try
-            {
-                await _enrollmentService.ApproveEnrollmentAsync(enrollmentId, approvedByUserId);
-                EnrollmentNotificationViewModel enrollment = await _enrollmentService.GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
-
-               // await _notificationService.SendNotificationAsync(enrollment, NotificationType.Approval);
-
-                await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Approval);
-
-                return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
+             await _enrollmentService.ApproveEnrollmentAsync(enrollmentId, approvedByUserId);
+             EnrollmentNotificationViewModel enrollment = await _enrollmentService.GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
+             await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Approval);
+             return Json(new { success = true });
         }
 
         [HttpPost]
         [AuthorizePermission(Permissions.RejectEnrollment)]
         public async Task<JsonResult> RejectEnrollment(int enrollmentId, string rejectionReason, int declinedByUserId)
         {
-            try
-            {
                 await _enrollmentService.RejectEnrollmentAsync(enrollmentId, rejectionReason, declinedByUserId);
                 EnrollmentNotificationViewModel enrollment = await _enrollmentService.GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
-
                 await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Rejection);
-               // await _notificationService.SendNotificationAsync(enrollment, NotificationType.Rejection);
                 return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
         }
 
         [HttpPost]
         public async Task<ActionResult> UploadFiles(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
         {
-            await _attachmentService.UploadFileAsync(files, EnrollmentID, PrerequisiteIDs);
-            return Json(new { success = true });
+            var result = await _attachmentService.UploadFileAsync(files, EnrollmentID, PrerequisiteIDs);
+
+            if (result.IsSuccessful)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, errors = result.Errors });
+            }
         }
-
-
-        //[HttpPost]
-        //public async Task<ActionResult> UploadFiles(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
-        //{
-        //    try
-        //    {
-        //        var validationResult = await _attachmentService.UploadFileAsync(files, EnrollmentID, PrerequisiteIDs);
-
-        //        if (validationResult.IsSuccessful)
-        //        {
-        //            return Json(new { success = true });
-        //        }
-        //        else
-        //        {
-        //            return Json(new { success = false, errors = validationResult.Errors });
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle any unexpected exception
-        //        return Json(new { success = false, errors = new List<string> { "An error occurred during file upload." } });
-        //    }
-        //}
 
         [HttpGet]
         [AuthorizePermission(Permissions.GetEnrollment)]
@@ -270,21 +202,12 @@ namespace MVC.SkillsForce.Controllers
         }
 
 
-
         [HttpPost]
         [AuthorizePermission(Permissions.GetEnrollment)]
         public async Task<JsonResult> FilterEnrollments(int trainingId, string status)
         {
-            try
-            {
                 IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllFilteredEnrollmentsWithDetailsAsync(trainingId, status);
-                //IEnumerable<EnrollmentViewModel> enrollments = await _enrollmentService.GetAllConfirmedEnrollmentsWithDetailsAsync();
                 return Json(enrollments);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = ex.Message });
-            }
         }
 
         [AuthorizePermission(Permissions.ViewTraining)]

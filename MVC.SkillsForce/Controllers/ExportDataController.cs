@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.ViewModel;
+using MVC.SkillsForce.Custom;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
+    [UserSession]
+    [UserActivityFilter]
     public class ExportDataController: Controller
     {
         private readonly IExportSelectedEmployeeService _selectedEmployeeService;

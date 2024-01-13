@@ -12,7 +12,6 @@ namespace MVC.SkillsForce.Custom
 {
     public class LogoutActivityFilter : ActionFilterAttribute
     {
-
         private IUserActivityService _userActivityService = DependencyResolver.Current.GetService<IUserActivityService>();
 
         public LogoutActivityFilter()
@@ -24,21 +23,11 @@ namespace MVC.SkillsForce.Custom
         {
 
             int userId = GetUserIdFromSession(filterContext.HttpContext);
-
-
             var httpMethod = filterContext.HttpContext.Request.HttpMethod;
             var ipAddress = filterContext.HttpContext.Request.UserHostAddress;
-
-
-
             var userAgent = filterContext.HttpContext.Request.UserAgent;
-
             var sessionId = filterContext.HttpContext.Session?.SessionID;
-
-
             var isMobileDevice = filterContext.HttpContext.Request.Browser.IsMobileDevice;
-
-
 
             var userActivityModel = new UserActivityModel
             {
@@ -49,12 +38,9 @@ namespace MVC.SkillsForce.Custom
                 UserAgent = userAgent,
                 IsMobileDevice = isMobileDevice,
             };
-
             _userActivityService.AddUserLoginActivity(userActivityModel);
-
-           
+         
         }
-
 
         private int GetUserIdFromSession(HttpContextBase httpContext)
         {

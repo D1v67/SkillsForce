@@ -10,7 +10,7 @@ namespace MVC.SkillsForce.Custom
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (filterContext.HttpContext.Session["Email"] ==null || filterContext.HttpContext.Session["CurrentRole"]==null)
+            if (filterContext.HttpContext.Session["UserID"] ==null || filterContext.HttpContext.Session["CurrentRole"]==null)
             {
                 filterContext.Result = new RedirectResult("~/Account/Index");
             }

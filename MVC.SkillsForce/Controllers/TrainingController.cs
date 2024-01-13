@@ -12,6 +12,8 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
+    //[UserSession]
+    //[UserActivityFilter]
     public class TrainingController : Controller
     {
         private readonly ITrainingService _trainingService;

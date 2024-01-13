@@ -8,11 +8,11 @@ namespace BusinessLayer.SkillsForce.Services
 {
     public interface IAttachmentService
     {
-        Task UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs);
+        //Task UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs);
         Task<IEnumerable<AttachmentModel>> GetAllAsync();
         Task<IEnumerable<AttachmentModel>> GetAllByEnrollmentIDAsync(int id);
         Task<AttachmentModel> GetByAttachmentIDAsync(int id);
 
-       // Task<ValidationResult> UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs);
+        Task<ValidationResult> UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs);
     }
 }

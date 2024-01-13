@@ -10,6 +10,7 @@ using System.Web.Mvc;
 namespace MVC.SkillsForce.Controllers
 {
     [UserSession]
+    [UserActivityFilter]
     public class AttachmentController : Controller
     {
         private readonly IAttachmentService _attachmentService;

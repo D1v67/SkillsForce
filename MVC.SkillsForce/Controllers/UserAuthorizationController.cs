@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
+using MVC.SkillsForce.Custom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
+    [UserSession]
+    [UserActivityFilter]
     public class UserAuthorizationController : Controller
     {
         private readonly IUserAuthorizationService _userAuthorizationService;

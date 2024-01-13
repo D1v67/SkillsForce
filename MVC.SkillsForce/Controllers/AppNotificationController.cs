@@ -13,9 +13,9 @@ using System.Web.Mvc;
 namespace MVC.SkillsForce.Controllers
 {
     [UserSession]
+    [UserActivityFilter]
     public class AppNotificationController : Controller
     {
-
         private readonly AppNotificationService _appNotificationService;
 
         public AppNotificationController(AppNotificationService appNotificationService)
@@ -52,7 +52,6 @@ namespace MVC.SkillsForce.Controllers
             Session["UnreadNotificationCount"] = unreadNotificationCount;
 
             return Json(new { redirectUrl = Url.Action("Index", "AppNotification"), success = true, message = "Notification marked as read" }, JsonRequestBehavior.AllowGet);
-
         }
 
         [AuthorizePermission(Permissions.ViewNotification)]
@@ -60,16 +59,11 @@ namespace MVC.SkillsForce.Controllers
         {
             int capacity = await _appNotificationService.GetUnreadNotificationCountAsync(id);
 
-            if (capacity != -1)
-            {
-                return Json(new { success = true, capacity }, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new { success = false, message = $"No capacity found for Training ID {id}" }, JsonRequestBehavior.AllowGet);
-            }
-        }
+            var success = capacity != -1;
+            var message = success ? null : $"No notifications found for Training ID {id}";
 
+            return Json(new { success, capacity, message }, JsonRequestBehavior.AllowGet);
+        }
 
     }
 }

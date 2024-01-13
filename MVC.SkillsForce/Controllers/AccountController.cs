@@ -10,10 +10,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
-
 namespace MVC.SkillsForce.Controllers
-{
-    
+{   
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
@@ -38,8 +36,7 @@ namespace MVC.SkillsForce.Controllers
         [HttpPost]
         [LoginActivityFilter]
         public async Task<JsonResult> Authenticate(AccountModel account)
-        {
-            
+        {           
             bool isUserValid = await _accountService.IsUserAuthenticatedAsync(account);
                 if (isUserValid)
                 {
@@ -106,6 +103,7 @@ namespace MVC.SkillsForce.Controllers
 
         private async  Task SetSessionVariables(AccountModel userDetailsWithRoles)
         {
+            //HttpContext.Response.Cache.AppendCacheExtension("no-cache=\"Set-Cookie\"");
             Session["UserID"] = userDetailsWithRoles.UserID;
             Session["Email"] = userDetailsWithRoles.Email;
             Session["FirstName"] = userDetailsWithRoles.FirstName;
@@ -148,6 +146,5 @@ namespace MVC.SkillsForce.Controllers
             List<string> userRoles = (List<string>)Session["UserRoles"];
             return Json(userRoles, JsonRequestBehavior.AllowGet);
         }
-
     }
 }

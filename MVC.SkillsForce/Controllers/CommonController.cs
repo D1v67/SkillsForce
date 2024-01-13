@@ -1,10 +1,12 @@
-﻿using System.Diagnostics;
+﻿using MVC.SkillsForce.Custom;
+using System.Diagnostics;
 using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
     public class CommonController : Controller
     {
+        [UserActivityFilter]
         public ActionResult AccessDenied()
         {
             return View();

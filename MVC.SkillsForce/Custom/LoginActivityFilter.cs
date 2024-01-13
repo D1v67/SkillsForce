@@ -26,10 +26,8 @@ namespace MVC.SkillsForce.Custom
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
             var result = filterContext.Result;
-
             if (result is JsonResult jsonResult)
-            {
-               
+            {            
                 var data = jsonResult.Data.ToString();
 
                 var match = Regex.Match(data, @"result\s*=\s*(\w+)", RegexOptions.IgnoreCase);
@@ -38,19 +36,15 @@ namespace MVC.SkillsForce.Custom
                 {
                     // Extracted value from the 'result' part
                     var resultValue = match.Groups[1].Value;
-
                     // Check if it's equal to "True" (case-insensitive)
                     if (bool.TryParse(resultValue, out var isLoginSuccessful) && isLoginSuccessful)
                     {
-                        // Do something for a successful login
                         Debug.WriteLine("Login Successu");
                         int userId = GetUserIdFromSession(filterContext.HttpContext);
                         var ipAddress = filterContext.HttpContext.Request.UserHostAddress;
                         var userAgent = filterContext.HttpContext.Request.UserAgent;
                         var isMobileDevice = filterContext.HttpContext.Request.Browser.IsMobileDevice;
-                        var sessionId = filterContext.HttpContext.Session?.SessionID;
-                        //var currentRole = GetUserCurrentRoleFromSession(filterContext.HttpContext);
-
+                       // var sessionId = filterContext.HttpContext.Session?.SessionID;
                         var userActivityModel = new UserActivityModel
                         {
                             UserID = userId,
@@ -59,22 +53,18 @@ namespace MVC.SkillsForce.Custom
                             EventTime = DateTime.Now,
                             UserAgent = userAgent,
                             IsMobileDevice = isMobileDevice,
-                            //CurrentRole = currentRole,
                         };
-
                         _userActivityService.AddUserLoginActivity(userActivityModel);
-
                     }
                     else
                     {
                         Debug.WriteLine("Login faileds");
                     }
                 }
-
             }
             else
             {
-
+                Debug.WriteLine("sth faileds");
             }
         }
 

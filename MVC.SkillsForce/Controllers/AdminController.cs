@@ -5,6 +5,7 @@ using System.Web.Mvc;
 namespace MVC.SkillsForce.Controllers
 {
     [UserSession]
+    [UserActivityFilter]
     public class AdminController : Controller
     {
         [AuthorizePermission(Permissions.AdminDashboard)]

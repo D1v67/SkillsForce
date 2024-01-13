@@ -4,15 +4,65 @@
     Layout = "";
 }
 
-<h2>InternalServerError</h2>
 
-<h2>InternalServerError</h2>
 
-@if (TempData["Message"] != null)
-{
-    <p>@TempData["Message"]</p>
-}
-else
-{
-    <p>An internal server error occurred.</p>
-}
+
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Your Application Name</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            margin: 50px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #d9534f;
+        }
+
+        p {
+            font-size: 16px;
+        }
+
+        a {
+            color: #31708f;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+
+<div class="container">
+    <h1>Internal Server Error</h1>
+
+    @if (TempData["Message"] != null)
+    {
+        <p>@TempData["Message"]</p>
+    }
+    else
+    {
+        <p>An internal server error occurred.</p>
+    }
+
+    <p>If you believe this is a mistake, please contact the <a href="#">support team</a>.</p>
+    <p>Go back to <strong>@Html.ActionLink("Home", "Index", "Home")</strong>  page.</p>
+</div>
+
+

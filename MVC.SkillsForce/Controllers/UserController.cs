@@ -10,6 +10,7 @@ using System.Web.Mvc;
 namespace MVC.SkillsForce.Controllers
 {
     [UserSession]
+    [UserActivityFilter]
     public class UserController : Controller
     {
         private readonly IUserService _userService;

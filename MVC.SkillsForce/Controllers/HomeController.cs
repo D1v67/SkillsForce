@@ -3,29 +3,24 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
-    // [UserSession]
-
-    //[SessionTimeout]
+    [UserActivityFilter]
     public class HomeController : Controller
-    {
-
+    {      
         public ActionResult Index()
         {
             return View();
         }
 
-        //[SessionTimeout]
-        [UserActivityFilter]
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Application description page.";
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Contact page.";
 
             return View();
         }

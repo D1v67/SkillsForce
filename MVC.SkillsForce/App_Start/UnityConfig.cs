@@ -24,6 +24,9 @@ namespace MVC.SkillsForce
 
             Container.RegisterType<ISessionService, SessionService>();
 
+            Container.RegisterType<IFileExtensionValidation, FileExtensionValidation>();
+          
+
             Container.RegisterType<IExportSelectedEmployeeService, ExportSelectedEmployeeService>();
             Container.RegisterType<IExportSelectedEmployeeDAL, ExportSelectedEmployeeDAL>();
 
