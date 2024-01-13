@@ -144,13 +144,15 @@ namespace DataAccessLayer.SkillsForce.DAL
                                                            SET EnrollmentStatus = 'Approved', 
                                                               ApprovedByUserId = @ApprovedByUserId,
                                                               LastModifiedTimestamp = GETDATE(),
-                                                              LastModifiedUserId = @LastModifiedUserId
+                                                              LastModifiedUserId = @LastModifiedUserId,
+                                                              ApprovedTimestamp = @ApprovedTimestamp
                                                            WHERE EnrollmentID = @EnrollmentID";
             List<SqlParameter> parameters = new List<SqlParameter>
             {
                 new SqlParameter("@EnrollmentID", enrollmentId),
                 new SqlParameter("@ApprovedByUserId", (object)approvedByUserId ?? DBNull.Value),
-                new SqlParameter("@LastModifiedUserId", approvedByUserId)
+                new SqlParameter("@LastModifiedUserId", approvedByUserId),
+                new SqlParameter("@ApprovedTimestamp", DateTime.Now)
             };
             await _dbCommand.InsertUpdateDataAsync(UPDATE_STATUS_APPROVED_QUERY, parameters);
         }
@@ -163,7 +165,8 @@ namespace DataAccessLayer.SkillsForce.DAL
                                                                 DeclineReason = @DeclineReason,
                                                                 DeclinedByUserId = @DeclinedByUserId,
                                                                 LastModifiedTimestamp = GETDATE(),
-                                                                LastModifiedUserId = @LastModifiedUserId
+                                                                LastModifiedUserId = @LastModifiedUserId,
+                                                                RejectedTimestamp = @RejectedTimestamp
                                                             WHERE EnrollmentID = @EnrollmentID";
 
             List<SqlParameter> parameters = new List<SqlParameter>
@@ -171,7 +174,8 @@ namespace DataAccessLayer.SkillsForce.DAL
                 new SqlParameter("@EnrollmentID", enrollmentId),
                 new SqlParameter("@DeclineReason", (object)rejectionReason ?? DBNull.Value),
                 new SqlParameter("@DeclinedByUserId", (object)declinedByUserId ?? DBNull.Value),
-                new SqlParameter("@LastModifiedUserId", declinedByUserId)
+                new SqlParameter("@LastModifiedUserId", declinedByUserId),
+                new SqlParameter("@RejectedTimestamp", DateTime.Now),
             };
             await _dbCommand.InsertUpdateDataAsync(UPDATE_STATUS_REJECTED_QUERY, parameters);
         }
