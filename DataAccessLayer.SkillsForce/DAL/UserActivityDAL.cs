@@ -55,20 +55,22 @@ namespace DataAccessLayer.SkillsForce.DAL
         public async Task<bool> AddUserLoginActivity(UserActivityModel userActivity)
         {
             const string INSERT_LOGIN_HISTORY_QUERY = @"
-            INSERT INTO [dbo].[LoginHistory] (
-                [UserID], [LoginTime], [IPAddress], [UserAgent], [IsMobileDevice]
+            INSERT INTO [dbo].[SessionHistory] (
+                [UserID], [EventType], [EventTime], [UserAgent], [IsMobileDevice], [IpAddress]
             )
             VALUES (
-                @UserID, @LoginTime, @IPAddress, @UserAgent, @IsMobileDevice
+                @UserID, @EventType, @EventTime, @UserAgent, @IsMobileDevice, @IpAddress
             )";
 
             List<SqlParameter> parameters = new List<SqlParameter>
             {
                 new SqlParameter("@UserID", userActivity.UserID),
-                new SqlParameter("@LoginTime", userActivity.LoginTimestamp),
-                new SqlParameter("@IpAddress", userActivity.IpAddress),
-                new SqlParameter("@UserAgent", userActivity.UserAgent),
+                new SqlParameter("@EventType", userActivity.EventType),
+                new SqlParameter("@EventTime", userActivity.EventTime),
+                new SqlParameter("@IpAddress", userActivity.IpAddress ?? (object)DBNull.Value),
+                new SqlParameter("@UserAgent", userActivity.UserAgent ?? (object)DBNull.Value),
                 new SqlParameter("@IsMobileDevice", userActivity.IsMobileDevice ?? (object)DBNull.Value),
+               // new SqlParameter("@CurrentRole", userActivity.CurrentRole ?? (object)DBNull.Value),
             };
 
             return await _dbCommand.InsertUpdateDataAsync(INSERT_LOGIN_HISTORY_QUERY, parameters) > 0;

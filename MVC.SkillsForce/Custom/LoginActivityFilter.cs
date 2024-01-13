@@ -48,14 +48,18 @@ namespace MVC.SkillsForce.Custom
                         var ipAddress = filterContext.HttpContext.Request.UserHostAddress;
                         var userAgent = filterContext.HttpContext.Request.UserAgent;
                         var isMobileDevice = filterContext.HttpContext.Request.Browser.IsMobileDevice;
+                        var sessionId = filterContext.HttpContext.Session?.SessionID;
+                        //var currentRole = GetUserCurrentRoleFromSession(filterContext.HttpContext);
 
                         var userActivityModel = new UserActivityModel
                         {
                             UserID = userId,
                             IpAddress = ipAddress,
-                            LoginTimestamp = DateTime.Now,
+                            EventType = "Login",
+                            EventTime = DateTime.Now,
                             UserAgent = userAgent,
                             IsMobileDevice = isMobileDevice,
+                            //CurrentRole = currentRole,
                         };
 
                         _userActivityService.AddUserLoginActivity(userActivityModel);
@@ -74,26 +78,6 @@ namespace MVC.SkillsForce.Custom
             }
         }
 
-        private bool Add(UserActivityModel model)
-        {
-            return Task.Run(async () => await _userActivityService.AddUserActivity(model)).Result;
-        }
-
-        private string GetActionParameters(ActionExecutingContext filterContext)
-        {
-            // Extract data from action parameters
-            var parameters = filterContext.ActionParameters;
-
-            if (parameters != null && parameters.Count > 0)
-            {
-                var parameterData = parameters.Select(kv => $"{kv.Key}: {kv.Value?.ToString()}");
-                return string.Join(", ", parameterData);
-            }
-
-            return null;
-        }
-
-
 
         private int GetUserIdFromSession(HttpContextBase httpContext)
         {
@@ -104,18 +88,6 @@ namespace MVC.SkillsForce.Custom
             else
             {
                 return -1;
-            }
-        }
-
-        private string GetUserCurrentRoleFromSession(HttpContextBase httpContext)
-        {
-            if (httpContext.Session != null && httpContext.Session["UserID"] != null)
-            {
-                return httpContext.Session["CurrentRole"].ToString();
-            }
-            else
-            {
-                return null;
             }
         }
 

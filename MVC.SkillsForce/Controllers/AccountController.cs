@@ -71,6 +71,7 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
+        [LogoutActivityFilter]
         public ActionResult Logout()
         {
             Session.Clear();

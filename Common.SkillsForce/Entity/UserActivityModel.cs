@@ -30,5 +30,8 @@ namespace Common.SkillsForce.Entity
         public DateTime LogoutTimestamp { get; set; }
 
 
+        public string EventType { get; set; }
+        public DateTime EventTime { get; set; }
+
     }
 }
