@@ -3,11 +3,11 @@
 
 <style>
     #trainingTable {
-        margin-top: 20px; /* Adjust the value as needed */
+        margin-top: 20px;
     }
 
     .btn-group {
-        margin-bottom: 20px; /* Adjust the value as needed */
+        margin-bottom: 20px;
     }
 </style>
 
@@ -57,12 +57,12 @@
 
 @if (TempData["ErrorMessage"] != null)
 {
-    <div id="error-alert" class="alert alert-danger">
+    <div id="error-alert" class="alert alert-danger mt-3">
         <strong>Error:</strong> @TempData["ErrorMessage"]
     </div>
 
     <script>
-        // Display error message for 5 seconds (5000 milliseconds)
+
         setTimeout(function () {
             $("#error-alert").fadeOut("slow", function () {
                 $(this).remove();
@@ -72,12 +72,12 @@
 }
 else if (TempData["SuccessMessage"] != null)
 {
-    <div id="success-alert" class="alert alert-success">
+    <div id="success-alert" class="alert alert-success mt-3">
         <strong>Success:</strong> @TempData["SuccessMessage"]
     </div>
 
     <script>
-        // Display success message for 5 seconds (5000 milliseconds)
+
         setTimeout(function () {
             $("#success-alert").fadeOut("slow", function () {
                 $(this).remove();
@@ -86,145 +86,130 @@ else if (TempData["SuccessMessage"] != null)
     </script>
 }
 
-@*<button id="AddTrainingButton">Add Training</button>*@
+
+<div class="table-responsive container-fluid p-3">
+
+    <div class="container-fluid mt-3">
+
+
+        <div id="errorDiv" class="alert alert-danger" style="display: none;"></div>
 
 
 
+        <a id="AddTrainingButton" href="/Training/CreateTraining/" class="btn btn-info btn-sm me-2">Add Training</a>
 
 
-<div class="container-fluid mt-3">
-
-    @*<button id="AddTrainingButton" class="btn btn-primary me-2" onclick="redirectToCreateTraining()">Add Training</button>*@
-
-
-
-    <!--<p>
-        @Html.ActionLink("Add Training", "CreateTraining", "Training", new { @class = "btn btn-primary me-2" })-->
-    <!-- Added me-2 for margin-right -->
-    <!--</p>-->
-    @*<p>
-            <button id="AddTraining" class="btn btn-primary me-2" onclick="redirectToCreateTraining()">Add Training</button>
-        </p>*@
-
-
-    <div id="errorDiv" class="alert alert-danger" style="display: none;"></div>
-
-
-
-    <a id="AddTrainingButton" href="/Training/CreateTraining/" class="btn btn-info btn-sm me-2">Add Training</a>
-    <!-- ... other buttons ... -->
-    <!-- Your table structure without Razor syntax -->
-    <div class="table-responsive">
-        <table id="trainingTable" class="table table-striped table-hover table-bordered mt-4">
-            <thead>
-                <tr>
-                    <th>Training Name</th>
-                    <th>Training Description</th>
-                    <th>Registration Deadline</th>
-                    <th>Capacity</th>
-                    <th>Department ID</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="table-responsive table-bordered mt-5">
+            <table id="trainingTable" class="table table-striped table-hover table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <th>Training Name</th>
+                        <th>Training Description</th>
+                        <th>Registration Deadline</th>
+                        <th>Capacity</th>
+                        @*<th>Department ID</th>*@
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
+
 </div>
+    @*<button type="button" class="btn btn-secondary btn-sm me-2 enroll-btn" data-toggle="modal" data-target="#enrollModal">Details</button>*@
 
-
-<button type="button" class="btn btn-secondary btn-sm me-2 enroll-btn" data-toggle="modal" data-target="#enrollModal">Details</button>
-
-<div class="modal fade" id="enrollModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="registrationModalLabel">Training Details</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-
-            <div class="modal-body" id="modalBody">
-
-
-
-                <div class="training-details">
-                    <p><strong>Training Name:</strong> <span id="trainingName"></span></p>
-                    <p><strong>TrainingDescription:</strong> <span id="trainingDesc"></span></p>
-                    <p><strong>Registration Deadline:</strong> <span id="registrationDeadline"></span></p>
-                    <p><strong>Start Date:</strong> <span id="startDate"></span></p>
-                    <p><strong>Capacity:</strong> <span id="capacity"></span></p>
-                    <p><strong>Department ID:</strong> <span id="departmentID"></span></p>
-                    <p><strong>Prerequisites:</strong> <span id="prerequisites"></span></p>
+    <div class="modal fade" id="enrollModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registrationModalLabel">Training Details</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
 
-                <input type="hidden" id="currentEnrollmentId" value="" />
 
-                @*<button type="submit" class="btn btn-primary" id="saveBtn">Save</button>*@
-            </div>
-
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+                <div class="modal-body" id="modalBody">
 
 
 
+                    <div class="training-details">
+                        <p><strong>Training Name:</strong> <span id="trainingName"></span></p>
+                        <p><strong>TrainingDescription:</strong> <span id="trainingDesc"></span></p>
+                        <p><strong>Registration Deadline (mm/dd/yyyy):</strong> <span id="registrationDeadline"></span></p>
+                        <p><strong>Start Date (mm/dd/yyyy):</strong> <span id="startDate"></span></p>
+                        <p><strong>Capacity:</strong> <span id="capacity"></span></p>
+                        <p><strong>Department ID:</strong> <span id="departmentID"></span></p>
+                        <p><strong>Prerequisites:</strong> <span id="prerequisites"></span></p>
+                    </div>
 
-<!-- Confirmation Modal -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this training?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger" id="confirmDelete">Yes, Delete</button>
+                    <input type="hidden" id="currentEnrollmentId" value="" />
+
+                    @*<button type="submit" class="btn btn-primary" id="saveBtn">Save</button>*@
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
 
-<link href="
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this training?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Yes, Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <link href="
 https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
-      rel="stylesheet" />
-<script defer src="
+          rel="stylesheet" />
+    <script defer src="
 https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script defer src="
+    <script defer src="
 https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-<link href="
+    <link href="
 https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
-      rel="stylesheet" />
-<script defer src="
+          rel="stylesheet" />
+    <script defer src="
 https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script defer src="
+    <script defer src="
 
 
 https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 
-<script>
-    function redirectToCreateTraining() {
-        // Redirect to the specified controller action
-        window.location.href = "/Training/CreateTraining";
+    <script>
+        function redirectToCreateTraining() {
 
-    }
-</script>
+            window.location.href = "/Training/CreateTraining";
 
-<script>
+        }
+    </script>
+
+    <script>
 
     $(document).ready(function () {
 
@@ -234,25 +219,23 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             var trainingID = $(this).data('training-id');
 
             console.log(trainingID)
-            // Set the training ID to the confirmation modal
+
             $('#confirmationModal').data('training-id', trainingID);
 
-            // Show the confirmation modal
+
             $('#confirmationModal').modal('show');
         });
 
-        // Handle confirm delete button click
         $(document).on('click', '#confirmDelete', function () {
-            // Get the training ID from the confirmation modal
+
             var trainingID = $('#confirmationModal').data('training-id');
             console.log(trainingID)
-            // Make an AJAX call to delete the training
+
             $.ajax({
                 url: "/Training/Delete/" + trainingID,
-                type: 'GET', // Change to the appropriate HTTP method for your application
+                type: 'GET',
                 success: function (result) {
-                    // Handle success (e.g., reload the DataTable)
-                   // $('#trainingTable').DataTable().ajax.reload();
+
 
                     if (result.success) {
                         $('#trainingTable').DataTable().ajax.reload();
@@ -271,17 +254,16 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
             });
 
-            // Hide the confirmation modal
+
             $('#confirmationModal').modal('hide');
         });
 
 
 
-        // Additional click event for "Details" link
         $(document).on('click', '.details-btn', function () {
             var trainingID = $(this).data('training-id');
             console.log(trainingID)
-            // Make an AJAX call to fetch details based on the trainingID
+
             $.ajax({
                 url: "/Training/GetTrainingDetails/" + trainingID,
                 type: 'GET',
@@ -296,7 +278,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                     $('#capacity').text(result.Capacity);
                     $('#departmentID').text(result.DepartmentID);
 
-                    // Display prerequisites if available
+
                     if (result.Prerequisites && result.Prerequisites.length > 0) {
                         var prerequisitesList = result.Prerequisites.map(function (prerequisite) {
                             return prerequisite.PrerequisiteName;
@@ -315,6 +297,8 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                 }
             });
         });
+
+
 
 
 
@@ -338,12 +322,11 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             contentType: 'application/json',
             data: JSON.stringify({ userId: userId, permissions: permissionsToCheck }),
             success: function (result) {
-                // Iterate through the result and show links accordingly
+
                 $.each(result, function (permission, hasPermission) {
                     if (hasPermission) {
-                        // Show the links since the user has the permission
+
                         $('#trainingTable').on('draw.dt', function () {
-                           // $("a[id^='EditTrainingButton']").show();
 
                             $("a[id^='" + permission + "Button']").show();
                         });
@@ -361,11 +344,11 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
         $('#trainingTable').DataTable({
             "ajax": {
-                "url": "/Training/GetAll", // Update this URL to match your controller's action
-                "type": "POST",  // Corrected to POST
+                "url": "/Training/GetAll",
+                "type": "POST",
                 "datatype": "json",
                 "dataSrc": function (data) {
-                    console.log('Data retrieved successfully:', data); // Log the data
+                    console.log('Data retrieved successfully:', data);
                     return data;
                 },
                 "error": function (xhr, error, thrown) {
@@ -382,10 +365,10 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                     }
                 },
                 { "data": "Capacity", "orderable": false },
-                { "data": "DepartmentID" },
+    /*            { "data": "DepartmentID" },*/
                 {
                     "data": null,
-                    "orderable": false, // Set to non-orderable
+                    "orderable": false,
                     "render": function (data) {
                         return '<a id="EditTrainingButton" href="/Training/Edit/' + data.TrainingID + '" class="btn btn-info btn-sm me-2">Edit</a>' +
                             '<a href="javascript:void(0);" class="btn btn-secondary btn-sm me-2 details-btn" data-training-id="' + data.TrainingID + '">Details</a>' +
@@ -397,18 +380,26 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 
 
-
         function formatDateTime(timestamp) {
             // Extracting only unix timestamp
             var match = timestamp.match(/\d+/);
             var numericPart = match ? match[0] : null;
 
-            // Make sure to treat as millisecond
             const dateObject = new Date(parseInt(numericPart, 10))
             const day = String(dateObject.getDate()).padStart(2, '0')
-            const month = String(dateObject.getMonth() + 1).padStart(2, '0')
+            const month = getMonthName(dateObject.getMonth() + 1);
             const year = dateObject.getFullYear()
-            return `${year}-${month}-${day}`
+
+            return `${day} ${month} ${year}`;
+        }
+
+        function getMonthName(monthNumber) {
+            const months = [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ];
+
+            return months[monthNumber - 1];
         }
     });
 
@@ -457,41 +448,5 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 
 
-</script>
-
-@*<div class=" container-fluid mt-3">
-        <p>
-            @Html.ActionLink("Create New", "CreateTraining", "Training", new { @class = "btn btn-primary" })
-        </p>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.TrainingName)</th>
-                    <th>@Html.DisplayNameFor(model => model.TrainingDescription)</th>
-                    <th>@Html.DisplayNameFor(model => model.RegistrationDeadline)</th>
-                    <th>@Html.DisplayNameFor(model => model.Capacity)</th>
-                    <th>@Html.DisplayNameFor(model => model.DepartmentID)</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.TrainingName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.TrainingDescription)</td>
-                        <td>@Html.DisplayFor(modelItem => item.RegistrationDeadline)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
-                        <td>@Html.DisplayFor(modelItem => item.DepartmentID)</td>
-                        <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.TrainingID }, new { @class = "btn btn-info btn-sm" })
-                            @Html.ActionLink("Details", "Details", new { id = item.TrainingID }, new { @class = "btn btn-secondary btn-sm" })
-                            @Html.ActionLink("Delete", "Delete", new { id = item.TrainingID }, new { @class = "btn btn-danger btn-sm" })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>*@
-
+    </script>
 

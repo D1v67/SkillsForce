@@ -7,7 +7,7 @@
 <style>
     label {
         font-weight: bold;
-        font-size: 16px; /* Adjust the font size as needed */
+        font-size: 16px;
     }
 </style>
 
@@ -134,7 +134,7 @@
                         </div>
                     </div>
 
-                    <!-- Table to display selected prerequisites -->
+            
                     <!-- Table to display selected prerequisites -->
                     <div id="selectedPrerequisitesDiv" style="display: none;">
                         <h4>Selected Prerequisites</h4>
@@ -344,21 +344,20 @@
                 Capacity: $('#Capacity').val(),
                 DepartmentID: parseInt($("#DepartmentID").val()),
                 Prerequisites: selectedPrerequisites,
-                // Add other fields as needed
+        
             };
 
 
             console.log(formData)
 
-            // Add your AJAX call to submit the form data
             $.ajax({
                 type: "POST",
-                url: "/Training/CreateTraining", // Replace with your actual controller and action
+                url: "/Training/CreateTraining", 
                 data: formData,
                 success: function (response) {
                     console.log(response);
                     if (response.url) {
-                        // Redirect to a relevant page on success
+                      
                         setTimeout(function () {
                             window.location = response.url;
                         }, 500);
@@ -370,16 +369,16 @@
                 },
                 error: function (error) {
                     console.error("Error submitting form:", error);
-                    // Handle errors as needed
+                   
                 }
             });
         });
 
         function handleValidationErrors(errors) {
-            // Clear existing validation messages
+           
             $('.is-invalid').removeClass('is-invalid');
 
-            // Display validation errors in toastr and mark corresponding fields as invalid
+       
             errors.forEach(function (error) {
                 toastr.error(error);
                 $('#' + error.field).addClass('is-invalid');

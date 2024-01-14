@@ -27,7 +27,7 @@
     }
 
     .btn-primary {
-        border-radius: 15px;
+        border-radius: 20px;
         width: 100%; /* Make the button width 100% */
         font-size: 18px; /* Increase text size */
     }
@@ -50,14 +50,14 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 
-<body>
+<body class="d-flex justify-content-center align-items-center">
     @using (Html.BeginForm("SetRole", "Account", FormMethod.Post, new { @class = "mx-auto" }))
     {
         if (Model != null && Model.Any())
         {
             <div class="card mx-auto mt-5 p-5">
                 <div class="card-body shadow-lg">
-                    <h5 class="card-title">Role Selection</h5>
+                    <h5 class="card-title">Select Role</h5>
                     <div class="form-check">
                         @foreach (var role in Model)
                         {

@@ -42,7 +42,7 @@ namespace BusinessLayer.SkillsForce.Services
             var validationErrors = new List<string>();
 
             // Validate Email
-            if (string.IsNullOrWhiteSpace(model.Email) || !Regex.IsMatch(model.Email, @"^[a-zA-Z0-9]{1,30}(?:[a-zA-Z0-9]*[._%+-]?[a-zA-Z0-9]+)@gmail\.com$"))
+            if (string.IsNullOrWhiteSpace(model.Email) || !Regex.IsMatch(model.Email, @"^[a-zA-Z0-9]{1,30}(?:[a-zA-Z0-9]*[.]?[a-zA-Z0-9]+)@gmail\.com$"))
             {
                 validationErrors.Add("Email is required and must be in a valid format.");
             }

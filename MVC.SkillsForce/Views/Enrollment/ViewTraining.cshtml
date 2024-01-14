@@ -65,19 +65,19 @@
     }
 
     .error-border {
-        border: 1px solid #dc3545 !important; /* Red border color */
-        border-radius: 0.2rem !important; /* Adjust border-radius as needed */
-        transition: border-color 0.2s ease-in-out; /* Optional: Add a smooth transition effect */
-        animation: glow 1s infinite alternate; /* Add a glowing animation */
+        border: 1px solid #dc3545 !important; 
+        border-radius: 0.2rem !important; 
+        transition: border-color 0.2s ease-in-out; 
+        animation: glow 1s infinite alternate; 
     }
 
     @@keyframes glow {
         from {
-            box-shadow: 0 0 5px #dc3545; /* Initial shadow color */
+            box-shadow: 0 0 5px #dc3545; 
         }
 
         to {
-            box-shadow: 0 0 10px #dc3545; /* Glowing shadow color */
+            box-shadow: 0 0 10px #dc3545; 
         }
     }
 
@@ -97,6 +97,18 @@
         height: 60px;
         width: 60px;
     }
+
+    .text-small {
+        font-size: 80%; /* or adjust as needed */
+        font-weight: lighter; /* or adjust as needed */
+    }
+
+    #toast-container > div {
+        opacity: 1;
+    }
+
+
+
 </style>
 
 <div class="spinner-wrapper" style="display: none;">
@@ -109,10 +121,10 @@
 
     <ul class="nav nav-tabs mb-5">
         <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#AllTrainingsTab">Trainings</a>
+            <a class="nav-link active" data-bs-toggle="tab" href="#AllTrainingsTab"><b>Trainings</b></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#myTrainingsTab">My Trainings</a>
+            <a class="nav-link" data-bs-toggle="tab" href="#myTrainingsTab"><b>My Trainings</b></a>
         </li>
     </ul>
 
@@ -134,7 +146,7 @@
                         <form id="enrollForm" onsubmit="saveEnrollment(); return false;" enctype="multipart/form-data">
                             <div class="modal-body" id="modalBody">
                                 <h3>Enroll in Training</h3>
-                                <p>Your User ID: <span id="userIdInfo"></span></p>
+                                @*<p>Your User ID: <span id="userIdInfo"></span></p>*@
                                 <p id="trainingInfo"></p>
 
                                 <div id="coursesCheckboxList"></div>
@@ -185,15 +197,15 @@
             <div id="trainingCardContainer" class="card-deck mt-5"></div>
 
             <div id="myDataTable">
-                <table id="trainingDataTable" class="table mt-3">
+                <table id="trainingDataTable" class="table table-striped table-hover table-bordered mt-4" >
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            @*<th>ID</th>*@
                             <th>Training Name</th>
                             <th>Description</th>
-                            <th>Registration Deadline</th>
+                            <th>Registration Deadline @*<span class="text-small">(dd/mm/yyyy)</span>*@</th>
                             <th>Capacity</th>
-                            <th>Department ID</th>
+                            <th>Department Name</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -209,7 +221,7 @@
         <!-- My Trainings Tab -->
         <div class="tab-pane fade" id="myTrainingsTab">
 
-            <!-- ... your content for My Trainings ... -->
+
             <!-- Message container for enrollments or no enrollments -->
             <div id="enrollmentsMessage" class="alert alert-info mt-3">
                 <!-- The message will be dynamically updated here -->
@@ -220,7 +232,7 @@
 
             <table id="trainingTableAlreadyEnrolled" class="table mt-3">
                 <thead>
-                    <!-- ... your existing table head ... -->
+                
                 </thead>
                 <tbody></tbody>
             </table>
@@ -280,7 +292,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         function updateTableGrid() {
             var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
-            // Initialize DataTable and store the reference in the global variable
+            
             trainingDataTable = $('#trainingDataTable').DataTable({
                 ajax: {
                     url: '/Enrollment/ViewTrainingData',
@@ -295,12 +307,17 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                     }
                 },
                 columns: [
-                    { data: 'TrainingID' },
+                    /*{ data: 'TrainingID' },*/
                     { data: 'TrainingName' },
                     { data: 'TrainingDescription' },
-                    { data: 'RegistrationDeadline' },
+                    {
+                        data: 'RegistrationDeadline',
+                        render: function (data, type, row) {
+                            return formatDateTime(data);
+                        }
+                    },
                     { data: 'Capacity' },
-                    { data: 'DepartmentID' },
+                    { data: 'DepartmentName' },
                     {
                         data: 'TrainingID',
                         render: function (data, type, row) {
@@ -310,7 +327,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
                             return isEnrollmentOpen
                                 ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${data}" onclick="enroll(${data})">Enroll</button>`
-                                : '<span style="color: red;">Enrollment Closed</span>';
+                                : '<span style="color: red;"><b>Enrollment Closed<b></span>';
                         },
                     },
                 ],
@@ -345,7 +362,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
             $(this).text(newValue === "grid" ? "Grid View" : "List View");
 
-            // Disable or enable the search button based on the current view
             if (newValue === "grid") {
                 $(".searchDiv").show();
             } else {
@@ -357,13 +373,11 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                 $("#trainingCardContainer").show();
                 $("#myDataTable").hide();
                 loadData(true, searchInput.val());
-                //GetAllEnrolledTrainings(true, $(this).val());
+     
             } else {
                 $("#trainingCardContainer").hide();
                 $("#myDataTable").show();
                 loadData(false, searchInput.val());
-
-                //GetAllEnrolledTrainings(false, $(this).val());
             }
         });
 
@@ -472,7 +486,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                             <p class="card-text"><strong>Start Date:</strong> ${formatDate(startDate)}</p>
                             <p class="card-text"><strong>Registration Deadline:</strong> ${formatDate(registrationDeadlineDate)}</p>
 
-                            ${isEnrollmentOpen ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${item.TrainingID}" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;">Enrollment Closed</span>'}
+                            ${isEnrollmentOpen ? `<button type="button" class="btn btn-primary enroll-btn" data-toggle="modal" data-target="#enrollModal" data-training-id="${item.TrainingID}" onclick="enroll(${item.TrainingID})">Enroll</button>` : '<span style="color: red;"><b>Enrollment Closed<b></span>'}
                         </div>
                      `;
                 col.appendChild(card);
@@ -515,20 +529,52 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             var match = timestamp.match(/\d+/);
             var numericPart = match ? match[0] : null;
 
-            // Make sure to treat as millisecond
             const dateObject = new Date(parseInt(numericPart, 10))
             const day = String(dateObject.getDate()).padStart(2, '0')
-            const month = String(dateObject.getMonth() + 1).padStart(2, '0')
+            const month = getMonthName(dateObject.getMonth() + 1);
             const year = dateObject.getFullYear()
-            return `${year}-${month}-${day}`
+
+            return `${day} ${month} ${year}`;
         }
-        // format date in 'YYYY-MM-DD'
+
+        function getMonthName(monthNumber) {
+            const months = [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ];
+
+            return months[monthNumber - 1];
+        }
+
+        //function formatDateTime(timestamp) {
+        //    // Extracting only unix timestamp
+        //    var match = timestamp.match(/\d+/);
+        //    var numericPart = match ? match[0] : null;
+
+        //    // Make sure to treat as millisecond
+        //    const dateObject = new Date(parseInt(numericPart, 10))
+        //    const day = String(dateObject.getDate()).padStart(2, '0')
+        //    const month = String(dateObject.getMonth() + 1).padStart(2, '0')
+        //    const year = dateObject.getFullYear()
+        //    //return `${year}-${month}-${day}`
+
+        //    return `${day}-${month}-${year}`
+        //}
+
         function formatDate(date) {
-            var year = date.getFullYear();
-            var month = ('0' + (date.getMonth() + 1)).slice(-2);
-            var day = ('0' + date.getDate()).slice(-2);
-            return year + '-' + month + '-' + day;
+            const day = ('0' + date.getDate()).slice(-2);
+            const month = getMonthName(date.getMonth() + 1);
+            const year = date.getFullYear();
+            return `${day} ${month} ${year}`;
         }
+
+        // format date in 'YYYY-MM-DD'
+        //function formatDate(date) {
+        //    var year = date.getFullYear();
+        //    var month = ('0' + (date.getMonth() + 1)).slice(-2);
+        //    var day = ('0' + date.getDate()).slice(-2);
+        //    return day + '-' + month + '-' + year;
+        //}
 
     });
 </script>
@@ -586,8 +632,8 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
         console.log(userId)
-        $("#trainingInfo").text("Enroll in Training: " + trainingId);
-        $("#userIdInfo").text("User : " + userId);
+       // $("#trainingInfo").text("Enroll in Training: " + trainingId);
+        //$("#userIdInfo").text("User : " + userId);
 
         $("#enrollModal").data("trainingId", trainingId);
 
@@ -644,7 +690,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                 '   <div class="col-6 col-md-12">' +
                 '       <div class="input-group">' +
                 '           <input type="file" accept=".pdf" class="form-control fileUploader" id="fileInput' + prerequisite.PrerequisiteID + '" data-prerequisite-id="' + prerequisite.PrerequisiteID + '" required>' +
-                '           <span class="file-size-limit-label">File size limit: ' + (fileSizeLimitPerPrerequisite / 1024) + ' KB</span>' +
+                '           <span class="file-size-limit-label ml-3">File size limit: ' + (fileSizeLimitPerPrerequisite / 1024) + ' KB</span>' +
                 '       </div>' +
                 '   </div>' +
                 '</div>'
@@ -653,8 +699,8 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             var fileInput = row.find('.fileUploader');
 
             fileInput.on('change', function () {
-                $(".spinner-wrapper").show();// Show the spinner when a file is being loaded
-                // ... Add additional logic if needed
+                $(".spinner-wrapper").show();
+             
                 setTimeout(function () {
                     $(".spinner-wrapper").hide();
                 }, 600);
@@ -662,13 +708,13 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 
 
-            // Add event listener to check file size before form submission
+           
             fileInput.on('change', function () {
-                var fileSize = this.files[0].size; // Size of the selected file in bytes
+                var fileSize = this.files[0].size; 
 
                 if (fileSize > fileSizeLimitPerPrerequisite) {
                     toastr.error('File size exceeds the limit for this prerequisite. Please choose a smaller file.');
-                    this.value = ''; // Clear the file input
+                    this.value = ''; 
                 }
             });
 
@@ -689,16 +735,13 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         });
         container.append(saveButton);
 
-        // Optionally, apply styling to the modal
         $('#enrollModal').find('.modal-content').addClass('rounded');
         $('#enrollModal').find('.modal-body').addClass('p-4');
     }
 
-    // Simulate asynchronous file upload (replace this with your actual upload logic)
 
 
-
-      function uploadFiles(enrollmentId) {
+    function uploadFiles(enrollmentId) {
                     console.log('entered function uploadFiles');
 
                 const formData = new FormData();
@@ -714,7 +757,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                             if (!file.name.toLowerCase().endsWith('.pdf')) {
                                 validFile = false;
                                 toastr.error('Invalid file type. Only PDF files are allowed.');
-                                return; // Stop processing further files
+                                return; 
                             }
                             formData.append('files', file);
                             //formData.append('prerequisiteIds', prerequisiteId);
@@ -728,7 +771,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                     formData.append('EnrollmentID', parseInt(enrollmentId));
                     console.log('FormData:', formData);
 
-                    // Perform the fetch using jQuery
+                 
                     $.ajax({
                         url: '/Enrollment/UploadFiles',
                         type: 'POST',
@@ -747,91 +790,85 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                 }
 
 
-function saveEnrollment() {
-    var trainingId = parseInt($("#enrollModal").data("trainingId"));
-    var userId = parseInt("@HttpContext.Current.Session["UserID"]");
-    var uniqueSaveBtnId = "saveBtn_" + trainingId;
-    var saveButton = $("#" + uniqueSaveBtnId);
+    function saveEnrollment() {
+        var trainingId = parseInt($("#enrollModal").data("trainingId"));
+        var userId = parseInt("@HttpContext.Current.Session["UserID"]");
+        var uniqueSaveBtnId = "saveBtn_" + trainingId;
+        var saveButton = $("#" + uniqueSaveBtnId);
 
-    // Check if any file input is empty
-    var filesUploaded = true;
+        var filesUploaded = true;
 
-    // Loop through file input elements
-    // Loop through file input elements
-    $('.fileUploader').each(function () {
-        var fileInput = $(this);
-        fileInput.removeClass('error-border');
-        if (!fileInput.val()) {
-            filesUploaded = false;
-            fileInput.addClass('error-border'); // Add error border styling to the empty field
-        } else {
-            fileInput.removeClass('error-border'); // Remove error border styling if the field is not empty
-        }
-    });
-
-    if (!filesUploaded) {
-        toastr.error("Please upload files for all prerequisites.");
-        return;
-    }
-
-
-    // Check file extension before proceeding with file upload
-    var validFile = true;
-
-    // Loop through file input elements
-    $('.fileUploader').each(function () {
-        var fileInput = $(this);
-        var files = this.files;
-
-        // Loop through files for each file input
-        for (const file of files) {
-            if (!file.name.toLowerCase().endsWith('.pdf')) {
-                validFile = false;
-                toastr.error('Invalid file type. Only PDF files are allowed.');
-                return; // Stop processing further files
+        // Loop through file input elements
+        $('.fileUploader').each(function () {
+            var fileInput = $(this);
+            fileInput.removeClass('error-border');
+            if (!fileInput.val()) {
+                filesUploaded = false;
+                fileInput.addClass('error-border'); 
+            } else {
+                fileInput.removeClass('error-border'); 
             }
-        }
-    });
+        });
 
-    if (!validFile) {
-        return; // Do not proceed with the file upload if an invalid file is detected
+        if (!filesUploaded) {
+            toastr.error("Please upload files for all prerequisites.");
+            return;
+        }
+
+        var validFile = true;
+
+        $('.fileUploader').each(function () {
+            var fileInput = $(this);
+            var files = this.files;
+
+     
+            for (const file of files) {
+                if (!file.name.toLowerCase().endsWith('.pdf')) {
+                    validFile = false;
+                    toastr.error('Invalid file type. Only PDF files are allowed.');
+                    return;
+                }
+            }
+        });
+
+        if (!validFile) {
+            return; 
+        }
+
+
+
+        $(".spinner-wrapper").show();
+        $.ajax({
+            url: '/Enrollment/SaveEnrollment',
+            type: 'POST',
+            data: {
+                UserID: parseInt(userId),
+                TrainingID: trainingId,
+            },
+            success: function (result) {
+                var generatedEnrollmentId = result.EnrollmentID;
+                uploadFiles(parseInt(generatedEnrollmentId));
+                toastr.success("Enrollment Successfully.");
+                saveButton.prop('disabled', true);
+
+               
+                $(".enroll-btn").prop("disabled", false); 
+                $(`.enroll-btn[data-training-id="${trainingId}"]`).prop("disabled", true); 
+
+                $("#enrollModal").modal("hide");
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+
+               // $(".spinner-wrapper").hide();
+            },
+            error: function () {
+                alert("Enrollment failed!");
+                $(".spinner-wrapper").hide();
+            }
+        });
     }
-
-
-
-
-    $(".spinner-wrapper").show();
-    $.ajax({
-        url: '/Enrollment/SaveEnrollment',
-        type: 'POST',
-        data: {
-            UserID: parseInt(userId),
-            TrainingID: trainingId,
-        },
-        success: function (result) {
-            var generatedEnrollmentId = result.EnrollmentID;
-            uploadFiles(parseInt(generatedEnrollmentId));
-            toastr.success("Enrollment Successfully.");
-            saveButton.prop('disabled', true);
-
-            // Disable the specific "Enroll" button
-            $(".enroll-btn").prop("disabled", false); // Enable all buttons before disabling the specific one
-            $(`.enroll-btn[data-training-id="${trainingId}"]`).prop("disabled", true); // Disable the clicked button
-
-            $("#enrollModal").modal("hide");
-
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
-
-           // $(".spinner-wrapper").hide();
-        },
-        error: function () {
-            alert("Enrollment failed!");
-            $(".spinner-wrapper").hide();
-        }
-    });
-}
 
 </script>
 

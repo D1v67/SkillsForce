@@ -103,22 +103,22 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            padding: 5px 30px 5px 10px; /* Adjust padding as needed */
-            border: 1px solid #ccc; /* Add border styling as needed */
-            background-color: transparent; /* Set background-color to transparent */
+            padding: 5px 30px 5px 10px; 
+            border: 1px solid #ccc; 
+            background-color: transparent; 
         }
 
         .arrow-down {
             position: absolute;
             top: 50%;
-            right: 10px; /* Adjust the position of the arrow as needed */
+            right: 10px;
             transform: translateY(-50%);
             width: 0;
             height: 0;
-            border-left: 6px solid transparent; /* Adjust the size of the arrow as needed */
+            border-left: 6px solid transparent; 
             border-right: 6px solid transparent;
-            border-top: 6px solid #333; /* Adjust the color of the arrow as needed */
-            pointer-events: none; /* Make sure the arrow doesn't interfere with the dropdown */
+            border-top: 6px solid #333; 
+            pointer-events: none; 
         }
 
         .custom-dropdown {
@@ -130,28 +130,28 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            padding: 5px 30px 5px 10px; /* Adjust padding as needed */
-            border: 1px solid transparent; /* Add border styling as needed */
-            background-color: transparent; /* Set background-color to transparent */
+            padding: 5px 30px 5px 10px; 
+            border: 1px solid transparent; 
+            background-color: transparent; 
             color: white;
         }
 
         .arrow-down {
             position: absolute;
             top: 50%;
-            right: 10px; /* Adjust the position of the arrow as needed */
+            right: 10px; 
             transform: translateY(-50%);
             width: 0;
             height: 0;
-            border-left: 6px solid transparent; /* Adjust the size of the arrow as needed */
+            border-left: 6px solid transparent; 
             border-right: 6px solid transparent;
-            border-top: 6px solid #333; /* Adjust the color of the arrow as needed */
-            pointer-events: none; /* Make sure the arrow doesn't interfere with the dropdown */
+            border-top: 6px solid #333; 
+            pointer-events: none; 
         }
 
         select option {
-            background-color: white; /* Set background-color of options to black */
-            color: black; /* Set text color of options to white */
+            background-color: white; 
+            color: black; 
         }
     </style>
 
@@ -330,7 +330,7 @@
                 @if (((List<string>)Session["UserRoles"]).Count == 1)
                 {
                     <div>
-                        <!-- Display current role directly if there is only one role -->
+                     
                         <strong> @Session["CurrentRole"]</strong> 
                     </div>
                 }
@@ -338,7 +338,7 @@
                 {
                     <div class="custom-dropdown">
                         <select id="roleDropdown" onchange="changeRole(this)">
-                            <!-- Populate dropdown options with roles using Ajax -->
+                    
                         </select>
                         <div class="arrow-down"></div>
                     </div>
@@ -347,9 +347,9 @@
         }
 
     <script>
-    // Function to populate roles and set the current role on page load
+
     $(document).ready(function () {
-        // Check if the session is not null before making the AJAX request
+     
         var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
         if (userId) {
@@ -371,7 +371,7 @@
                     }
                 },
                 error: function (error) {
-                    // Handle error if needed
+                  
                     console.error("Error retrieving roles");
                 }
             });

@@ -13,5 +13,6 @@ namespace Common.SkillsForce.Entity
         public int Capacity { get; set; }
         public int DepartmentID { get; set; }
         public DateTime StartDate { get; set; }
+        public string DepartmentName { get; set; }
     }
 }

@@ -65,19 +65,19 @@
     }
 
     .error-border {
-        border: 1px solid #dc3545 !important; /* Red border color */
-        border-radius: 0.2rem !important; /* Adjust border-radius as needed */
-        transition: border-color 0.2s ease-in-out; /* Optional: Add a smooth transition effect */
-        animation: glow 1s infinite alternate; /* Add a glowing animation */
+        border: 1px solid #dc3545 !important; 
+        border-radius: 0.2rem !important;
+        transition: border-color 0.2s ease-in-out; 
+        animation: glow 1s infinite alternate; 
     }
 
     @@keyframes glow {
         from {
-            box-shadow: 0 0 5px #dc3545; /* Initial shadow color */
+            box-shadow: 0 0 5px #dc3545;
         }
 
         to {
-            box-shadow: 0 0 10px #dc3545; /* Glowing shadow color */
+            box-shadow: 0 0 10px #dc3545; 
         }
     }
 
@@ -137,7 +137,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="registrationModalLabel">View Prerequisite Attachment</h5>
+                <h5 class="modal-title" id="registrationModalLabel">View  Attachments</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -244,7 +244,8 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                             <h5 class="card-title"><strong>${item.TrainingName}</strong> </h5>
                         </div>
                         <div class="card-body">
-                            <p class="card-text">${item.TrainingDescription}</p>
+                         
+                            <p><strong>Start Date:</strong> ${formatDateTime(item.TrainingStartDate)}</p>
            
 
                             ${true ? `<button type="button"  class="btn btn-info view-attachments-btn" data-bs-toggle="modal" data-bs-target="#attachmentModal"  data-training-id="${item.EnrollmentID}" onclick="showAttachments(${item.EnrollmentID})">View</button>` : '<span style="color: red;">Enrollment Closed</span>'}
@@ -257,7 +258,27 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             });
         }
 
+        function formatDateTime(timestamp) {
+            // Extracting only unix timestamp
+            var match = timestamp.match(/\d+/);
+            var numericPart = match ? match[0] : null;
 
+            const dateObject = new Date(parseInt(numericPart, 10))
+            const day = String(dateObject.getDate()).padStart(2, '0')
+            const month = getMonthName(dateObject.getMonth() + 1);
+            const year = dateObject.getFullYear()
+
+            return `${day} ${month} ${year}`;
+        }
+
+        function getMonthName(monthNumber) {
+            const months = [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ];
+
+            return months[monthNumber - 1];
+        }
         //// format date in 'YYYY-MM-DD'
         //function formatDate(date) {
         //    var year = date.getFullYear();

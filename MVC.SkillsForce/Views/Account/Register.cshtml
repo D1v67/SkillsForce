@@ -13,14 +13,12 @@
     <style>
         label {
             font-weight: bold;
-            font-size: 16px; /* Adjust the font size as needed */
+            font-size: 16px; 
         }
 
-        #passwordHelpBlock {
-            font-size: 13px; /* Adjust the font size as needed */
+        .help-block {
+            font-size: 10px;
         }
-
-
     </style>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -52,7 +50,7 @@
         <script type="text/javascript">
         $(document).ready(function () {
 
-
+            
 
             toastr.options.timeOut = 3000;
             function validateFieldOnBlur(field, regex) {
@@ -68,18 +66,22 @@
 
             $('#MobileNumber').on('blur', function () {
                 validateFieldOnBlur($(this), /^5[0-9]{7}$/);
+                $('#mobileHelpBlock').show();
+               
             });
 
             $('#NIC').on('blur', function () {
                 validateFieldOnBlur($(this), /^[A-Za-z0-9]{14}$/);
+                $('#nicHelpBlock').show();
             });
 
             $('#Email').on('blur', function () {
                 // Using the specified email regex pattern
-                validateFieldOnBlur($(this), /^[a-zA-Z0-9]{1,30}(?:[a-zA-Z0-9]*[._%+-]?[a-zA-Z0-9]+)*@@gmail\.com$/);
+                validateFieldOnBlur($(this), /^[a-zA-Z0-9]{1,30}(?:[a-zA-Z0-9]*[.]?[a-zA-Z0-9]+)*@@gmail\.com$/);
+                $('#emailHelpBlock').show();
             });
 
-
+            //Regex for Password has been commented for demo and testing purposes
 
             //$('#Password').on('blur', function () {
             //    // Regular expression for password with minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number
@@ -167,12 +169,11 @@
                         toastr.error("Invalid input for " + fieldName + ". Please check again.");
 
                         //$(this).siblings('.help-block').show();
+                        
                     });
                     return;
                 }
 
-                    //console.log('d');
-                //if (validateForm()) {
 
                     $('#Password, #ConfirmPassword').removeClass('is-valid is-invalid');
 
@@ -205,8 +206,6 @@
                     };
 
                     console.log(formData);
-                    //console.log('here2');
-
 
                     $.ajax({
                         type: "POST",
@@ -223,8 +222,6 @@
                         },
                         success: function (response) {
                             console.log( response);
-                            //console.log('respone ');
-
 
                             if (response.url) {
                                 //toastr.success("Registration succeeded. Redirecting to the relevant page...");
@@ -323,6 +320,9 @@
                                 <div class="invalid-feedback">
                                     Please enter your Email Address
                                 </div>
+                                <div id="emailHelpBlock" class=" help-block text-muted " style="display: none;">
+                                    Only letters, numbers and periods allowed. It must end with @@gmail.com (1-30 characters)'.
+                                </div>
                             </div>
 
                             <div class="mb-3">
@@ -330,6 +330,9 @@
                                 <input type="text" class="form-control" id="NIC" required>
                                 <div class="invalid-feedback">
                                     Please enter your NIC
+                                </div>
+                                <div id="nicHelpBlock" class=" help-block text-muted " style="display: none;">
+                                    Required format: Must have 14 characters
                                 </div>
                             </div>
 
@@ -339,7 +342,7 @@
                                 <div class="invalid-feedback">
                                     Please enter your Mobile Number
                                 </div>
-                                <div class="help-block text-muted" style="display: none;">
+                                <div id="mobileHelpBlock" class="help-block text-muted" style="display: none;">
                                     Required format: Must start with 5 and have 8 digits following.
                                 </div>
                             </div>
@@ -371,7 +374,7 @@
                             <div class="mb-3">
                                 <label for="Password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="Password" required>
-                                <div id="passwordHelpBlock" class="form-text">
+                                <div id="passwordHelpBlock" class=" help-block text-muted ">
                                     Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces or special characters.
                                 </div>
                                 <div class="invalid-feedback">
@@ -431,21 +434,3 @@
 @Scripts.Render("~/bundles/bootstrap")
 
 
-<!-- Bootstrap CSS -->
-<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-      crossorigin="anonymous">-->
-<!-- Toastr CSS -->
-<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">-->
-<!-- jQuery -->
-<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>-->
-<!-- Bootstrap JS and dependencies -->
-<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>-->
-@*<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>*@
-@*<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>*@

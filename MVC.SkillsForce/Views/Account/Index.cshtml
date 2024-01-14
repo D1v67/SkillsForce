@@ -11,7 +11,7 @@
 
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <!-- jQuery -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -22,146 +22,19 @@
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
 
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
-  
+
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-    <style>
-        body {
-            position: relative;
-            background-image: url('../../content/myimages/login_bg.jpg');
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
 
-        body::before {
-             content: "";
-             position: absolute;
-             top: 0;
-             right: 0;
-             bottom: 0;
-             left: 0;
-             background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)); 
-             z-index: -1;
-         }
+    <!-- My Custom CSS And JS -->
+    <link href="~/MyCSS/Login.css" rel="stylesheet" />
 
-        .card {
-            background-color: rgba(255, 255, 255, 0.9);
-            z-index: 1;
-        }
+    <script src="~/MyScripts/Login.js"></script>
 
-        .spinner-wrapper {
-            background-color: rgba(0, 0, 0, 0.4);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spinner-border {
-            height: 60px;
-            width: 60px;
-        }
-    </style>
-
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-        
-            $("#loginForm").submit(function (e) {
-                e.preventDefault();
-
-                $(".error-message").remove();
-                $(".form-control").removeClass("is-invalid");
-
-                var emailAddress = $("#emailAddress").val();
-                var password = $("#password").val();
-
-                // Validate Email Address
-                if (!emailAddress) {
-                    $("#emailAddress").addClass("is-invalid");
-                    $("#emailAddress").after('<div class="invalid-feedback error-message">Email is required.</div>');
-                }
-
-                // Validate Password
-                if (!password) {
-                    $("#password").addClass("is-invalid");
-                    $("#password").after('<div class="invalid-feedback error-message">Password is required.</div>');
-                }
-
-                if (!emailAddress || !password) {
-                    return;
-                }
-
-                var authObj = { Email: emailAddress, Password: password };
-
-                // Show spinner while waiting for the response
-             //   $(".spinner-wrapper").show();
-
-
-                $.ajax({
-                    type: "POST",
-                    url: "/Account/Authenticate",
-                    data: authObj,
-                    dataType: "json",
-                    success: function (response) {
-                        try {
-                            if (response.result) {
-
-                                setTimeout(function () {
-                                    //$(".spinner-wrapper").hide();
-                                    toastr.success("Login Successful...Redirecting to Home page...");
-                                    setTimeout(function () {
-                                        window.location.href = response.url;
-                                    }, 500);
-                                }, 500);
-
-                            } else {
-                                toastr.error('Invalid Email or Password');
-                               // $(".spinner-wrapper").hide();
-                            }
-                        } catch (error) {
-                            console.log(error)
-                            toastr.error('aaaaaaaaaaaaa');
-                        }
-
-                    },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log("Error:", xhr);
-                        console.log("Status:", textStatus);
-                        console.log("Error Thrown:", errorThrown);
-
-                        toastr.error('Something went wrong. Please try again later.');
-
-                       // $(".spinner-wrapper").hide();
-                    },
-                    //complete: function () {
-                    //    // Hide spinner after a delay of 2 seconds
-                    //    setTimeout(function () {
-                    //        $(".spinner-wrapper").hide();
-                    //    }, 1000);
-                    //}
-                });
-            });
-
-            $("#btnRegister").click(function () {
-                window.location = '/Account/Register';
-            });
-        });
-    </script>
 </head>
 <body>
 
@@ -207,7 +80,14 @@
                                     </label>
                                 </div>
                                 <input type="password" class="form-control" id="password" placeholder="Enter your password">
+
                             </div>
+                            <div class="input-group-append">
+                                <div class="">
+                                    <input type="checkbox" id="showPassword"> Show Password
+                                </div>
+                            </div>
+
 
                             <div class="card-footer text-center">
                                 <button type="submit" class="btn btn-primary btn-block">Login</button>

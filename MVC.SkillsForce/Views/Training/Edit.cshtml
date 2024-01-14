@@ -9,7 +9,7 @@
 <style>
     label {
         font-weight: bold;
-        font-size: 16px; /* Adjust the font size as needed */
+        font-size: 16px; 
     }
 </style>
 
@@ -421,10 +421,10 @@
                 };
 
                 console.log(formData)
-                // Add your AJAX call to submit the form data
+               
                 $.ajax({
                     type: "POST",
-                    url: "/Training/Edit", // Replace with your actual controller and action
+                    url: "/Training/Edit",
                     data: formData,
                     success: function (response) {
                         console.log(response);
@@ -443,17 +443,17 @@
                     },
                     error: function (error) {
                         console.error("Error submitting form:", error);
-                        // Handle errors as needed
+                  
                     }
         });
      });
 
 
         function handleValidationErrors(errors) {
-            // Clear existing validation messages
+       
             $('.is-invalid').removeClass('is-invalid');
 
-            // Display validation errors in toastr and mark corresponding fields as invalid
+
             errors.forEach(function (error) {
                 toastr.error(error);
                 $('#' + error.field).addClass('is-invalid');

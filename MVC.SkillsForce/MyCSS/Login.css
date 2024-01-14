@@ -1,0 +1,45 @@
+﻿body {
+    position: relative;
+    background-image: url('../../content/myimages/login_bg.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+        z-index: -1;
+    }
+
+.card {
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 1;
+}
+
+.spinner-wrapper {
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner-border {
+    height: 60px;
+    width: 60px;
+}

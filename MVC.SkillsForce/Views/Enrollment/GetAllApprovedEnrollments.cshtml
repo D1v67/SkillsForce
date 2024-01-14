@@ -24,7 +24,7 @@
         <div class="table-bordered table-hover table-responsive">
             @foreach (var group in Model.GroupBy(m => m.TrainingName))
             {
-                <h3>@group.Key  <span id="@group.First().TrainingID" class="capacity"></span> </h3> <!-- Display the TrainingName as a heading for the group -->
+                <h3>@group.Key  <span id="@group.First().TrainingID" class="capacity"></span> </h3> 
 
                 <button class="btn btn-success export-btn" data-training-id="@group.First().TrainingID">Export CSV</button>
 
@@ -33,7 +33,7 @@
                     var trainingId = @group.First().TrainingID;
 
                     $(document).ready(function () {
-                        // Display the spinner while prerequisites are loading
+            
                         $('#@group.First().TrainingID')
                         $.ajax({
                             url: '/Training/GetRemainingCapacityById?id=' + '@group.First().TrainingID',
@@ -53,7 +53,7 @@
                     });
 
                     function checkAllPrerequisitesFetched() {
-                        // Check if all prerequisites are fetched
+                    
                         var allPrerequisitesFetched = true;
                         $('.capacity').each(function () {
                             if ($(this).text().trim() === '') {
@@ -62,7 +62,6 @@
                             }
                         });
 
-                        // Enable the button if all prerequisites are fetched
                         if (allPrerequisitesFetched) {
                             $('#automaticSelectionBtn').prop('disabled', false);
                         }
@@ -174,7 +173,7 @@
 </div>
     <script>
         function confirmSelection(EnrollmentID) {
-            // Add your logic here to handle the confirmation for the selected training
+        
             alert('Confirming selection for ' + EnrollmentID);
 
         }
@@ -231,20 +230,19 @@
                     data: { trainingId: trainingId },
                     success: function (data) {
                         if (data.success) {
-                            // Display success message using Toastr or any other method
+                 
                             toastr.success(data.message);
                         } else {
-                            // Display error message using Toastr or any other method
+                 
                             toastr.error(data.message);
                         }
                     },
                     error: function () {
-                        // Handle the AJAX error
                         console.error('Error exporting CSV');
                     }
                 });
             });
 
-            // Existing script for automaticSelectionBtn click event ...
+           
         });
     </script>

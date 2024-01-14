@@ -453,15 +453,16 @@ ORDER BY T.TrainingName";
         public async Task<IEnumerable<TrainingModel>> GetAllTrainingsNotEnrolledByUserAsync(int id)
         {
             const string GET_NOT_ENROLLED_TRAININGS_QUERY = @"
-    SELECT T.*
-    FROM Training T
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM Enrollment E
-        WHERE E.TrainingID = T.TrainingID
-          AND E.UserID = @UserID
-    )
-    ORDER BY T.TrainingName";
+             SELECT T.*, D.DepartmentName 
+             FROM Training T 
+             LEFT JOIN Department D ON T.DepartmentID = D.DepartmentID 
+             WHERE NOT EXISTS (
+                 SELECT 1
+                 FROM Enrollment E
+                 WHERE E.TrainingID = T.TrainingID
+                   AND E.UserID = @UserID
+             )
+             ORDER BY T.TrainingName";
 
             List<TrainingModel> trainings = new List<TrainingModel>();
             var parameters = new List<SqlParameter> { new SqlParameter("@UserID", id) };
@@ -479,6 +480,7 @@ ORDER BY T.TrainingName";
                         Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
                         DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID")),
                         StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                        DepartmentName = reader.GetString(reader.GetOrdinal("DepartmentName")),
                     };
 
                     trainings.Add(training);

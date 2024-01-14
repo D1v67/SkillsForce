@@ -74,35 +74,6 @@
 </div>
 
 
-<!-- Button trigger modal -->
-<!--<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#attachmentModal">
-    Launch demo modal
-</button>-->
-<!-- Modal -->
-@*<div class="modal fade" id="attachmentModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>*@
-
-
-
-
-
-
-
 
 
 <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
@@ -159,8 +130,6 @@
 
 
 
-
-
 <link href="
     https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
       rel="stylesheet" />
@@ -189,12 +158,12 @@
         $('#enrollmentTable').DataTable({
             responsive: true,
             "ajax": {
-                "url": "/Enrollment/GetEnrollmentsData", // Update this URL to match your controller's action
-                "type": "POST",  // Corrected to POST
+                "url": "/Enrollment/GetEnrollmentsData", 
+                "type": "POST",  
                 "datatype": "json",
                 "dataSrc": function (data) {
                     console.log('Data retrieved successfully:', data);
-                    // Check if data is null
+                    
                     if (data === null || data.length === 0) {
                         $('#EnrollmentsMessage').show();
                         $('#enrollmentTableContainer').hide();
@@ -240,7 +209,7 @@
                 {
                     "data": null,
                     "render": function (data) {
-                        // Modify the conditions based on your approval logic
+                        
                         return data.EnrollmentStatus === "Pending"
                             ? '<button class="btn btn-primary me-2 approve-btn" data-toggle="modal" data-enrollment-id="' + data.EnrollmentID + '" onclick="approveEnrollment(' + data.EnrollmentID + ', $(this))" >Approve</button>' +
                             '<button class="btn btn-danger me-2 reject-btn" data-enrollment-id="' + data.EnrollmentID + '"  onclick="rejectEnrollment(' + data.EnrollmentID + ', $(this))">Reject</button>'
@@ -264,11 +233,10 @@
 
 
         function formatDateTime(timestamp) {
-            // Extracting only unix timestamp
+          
             var match = timestamp.match(/\d+/);
             var numericPart = match ? match[0] : null;
-
-            // Make sure to treat as millisecond
+           
             const dateObject = new Date(parseInt(numericPart, 10))
             const day = String(dateObject.getDate()).padStart(2, '0')
             const month = String(dateObject.getMonth() + 1).padStart(2, '0')
@@ -314,7 +282,7 @@
                 data: { enrollmentId: enrollmentId, approvedByUserId: userId },
                 success: function (result) {
                     if (result.success) {
-                        //button.closest('tr').find('td:eq(7)').html('Approved');
+                  
                         button.prop('disabled', true);
                         button.siblings('.reject-btn').prop('disabled', false);
                         toastr.success("Enrollment Approved Successfully.");
@@ -335,7 +303,7 @@
                     alert('Error approving enrollment.');
                 },
                 complete: function () {
-                    // Remove loading spinner from the button after AJAX completes
+               
                     button.html('Approve');
                 }
             });
@@ -345,18 +313,15 @@
         function rejectEnrollment(enrollmentId, button) {
 
 
-            // Get a reference to the submit button inside the modal
-
 
             var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
-            // Show rejection modal
             $('#rejectionModal').modal('show');
 
 
 
             $('#rejectionForm').off('submit');
-            // Submit rejection reason when the form is submitted
+    
             $('#rejectionForm').submit(function (event) {
 
                 button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Rejecting...');
@@ -370,7 +335,7 @@
                     data: { enrollmentId: enrollmentId, rejectionReason: rejectionReason, declinedByUserId: userId },
                     success: function (result) {
                         if (result.success) {
-                           // button.closest('tr').find('td:eq(7)').html('Rejected');
+                    
                             button.prop('disabled', true);
                             button.siblings('.approve-btn').prop('disabled', false);
                             $('#rejectionModal').modal('hide');
@@ -388,7 +353,7 @@
                         alert('Error rejecting enrollment.');
                     },
                     complete: function () {
-                        // Remove loading spinner from the button after AJAX completes
+        
                         button.html('Reject');
                     }
                 });
