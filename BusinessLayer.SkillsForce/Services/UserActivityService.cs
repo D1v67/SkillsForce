@@ -1,11 +1,6 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
 using DataAccessLayer.SkillsForce.DAL;
-using DataAccessLayer.SkillsForce.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.SkillsForce.Services
@@ -14,12 +9,9 @@ namespace BusinessLayer.SkillsForce.Services
     {
         private readonly IUserActivityDAL _userActivityDAL;
 
-
         public UserActivityService(IUserActivityDAL userActivityDAL)
         {
             _userActivityDAL = userActivityDAL;
-
-
         }
         public async Task<bool> AddUserActivity(UserActivityModel userActivity)
         {

@@ -1,7 +1,6 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
 using DataAccessLayer.SkillsForce.Interface;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,7 +14,6 @@ namespace BusinessLayer.SkillsForce.Services
         {
             _userDAL = userDAL;
         }
-
 
         public async Task<IEnumerable<UserModel>> GetAllAsync()
         {

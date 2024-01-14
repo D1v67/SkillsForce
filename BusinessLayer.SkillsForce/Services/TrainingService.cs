@@ -1,18 +1,13 @@
-﻿using BusinessLayer.SkillsForce.Helpers;
-using BusinessLayer.SkillsForce.Interface;
+﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.Helpers;
 using Common.SkillsForce.ViewModel;
-using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web.ModelBinding;
 
 namespace BusinessLayer.SkillsForce.Services
 {
@@ -63,8 +58,6 @@ namespace BusinessLayer.SkillsForce.Services
                 await _trainingDAL.AddAsync(model);
                 return new ValidationResult { IsSuccessful = true };
             }
-
-
             return new ValidationResult { IsSuccessful = false, Errors = validationErrors };
         }
 
@@ -128,7 +121,6 @@ namespace BusinessLayer.SkillsForce.Services
                 Prerequisites = prerequisites.ToList(),
                 Departments = departments.ToList(),
             };
-
             return trainingViewModel;
         }
 

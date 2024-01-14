@@ -13,7 +13,6 @@ namespace BusinessLayer.SkillsForce.Services
     /// be time consuming and some emails used in this project are dummy emails. Hence an In-App Notification is also implemented
     /// </summary>
     /// 
-
     public class NotificationService : INotificationService
     {
         #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -25,8 +24,6 @@ namespace BusinessLayer.SkillsForce.Services
             {
                 string result = enrollment.EnrollmentStatus;
                 string htmlBody = GenerateHtmlBody(enrollment, notificationType);
-
-                // Modify the subject based on NotificationType
                 string subject;
 
                 switch (notificationType)
@@ -41,7 +38,6 @@ namespace BusinessLayer.SkillsForce.Services
                         subject = $"Training Request - {result} - {enrollment.TrainingName}";
                         break;
                 }
-
 
                 #pragma warning disable CS4014
                 Task.Run(() =>
@@ -119,7 +115,6 @@ namespace BusinessLayer.SkillsForce.Services
 
                     return htmlBody;
         }
-
 
         private string GetActionVerb(NotificationType notificationType)
         {

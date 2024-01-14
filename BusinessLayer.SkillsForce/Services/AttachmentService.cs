@@ -35,40 +35,8 @@ namespace BusinessLayer.SkillsForce.Services
             return await _attachmentDAL.GetAllByEnrollmentIDAsync(id);
         }
 
-        //public async Task UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
-        //{
-        //    if (!string.IsNullOrEmpty(PrerequisiteIDs))
-        //    {
-        //        var prerequisiteIdArray = PrerequisiteIDs.Split(',');
-
-        //        for (int i = 0; i < files.Count; i++)
-        //        {
-        //            var item = files[i];
-
-        //            if (item.ContentLength > 0)
-        //            {
-        //                using (var reader = new BinaryReader(item.InputStream))
-        //                {
-        //                    var fileData = reader.ReadBytes(item.ContentLength);
-        //                    int prerequisiteId = int.Parse(prerequisiteIdArray[i]);
-        //                    var attachment = new AttachmentModel()
-        //                    {
-        //                        FileName = item.FileName,
-        //                        EnrollmentID = EnrollmentID,
-        //                        FileData = fileData,
-        //                        PrerequisiteID = prerequisiteId,
-        //                    };
-        //                    await _attachmentDAL.AddAsync(attachment);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //}
-
         public async Task<ValidationResult> UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
         {
-            var validationResult = new ValidationResult();
             var validationErrors = new List<string>();
             bool isValid = true;
 
@@ -103,7 +71,6 @@ namespace BusinessLayer.SkillsForce.Services
                     }
                 }
             }
-
             return new ValidationResult { IsSuccessful = isValid, Errors = validationErrors };
         }
 
@@ -113,60 +80,90 @@ namespace BusinessLayer.SkillsForce.Services
             return _fileExtensionValidation.Validate(fileName, allowedExtensions);
         }
 
-
-
-        //public async Task<ValidationResult> UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
-        //{
-        //    var validationResult = new ValidationResult
-        //    {
-        //        IsSuccessful = true,
-        //        Errors = new List<string>()
-        //    };
-
-        //    if (!string.IsNullOrEmpty(PrerequisiteIDs))
-        //    {
-        //        var prerequisiteIdArray = PrerequisiteIDs.Split(',');
-
-        //        for (int i = 0; i < files.Count; i++)
-        //        {
-        //            var item = files[i];
-
-        //            if (item.ContentLength > 0)
-        //            {
-        //                // Perform file type validation
-        //                if (!IsValidPdf(item))
-        //                {
-        //                    // Add an error message to the ValidationResult
-        //                    validationResult.IsSuccessful = false;
-        //                    validationResult.Errors.Add("Invalid file type. Only PDF files are allowed.");
-        //                    continue; // Skip processing the current file if it's invalid
-        //                }
-
-        //                using (var reader = new BinaryReader(item.InputStream))
-        //                {
-        //                    var fileData = reader.ReadBytes(item.ContentLength);
-        //                    int prerequisiteId = int.Parse(prerequisiteIdArray[i]);
-        //                    var attachment = new AttachmentModel()
-        //                    {
-        //                        FileName = item.FileName,
-        //                        EnrollmentID = EnrollmentID,
-        //                        FileData = fileData,
-        //                        PrerequisiteID = prerequisiteId,
-        //                    };
-
-        //                    await _attachmentDAL.AddAsync(attachment);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return validationResult;
-        //}
-
         private bool IsValidPdf(HttpPostedFileBase file)
         {
-            // Add your file type validation logic here
             return file.ContentType.ToLower() == "application/pdf" && file.FileName.ToLower().EndsWith(".pdf");
         }
     }
 }
+
+
+
+//public async Task UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
+//{
+//    if (!string.IsNullOrEmpty(PrerequisiteIDs))
+//    {
+//        var prerequisiteIdArray = PrerequisiteIDs.Split(',');
+
+//        for (int i = 0; i < files.Count; i++)
+//        {
+//            var item = files[i];
+
+//            if (item.ContentLength > 0)
+//            {
+//                using (var reader = new BinaryReader(item.InputStream))
+//                {
+//                    var fileData = reader.ReadBytes(item.ContentLength);
+//                    int prerequisiteId = int.Parse(prerequisiteIdArray[i]);
+//                    var attachment = new AttachmentModel()
+//                    {
+//                        FileName = item.FileName,
+//                        EnrollmentID = EnrollmentID,
+//                        FileData = fileData,
+//                        PrerequisiteID = prerequisiteId,
+//                    };
+//                    await _attachmentDAL.AddAsync(attachment);
+//                }
+//            }
+//        }
+//    }
+
+//}
+
+//public async Task<ValidationResult> UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
+//{
+//    var validationResult = new ValidationResult
+//    {
+//        IsSuccessful = true,
+//        Errors = new List<string>()
+//    };
+
+//    if (!string.IsNullOrEmpty(PrerequisiteIDs))
+//    {
+//        var prerequisiteIdArray = PrerequisiteIDs.Split(',');
+
+//        for (int i = 0; i < files.Count; i++)
+//        {
+//            var item = files[i];
+
+//            if (item.ContentLength > 0)
+//            {
+//                // Perform file type validation
+//                if (!IsValidPdf(item))
+//                {
+//                    // Add an error message to the ValidationResult
+//                    validationResult.IsSuccessful = false;
+//                    validationResult.Errors.Add("Invalid file type. Only PDF files are allowed.");
+//                    continue; // Skip processing the current file if it's invalid
+//                }
+
+//                using (var reader = new BinaryReader(item.InputStream))
+//                {
+//                    var fileData = reader.ReadBytes(item.ContentLength);
+//                    int prerequisiteId = int.Parse(prerequisiteIdArray[i]);
+//                    var attachment = new AttachmentModel()
+//                    {
+//                        FileName = item.FileName,
+//                        EnrollmentID = EnrollmentID,
+//                        FileData = fileData,
+//                        PrerequisiteID = prerequisiteId,
+//                    };
+
+//                    await _attachmentDAL.AddAsync(attachment);
+//                }
+//            }
+//        }
+//    }
+
+//    return validationResult;
+//}

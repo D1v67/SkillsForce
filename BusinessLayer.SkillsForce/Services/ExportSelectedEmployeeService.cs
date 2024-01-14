@@ -1,16 +1,12 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.ViewModel;
-using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace BusinessLayer.SkillsForce.Services
 {
@@ -39,23 +35,20 @@ namespace BusinessLayer.SkillsForce.Services
                 var worksheet = package.Workbook.Worksheets.Add($"{trainingName}SelectedEmployees_{DateTime.Now:f}.xlsx");
 
                 // Add Training Name at the top
-                // Add Training Name at the top with a background color
                 worksheet.Cells["A1:D1"].Merge = true;
                 worksheet.Cells["A1"].Value = $"Training Name: {trainingName}";
                 worksheet.Cells["A1:D1"].Style.Font.Bold = true;
                 worksheet.Cells["A1:D1"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                worksheet.Cells["A1:D1"].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue); // Choose your color
+                worksheet.Cells["A1:D1"].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
                 worksheet.Cells["A1:D1"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-                var headers = new string[]
-        { "Employee_FullName", "Employee_MobileNumber", "Employee_Email", "Manager_FullName" };
+                var headers = new string[] { "Employee_FullName", "Employee_MobileNumber", "Employee_Email", "Manager_FullName" };
                 for (byte i = 0; i < headers.Length; i++)
                 {
-                    // Style headers with a different background color
                     worksheet.Cells[3, i + 1].Value = headers[i];
                     worksheet.Cells[3, i + 1].Style.Font.Bold = true;
                     worksheet.Cells[3, i + 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[3, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray); // Choose your color
+                    worksheet.Cells[3, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray); 
                 }
 
                 // Adding Data to worksheet
@@ -69,7 +62,7 @@ namespace BusinessLayer.SkillsForce.Services
                     {
                         var range = worksheet.Cells[rowIndex, 1, rowIndex, 4];
                         range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                        range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightYellow); // Choose your color
+                        range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightYellow);
                     }
 
                     // Concatenate employee's first and last names into one column

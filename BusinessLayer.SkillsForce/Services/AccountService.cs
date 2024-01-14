@@ -1,10 +1,8 @@
 ﻿using BusinessLayer.SkillsForce.Helpers;
 using BusinessLayer.SkillsForce.Interface;
-using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.Helpers;
 using Common.SkillsForce.ViewModel;
-using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -25,15 +23,12 @@ namespace BusinessLayer.SkillsForce.Services
 
         public async Task<bool> IsUserAuthenticatedAsync(AccountModel model)
         {
-            // return await _accountDAL.IsUserAuthenticatedAsync(model);
-
             AccountModel storedAccount = await _accountDAL.GetUserCredentialsAsync(model.Email);
 
             if (storedAccount != null)
             {
                 return PasswordHasher.VerifyPassword(model.Password, storedAccount.HashedPassword, storedAccount.SaltValue);
             }
-
             return false;
         }
 
@@ -83,9 +78,6 @@ namespace BusinessLayer.SkillsForce.Services
             ValidateField(model.NIC, "NIC", validationErrors, fixedLength: 14 );
             ValidateField(model.MobileNumber, "Mobile Number", validationErrors, fixedLength: 8);
 
-
-
-
             if (validationErrors.Count == 0)
             {
                 var hashedPassword = PasswordHasher.HashPassword(model.Password);
@@ -95,7 +87,6 @@ namespace BusinessLayer.SkillsForce.Services
                 await _accountDAL.RegisterAsync(model);
                 return new ValidationResult { IsSuccessful = true };
             }
-
             return new ValidationResult { IsSuccessful = false, Errors = validationErrors };
         }
 
@@ -124,39 +115,5 @@ namespace BusinessLayer.SkillsForce.Services
             Range,
             Both
         }
-
     }
 }
-
-
-//public async Task<ValidationResult> RegisterUserAsync(RegisterViewModel model)
-//{
-//    var validationErrors = new List<string>();
-
-//    if (await _userService.IsEmailAlreadyExistsAsync(model.Email))
-//    {
-//        validationErrors.Add("Email is already in use.");
-//    }
-
-//    if (await _userService.IsNICExistsAsync(model.NIC))
-//    {
-//        validationErrors.Add("NIC is already in use.");
-//    }
-
-//    if (await _userService.IsMobileNumberExistsAsync(model.MobileNumber))
-//    {
-//        validationErrors.Add("Mobile Number is already in use.");
-//    }
-
-//    if (validationErrors.Count == 0)
-//    {
-//        var hashedPassword = PasswordHasher.HashPassword(model.Password);
-//        model.HashedPassword = hashedPassword.Item1;
-//        model.SaltValue = hashedPassword.Item2;
-
-//        await _accountDAL.RegisterAsync(model);
-//        return new ValidationResult { IsSuccessful = true };
-//    }
-
-//    return new ValidationResult { IsSuccessful = false, Errors = validationErrors };
-//}

@@ -1,7 +1,6 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
 using DataAccessLayer.SkillsForce.Interface;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

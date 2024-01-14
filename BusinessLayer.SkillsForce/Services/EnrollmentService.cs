@@ -5,7 +5,6 @@ using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,15 +15,12 @@ namespace BusinessLayer.SkillsForce.Services
 
         private readonly IEnrollmentDAL _enrollmentDAL;
         private readonly ITrainingService _trainingService;
-        private readonly INotificationService _notificationService;
-
         private readonly INotificationHandler _notificationHandler;
 
-        public EnrollmentService(IEnrollmentDAL enrollmentDAL, ITrainingService trainingService, INotificationService notificationService, INotificationHandler notificationHandler)
+        public EnrollmentService(IEnrollmentDAL enrollmentDAL, ITrainingService trainingService, INotificationHandler notificationHandler)
         {
             _enrollmentDAL = enrollmentDAL;
             _trainingService = trainingService;
-            _notificationService = notificationService;
             _notificationHandler = notificationHandler;
         }
         public async Task<int> AddAsync(EnrollmentViewModel enrollment)
@@ -36,7 +32,6 @@ namespace BusinessLayer.SkillsForce.Services
         {
             await _enrollmentDAL.ApproveEnrollmentAsync(enrollmentId, approvedByUserId);
         }
-
 
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllAsync()
         {
@@ -68,38 +63,14 @@ namespace BusinessLayer.SkillsForce.Services
             await _enrollmentDAL.RejectEnrollmentAsync(enrollmentId, rejectionReason, declinedByUserId);
         }
 
-
         public async Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int trainingID)
         {
             return await _enrollmentDAL.ConfirmEnrollmentsByTrainingIDAsync(trainingID);
         }
 
-        //public async Task RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob)
-        //{
-        //    DateTime registrationDeadline = new DateTime(2024, 03, 01);
-        //    var trainings = await _trainingService.GetAllTrainingsByRegistrationDeadlineAsync(registrationDeadline, isCronjob);
-
-        //    foreach (var training in trainings)
-        //    {
-        //        var enrollmentIds = await _enrollmentDAL.ConfirmEnrollmentsByTrainingIDAsync(training.TrainingID);
-
-        //        if (enrollmentIds != null && enrollmentIds.Any())
-        //        {
-        //            foreach (var enrollmentId in enrollmentIds)
-        //            {
-        //                EnrollmentNotificationViewModel enrollment = await GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
-
-        //                await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Confirmation);
-
-        //            }
-        //        }
-        //    }
-        //}
 
         public async Task<ExecutionResult> RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob)
         {
-           // ExecutionResult result = new ExecutionResult();
-
             var Errors = new List<string>();
             var SuccessMessages = new List<string>();
 
@@ -123,19 +94,15 @@ namespace BusinessLayer.SkillsForce.Services
                     {
                         EnrollmentNotificationViewModel enrollment = await GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
 
-                        await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Confirmation);
-
-                        
+                        await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Confirmation);                      
                     }
                 }
-            }
-           
+            }        
             return new ExecutionResult { IsSuccessful = true, Errors = Errors, SuccessMessages = SuccessMessages };
         }
 
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredEnrollmentsWithDetailsAsync(int trainingId, string statusFilter)
         {
-           // Debug.WriteLine(trainingId, statusFilter);
             if (statusFilter == EnrollmentStatusEnum.Selected.ToString())
             {
                 return await _enrollmentDAL.GetAllFilteredConfirmedEnrollmentsWithDetailsAsync(trainingId);
@@ -157,3 +124,26 @@ namespace BusinessLayer.SkillsForce.Services
         }
     }
 }
+
+
+//public async Task RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob)
+//{
+//    DateTime registrationDeadline = new DateTime(2024, 03, 01);
+//    var trainings = await _trainingService.GetAllTrainingsByRegistrationDeadlineAsync(registrationDeadline, isCronjob);
+
+//    foreach (var training in trainings)
+//    {
+//        var enrollmentIds = await _enrollmentDAL.ConfirmEnrollmentsByTrainingIDAsync(training.TrainingID);
+
+//        if (enrollmentIds != null && enrollmentIds.Any())
+//        {
+//            foreach (var enrollmentId in enrollmentIds)
+//            {
+//                EnrollmentNotificationViewModel enrollment = await GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
+
+//                await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Confirmation);
+
+//            }
+//        }
+//    }
+//}
