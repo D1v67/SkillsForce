@@ -23,15 +23,15 @@
 <style>
     /* Custom Colors */
     .confirmed-enrollments {
-        background-color: #27ae60; /* Green */
+        background-color: #005073;
     }
 
     .rejected-enrollments {
-        background-color: #e74c3c; /* Red */
+        background-color: #107dac;
     }
 
     .pending-enrollments {
-        background-color: #f39c12; /* Orange */
+        background-color: #189ad3;
     }
 
     .action-card {
@@ -39,14 +39,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 10px;
+        border-radius: 15px;
         transition: transform 0.3s, box-shadow 0.3s;
         cursor: pointer;
     }
 
         .action-card:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
         }
 
     .card-body {
@@ -65,7 +65,7 @@
 <body>
 
     <div class="dashboard-title">
-        Dashboard
+        My Enrollments
     </div>
 
     <div class="container mt-5">
@@ -76,7 +76,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Confirmed Enrollments</h5>
                         <p class="card-text">Click here to view</p>
-                        <a href="@Url.Action("ViewConfirmedEnrollments", "Enrollment")" class="btn btn-light">Confirmed Enrollments</a>
+                        <a href="@Url.Action("ViewConfirmedEnrollments", "Enrollment")" class="btn btn-light">View</a>
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Rejected Enrollments</h5>
                         <p class="card-text">Click here to view</p>
-                        <a href="@Url.Action("ViewRejectedEnrollments", "Enrollment")" class="btn btn-light">Rejected Enrollments</a>
+                        <a href="@Url.Action("ViewRejectedEnrollments", "Enrollment")" class="btn btn-light">View</a>
                     </div>
                 </div>
             </div>
@@ -96,7 +96,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Pending Enrollments</h5>
                         <p class="card-text">Click here to view</p>
-                        <a href="@Url.Action("ViewPendingEnrollments", "Enrollment")" class="btn btn-light">Pending Enrollments</a>
+                        <a href="@Url.Action("ViewPendingEnrollments", "Enrollment")" class="btn btn-light">View</a>
                     </div>
                 </div>
             </div>
