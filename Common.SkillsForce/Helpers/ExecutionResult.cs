@@ -10,7 +10,6 @@ namespace Common.SkillsForce.Helpers
     {
         public bool IsSuccessful { get; set; }
         public List<string> Errors { get; set; }
-
         public List<string> SuccessMessages { get; set; }
     }
 }

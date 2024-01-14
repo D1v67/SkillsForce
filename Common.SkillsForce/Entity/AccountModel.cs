@@ -12,17 +12,7 @@ namespace Common.SkillsForce.Entity
         public string RoleName { get; set; }
         public int RoleId { get; set; }
         public List<UserRoleModel> listOfRoles { get; set; }
-
-       
-
-       // public string Password { get; set; }
-
         public byte[] HashedPassword { get; set; }
         public byte[] SaltValue { get; set; }
-
-        //public string HashedPassword { get; set; }
-        //public string SaltValue { get; set; }
-
-
     }
 }

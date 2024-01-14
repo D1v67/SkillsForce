@@ -1,34 +1,26 @@
 ﻿using System;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Common.SkillsForce.EmailSender
 {
     public static class EmailSender
     {
-        public static async Task<string> SendEmailAsync(string Subject, string Body, string recipientEmail)
-        {
-            string senderEmail = "SkillsForceAdmin@ceridian.com";
-            var smtpClent = new SmtpClient("relay.ceridian.com")
-            {
-                Port = 25,
-                EnableSsl = true,
-                UseDefaultCredentials = true,
-            };
+        private const string SENDER_MAIL = "SkillsForceAdmin@ceridian.com";
+        private const string SMTP_SERVER = "relay.ceridian.com";
+        private const int SMTP_PORT = 25;
 
-            var mailMessage = new MailMessage(senderEmail, recipientEmail)
-            {
-                Subject = Subject,
-                Body = Body,
-                IsBodyHtml = true
-            };
+        public static async Task<string> SendEmailAsync(string subject, string body, string recipientEmail)
+        {        
+            var smtpClient = CreateSmtpClient();
+            var mailMessage = CreateMailMessage(subject, body, recipientEmail);
 
             try
             {
-
                 #pragma warning disable CS4014 
-                Task.Run(()=> { smtpClent.Send(mailMessage); }).ConfigureAwait(false);
-                 #pragma warning restore CS4014 
+                Task.Run(()=> { smtpClient.Send(mailMessage); }).ConfigureAwait(false);
+                #pragma warning restore CS4014 
 
                 return "Email Sent Successfully";
             }
@@ -38,5 +30,24 @@ namespace Common.SkillsForce.EmailSender
             }
         }
 
+        private static SmtpClient CreateSmtpClient()
+        {
+            return new SmtpClient(SMTP_SERVER)
+            {
+                Port = SMTP_PORT,
+                EnableSsl = true,
+                UseDefaultCredentials = true
+            };
+        }
+
+        private static MailMessage CreateMailMessage(string subject, string body, string recipientEmail)
+        {
+            return new MailMessage(SENDER_MAIL, recipientEmail)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
+        }
     }
 }

@@ -7,11 +7,12 @@ namespace Common.SkillsForce.AppLogger
     public class Logger : ILogger
     {
         private readonly string _loggerFilePath;
-        string loggerFilePath = "ErrorLog\\log.txt";
+        private const string LOGGER_FILE_PATH = "ErrorLog\\log.txt";
+
         public Logger()
         {
             string rootDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            _loggerFilePath = Path.Combine(rootDirectory, loggerFilePath);
+            _loggerFilePath = Path.Combine(rootDirectory, LOGGER_FILE_PATH);
         }
 
         public void Log(string message)

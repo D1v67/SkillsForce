@@ -1,5 +1,4 @@
-﻿
-namespace Common.SkillsForce.Entity
+﻿namespace Common.SkillsForce.Entity
 {
     public class UserRoleModel
     {

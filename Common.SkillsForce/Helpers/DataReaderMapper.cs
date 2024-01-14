@@ -10,6 +10,13 @@ namespace Common.SkillsForce.Helpers
 {
     public static class DataReaderMapper
     {
+        /// <summary>
+        /// Maps data from a SqlDataReader to an object of a specified type.
+        /// </summary>
+        /// <typeparam name="T">Type of object to be created and mapped.</typeparam>
+        /// <param name="reader">SqlDataReader containing the result set.</param>
+        /// <returns>An instance of the specified type with properties mapped from the SqlDataReader.</returns>
+        /// 
         public static T MapToObject<T>(SqlDataReader reader) where T : new()
         {
             T obj = new T();
@@ -25,6 +32,14 @@ namespace Common.SkillsForce.Helpers
             return obj;
         }
 
+
+        /// <summary>
+        /// Sets the value of a property on an object based on the provided property name and value.
+        /// </summary>
+        /// <param name="obj">Object whose property will be set.</param>
+        /// <param name="propertyName">Name of the property to be set.</param>
+        /// <param name="value">Value to be assigned to the property.</param>
+        /// 
         private static void SetProperty(object obj, string propertyName, object value)
         {
             var property = obj.GetType().GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);

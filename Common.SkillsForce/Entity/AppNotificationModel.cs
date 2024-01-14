@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.SkillsForce.Entity
 {
@@ -15,9 +11,7 @@ namespace Common.SkillsForce.Entity
         public string NotificationMessage { get; set; }
         public string Status { get; set; }
         public bool HasRead { get; set; }
-
         public DateTime CreateTimeStamp { get; set; }
-
         public string NotificationSender { get; set; }
     }
 }
