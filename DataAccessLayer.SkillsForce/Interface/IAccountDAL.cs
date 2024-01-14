@@ -6,10 +6,9 @@ namespace DataAccessLayer.SkillsForce.Interface
 {
     public interface IAccountDAL
     {
-        Task<bool> IsUserAuthenticatedAsync(AccountModel model);
+        //Task<bool> IsUserAuthenticatedAsync(AccountModel model);
         Task<AccountModel> GetUserDetailsWithRolesAsync(AccountModel model);
         Task RegisterAsync(RegisterViewModel model);
-
         Task<AccountModel> GetUserCredentialsAsync(string email);
     }
 }

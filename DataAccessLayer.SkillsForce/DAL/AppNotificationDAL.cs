@@ -2,12 +2,8 @@
 using Common.SkillsForce.Enums;
 using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
-using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
@@ -61,7 +57,9 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<IEnumerable<AppNotificationModel>> GetAllAsync()
         {
-            const string GET_ALL_NOTIFICATIONS_QUERY = @"SELECT * FROM [dbo].[AppNotification]";
+            const string GET_ALL_NOTIFICATIONS_QUERY = @"SELECT [AppNotificationID], [UserID], [EnrollmentID], [NotificationSubject],  [NotificationMessage], [Status], [HasRead], [NotificationSender] 
+            FROM [dbo].[AppNotification]";
+
             List<AppNotificationModel> notifications = new List<AppNotificationModel>();
             using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_ALL_NOTIFICATIONS_QUERY))
             {
@@ -86,7 +84,9 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<IEnumerable<AppNotificationModel>> GetByUserIdAsync(int userId)
         {
-            const string GET_NOTIFICATION_BY_ID_QUERY = @"SELECT * FROM [dbo].[AppNotification] WHERE UserID = @UserID ORDER BY CreateTimeStamp DESC";
+            const string GET_NOTIFICATION_BY_ID_QUERY = @"SELECT [AppNotificationID], [UserID], [EnrollmentID], [NotificationSubject],  [NotificationMessage], [Status], [HasRead], [CreateTimeStamp], [NotificationSender] 
+            FROM [dbo].[AppNotification] WHERE UserID = @UserID ORDER BY CreateTimeStamp DESC";
+
             List<SqlParameter> parameters = new List<SqlParameter>
             {
                 new SqlParameter("@UserID", userId),
@@ -199,7 +199,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
         }
 
-
         private string ConstructNotificationMessage(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
             int relevantUserId = GetRelevantUserId(enrollment, notificationType);
@@ -218,37 +217,10 @@ namespace DataAccessLayer.SkillsForce.DAL
                 case NotificationType.Enrollment:
                     return $"Hello {enrollment.ManagerFirstName} {enrollment.ManagerLastName},\n\nWe are pleased to inform you that your employee, {enrollment.AppUserFirstName} {enrollment.AppUserLastName}, has enrolled for the '{enrollment.TrainingName}' training program. This initiative reflects the dedication to professional development within your team. If you have any specific requirements or would like to offer further support, please don't hesitate to reach out.";
 
-                // Add more cases for other notification types if needed
-
                 default:
                     return "New notification received.";
             }
         }
-
-
-        //private string ConstructNotificationMessage(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
-        //{
-        //    int relevantUserId = GetRelevantUserId(enrollment, notificationType);
-
-        //    switch (notificationType)
-        //    {
-        //        case NotificationType.Approval:
-        //            return $"Your enrollment for '{enrollment.TrainingName}' has been approved by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}.";
-
-        //        case NotificationType.Rejection:
-        //            return $"Your enrollment for '{enrollment.TrainingName}' has been rejected. Reason: {enrollment.DeclineReason}";
-
-        //        case NotificationType.Confirmation:
-        //            return $"Your enrollment for '{enrollment.TrainingName}' has been confirmed by {enrollment.ManagerFirstName} {enrollment.ManagerLastName}.";
-
-        //        case NotificationType.Enrollment: // Handle the new Enrollment type
-        //            return $"Your employee {enrollment.AppUserFirstName} {enrollment.AppUserLastName} has enrolled for '{enrollment.TrainingName}'.";
-        //        // Add more cases for other notification types if needed
-
-        //        default:
-        //            return "New notification received.";
-        //    }
-        //}
 
     }
 }

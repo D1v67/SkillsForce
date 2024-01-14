@@ -8,7 +8,6 @@ namespace DataAccessLayer.SkillsForce.DAL
 {
     public class DataAccessLayer
     {
-        //public const string connectionstring = @"server=localhost;database=EmployeeTrainingDB;uid=wbpoc;pwd=sql@tfs2008";
         public string databaseConnectionstring = ConfigurationManager.ConnectionStrings["DefaultConnectionString"].ConnectionString;
         public SqlConnection _databaseConnection;
 

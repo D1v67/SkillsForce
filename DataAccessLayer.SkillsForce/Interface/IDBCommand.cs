@@ -14,15 +14,15 @@ namespace DataAccessLayer.SkillsForce.Interface
         Task<List<int>> ExecuteQueryWithOutputAsync(string query, List<SqlParameter> parameters, string outputColumnName);
         Task<int> InsertDataAndReturnIdentityAsync(string query, List<SqlParameter> parameters);
 
-        DataTable GetData(string query);
-        DataTable GetDataWithConditions(string query, List<SqlParameter> parameters);
+
         int InsertUpdateData(string query, List<SqlParameter> parameters);
         int InsertDataAndReturnIdentity(string query, List<SqlParameter> parameters);
-
-
         SqlDataReader GetDataReader(string query);
         SqlDataReader GetDataWithConditionsReader(string query, List<SqlParameter> parameters);
-
         List<int> ExecuteQueryWithOutput(string query, List<SqlParameter> parameters, string outputColumnName);
+
+
+        T MapToObject<T>(SqlDataReader reader) where T : new();
+
     }
 }

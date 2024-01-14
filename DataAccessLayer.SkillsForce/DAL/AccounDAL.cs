@@ -4,7 +4,6 @@ using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using BusinessLayer.SkillsForce.Helpers;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.SkillsForce.DAL
@@ -18,7 +17,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand = dbCommand;
         }
 
-
         public async Task<AccountModel> GetUserCredentialsAsync(string email)
         {
             const string GET_USER_CREDENTIALS_QUERY = @"SELECT a.HashedPassword, a.SaltValue FROM [User] u INNER JOIN Account a ON u.UserID = a.UserID WHERE u.Email = @Email";
@@ -29,9 +27,9 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
 
             List<SqlParameter> parameters = new List<SqlParameter>
-        {
-            new SqlParameter("@Email", email)
-        };
+            {
+                new SqlParameter("@Email", email)
+            };
 
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_USER_CREDENTIALS_QUERY, parameters))
             {
@@ -47,40 +45,13 @@ namespace DataAccessLayer.SkillsForce.DAL
                     };
                 }
             }
-
             return null;
         }
-        public async Task<bool> IsUserAuthenticatedAsync(AccountModel account)
-        {
-            const string AUTHENTICATE_USER_QUERY = @"SELECT a.HashedPassword, a.SaltValue FROM [User] u INNER JOIN Account a ON u.UserID = a.UserID WHERE u.Email = @Email";
 
-            if (string.IsNullOrEmpty(account.Email) || string.IsNullOrEmpty(account.Password))
-            {
-                throw new ArgumentNullException("Email and Password cannot be null or empty.");
-            }
-
-            List<SqlParameter> parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@Email", account.Email)
-            };
-
-            using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(AUTHENTICATE_USER_QUERY, parameters))
-            {
-                if (await reader.ReadAsync())
-                {
-                    byte[] storedHash = (byte[])reader["HashedPassword"];
-                    byte[] storedSalt = (byte[])reader["SaltValue"];
-
-                    return PasswordHasher.VerifyPassword(account.Password, storedHash, storedSalt);
-                }
-            }
-            return false;
-        }
 
         public async Task<AccountModel> GetUserDetailsWithRolesAsync(AccountModel account)
         {
-            const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.UserID, u.FirstName, u.LastName, u.Email, u.NIC, u.MobileNumber, 
-                                                              u.DepartmentID, d.DepartmentName, u.ManagerID, r.RoleName, r.RoleID
+            const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.UserID, u.FirstName, u.LastName, u.Email, u.NIC, u.MobileNumber, u.DepartmentID, d.DepartmentName, u.ManagerID, r.RoleName, r.RoleID
                                                                 FROM [User] u
                                                                 LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
                                                                 LEFT JOIN UserRole ur ON u.UserID = ur.UserID
@@ -145,3 +116,34 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
     }
 }
+
+
+
+
+
+//public async Task<bool> IsUserAuthenticatedAsync(AccountModel account)
+//{
+//    const string AUTHENTICATE_USER_QUERY = @"SELECT a.HashedPassword, a.SaltValue FROM [User] u INNER JOIN Account a ON u.UserID = a.UserID WHERE u.Email = @Email";
+
+//    if (string.IsNullOrEmpty(account.Email) || string.IsNullOrEmpty(account.Password))
+//    {
+//        throw new ArgumentNullException("Email and Password cannot be null or empty.");
+//    }
+
+//    List<SqlParameter> parameters = new List<SqlParameter>
+//            {
+//                new SqlParameter("@Email", account.Email)
+//            };
+
+//    using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(AUTHENTICATE_USER_QUERY, parameters))
+//    {
+//        if (await reader.ReadAsync())
+//        {
+//            byte[] storedHash = (byte[])reader["HashedPassword"];
+//            byte[] storedSalt = (byte[])reader["SaltValue"];
+
+//            return PasswordHasher.VerifyPassword(account.Password, storedHash, storedSalt);
+//        }
+//    }
+//    return false;
+//}

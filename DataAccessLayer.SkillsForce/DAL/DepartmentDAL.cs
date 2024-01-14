@@ -2,7 +2,6 @@
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -19,7 +18,7 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<IEnumerable<DepartmentModel>> GetAllAsync()
         {
-            const string GET_ALL_DEPARTMENT_QUERY = @"SELECT * FROM [dbo].[Department]";
+            const string GET_ALL_DEPARTMENT_QUERY = @"SELECT [DepartmentID], [DepartmentName] FROM [dbo].[Department]";
             List<DepartmentModel> departments = new List<DepartmentModel>();
 
             using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_ALL_DEPARTMENT_QUERY))

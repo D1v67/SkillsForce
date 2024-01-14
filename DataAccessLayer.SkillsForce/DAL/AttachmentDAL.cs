@@ -1,7 +1,6 @@
 ﻿using Common.SkillsForce.Entity;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -40,16 +39,9 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<IEnumerable<AttachmentModel>> GetAllByEnrollmentIDAsync(int id)
         {
-            const string GET_ALL_BY_ENROLLMENTID = @"
-                SELECT 
-                    A.AttachmentID, 
-                    A.EnrollmentID, 
-                    A.PrerequisiteID, 
-                    A.FileName,
-                    P.PrerequisiteName
-                FROM Attachment A
-                JOIN Prerequisite P ON A.PrerequisiteID = P.PrerequisiteID
-                WHERE A.EnrollmentID = @EnrollmentID";
+            const string GET_ALL_BY_ENROLLMENTID = @"SELECT A.AttachmentID, A.EnrollmentID, A.PrerequisiteID, A.FileName, P.PrerequisiteName
+            FROM Attachment A JOIN Prerequisite P ON A.PrerequisiteID = P.PrerequisiteID WHERE A.EnrollmentID = @EnrollmentID";
+
             List<AttachmentModel> attachments = new List<AttachmentModel>();
 
             var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
@@ -97,7 +89,7 @@ namespace DataAccessLayer.SkillsForce.DAL
         public async Task AddAsync(AttachmentModel attachment)
         {
             const string INSERT_EVIDENCE_QUERY = @"INSERT INTO Attachment (EnrollmentID, PrerequisiteID, FileName, FileData)
-                                                   VALUES (@EnrollmentID, @PrerequisiteID, @FileName, @FileData)";
+            VALUES (@EnrollmentID, @PrerequisiteID, @FileName, @FileData)";
 
             List<SqlParameter> parameters = new List<SqlParameter>
         {

@@ -210,50 +210,18 @@ namespace DataAccessLayer.SkillsForce.DAL
             return generatedIdentity;
         }
 
-        public DataTable GetData(string query)
-        {
-            DataAccessLayer dataAccess = new DataAccessLayer();
-            DataTable resultTable = new DataTable();
-            using (SqlCommand command = new SqlCommand(query, dataAccess._databaseConnection))
-            {
-                command.CommandType = CommandType.Text;
-                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
-                {
-                    adapter.Fill(resultTable);
-                }
-            }
-            dataAccess.CloseConnection();
-            return resultTable;
-        }
-
-        public DataTable GetDataWithConditions(string query, List<SqlParameter> parameters)
-        {
-            DataAccessLayer dataAccess = new DataAccessLayer();
-            DataTable resultTable = new DataTable();
-            using (SqlCommand command = new SqlCommand(query, dataAccess._databaseConnection))
-            {
-                command.CommandType = CommandType.Text;
-
-                if (parameters != null)
-                {
-                    parameters.ForEach(parameter =>
-                    {
-                        command.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
-                    });
-                }
-                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
-                {
-                    adapter.Fill(resultTable);
-                }
-            }
-            dataAccess.CloseConnection();
-            return resultTable;
-        }
-
         #endregion
 
         #region Mapper Helper methods
-        public static T MapToObject<T>(SqlDataReader reader) where T : new()
+
+        /// <summary>
+        /// Maps data from a SqlDataReader to an object of a specified type.
+        /// </summary>
+        /// <typeparam name="T">Type of object to be created and mapped.</typeparam>
+        /// <param name="reader">SqlDataReader containing the result set.</param>
+        /// <returns>An instance of the specified type with properties mapped from the SqlDataReader.</returns>
+        /// 
+        public  T MapToObject<T>(SqlDataReader reader) where T : new()
         {
             T obj = new T();
 
@@ -268,6 +236,14 @@ namespace DataAccessLayer.SkillsForce.DAL
             return obj;
         }
 
+
+        /// <summary>
+        /// Sets the value of a property on an object based on the provided property name and value.
+        /// </summary>
+        /// <param name="obj">Object whose property will be set.</param>
+        /// <param name="propertyName">Name of the property to be set.</param>
+        /// <param name="value">Value to be assigned to the property.</param>
+        /// 
         private static void SetProperty(object obj, string propertyName, object value)
         {
             var property = obj.GetType().GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);

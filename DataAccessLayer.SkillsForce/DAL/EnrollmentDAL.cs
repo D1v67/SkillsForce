@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Data;
 using Common.SkillsForce.ViewModel;
 using System.Threading.Tasks;
 
@@ -32,7 +31,7 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllAsync()
         {
-            const string GET_ALL_ENROLLMENT_QUERY = @"SELECT * FROM [dbo].[Enrollment]";
+            const string GET_ALL_ENROLLMENT_QUERY = @"SELECT [EnrollmentID], [UserID], [TrainingID], [EnrollmentDate], [EnrollmentStatus] FROM [dbo].[Enrollment]";
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
 
             using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_ALL_ENROLLMENT_QUERY))
@@ -56,7 +55,7 @@ namespace DataAccessLayer.SkillsForce.DAL
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllEnrollmentsWithDetailsAsync()
         {
             const string GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY =
-                @"SELECT
+                    @"SELECT
                         E.EnrollmentID,
                         U.UserID,
                         U.FirstName,
@@ -157,7 +156,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             await _dbCommand.InsertUpdateDataAsync(UPDATE_STATUS_APPROVED_QUERY, parameters);
         }
 
-
         public async Task RejectEnrollmentAsync(int enrollmentId, string rejectionReason, int declinedByUserId)
         {
             const string UPDATE_STATUS_REJECTED_QUERY = @"UPDATE Enrollment
@@ -183,7 +181,7 @@ namespace DataAccessLayer.SkillsForce.DAL
         public async Task<EnrollmentNotificationViewModel> GetEnrollmentNotificationDetailsByIDAsync(int id)
         {
             const string GET_ENROLLMENT_NOTIFICATION_DETAILS_BY_ID =
-                                                                    @"SELECT
+                                                            @"SELECT
                                                                 E.EnrollmentID,
                                                                 U.UserID AS AppUserID,
                                                                 U.FirstName AS AppUserFirstName,
@@ -199,12 +197,12 @@ namespace DataAccessLayer.SkillsForce.DAL
                                                                 M.Email AS ManagerEmail,
                                                                 M.FirstName AS ManagerFirstName,
                                                                 M.LastName AS ManagerLastName
-                                                                FROM
-                                                                    Enrollment E
-                                                                INNER JOIN [User] U ON E.UserID = U.UserID
-                                                                INNER JOIN Training T ON E.TrainingID = T.TrainingID
-                                                                LEFT JOIN Department D ON U.DepartmentID = D.DepartmentID
-                                                                LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
+                                                             FROM
+                                                                Enrollment E
+                                                             INNER JOIN [User] U ON E.UserID = U.UserID
+                                                             INNER JOIN Training T ON E.TrainingID = T.TrainingID
+                                                             LEFT JOIN Department D ON U.DepartmentID = D.DepartmentID
+                                                             LEFT JOIN [User] M ON U.ManagerID = M.UserID WHERE E.EnrollmentID = @EnrollmentID";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@EnrollmentID", id) };
 
@@ -236,7 +234,6 @@ namespace DataAccessLayer.SkillsForce.DAL
 
             return null;
         }
-
 
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllApprovedEnrollmentsAsync()
         {
@@ -416,7 +413,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             return enrollments;
         }
 
-
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredConfirmedEnrollmentsWithDetailsAsync(int trainingId)
         {
             const string GET_FILTERED_CONFIRMED_ENROLLMENTS_WITH_DETAILS_QUERY =
@@ -477,7 +473,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
             return enrollments;
         }
-
 
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsWithDetailsAsync()
         {
@@ -665,8 +660,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             return enrollments;
         }
 
-
-
+        //For Pagination
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllEnrollmentsWithDetailsAsync(int page, int pageSize)
         {
             const string GET_ENROLLMENTS_WITH_DETAILS_PAGINATED_QUERY =

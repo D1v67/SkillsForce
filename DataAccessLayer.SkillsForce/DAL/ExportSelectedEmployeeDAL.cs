@@ -24,7 +24,7 @@ namespace DataAccessLayer.SkillsForce.DAL
         public async Task<IEnumerable<ExportEmployeeEnrollmentViewModel>> GetSelectedEmployeeByTrainingAsync(int trainingId)
         {
             const string GET_ALL_SELECTED_EMPLOYEES_BY_TRAINING_ID_QUERY =
-    @"SELECT
+            @"SELECT
                 U.FirstName,
                 U.LastName,
                 U.Email,

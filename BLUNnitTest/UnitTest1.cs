@@ -42,16 +42,16 @@ namespace BLUNnitTest
 
            // hasher = new PasswordHasher();
 
-            _stubAccountDAL.Setup(accountDAL => accountDAL.IsUserAuthenticatedAsync(It.IsAny<AccountModel>())).
-            ReturnsAsync((AccountModel account) => {
+            //_stubAccountDAL.Setup(accountDAL => accountDAL.IsUserAuthenticatedAsync(It.IsAny<AccountModel>())).
+            //ReturnsAsync((AccountModel account) => {
 
-                //byte[] hashedPassword = (PasswordHasher.HashPassword(account.Password)).Item1;
-                //byte[] salt = (PasswordHasher.HashPassword(account.Password)).Item2;
+            //    //byte[] hashedPassword = (PasswordHasher.HashPassword(account.Password)).Item1;
+            //    //byte[] salt = (PasswordHasher.HashPassword(account.Password)).Item2;
 
-                bool exist = PasswordHasher.VerifyPassword(account.Password, account.HashedPassword, account.SaltValue);
-               // string pass = hashedPassword.ToString();
-                return _accounts.Any(a => a.Email.Equals(account.Email) && exist);
-            });
+            //    bool exist = PasswordHasher.VerifyPassword(account.Password, account.HashedPassword, account.SaltValue);
+            //   // string pass = hashedPassword.ToString();
+            //    return _accounts.Any(a => a.Email.Equals(account.Email) && exist);
+            //});
 
             _stubAccountDAL.Setup(accountDAL => accountDAL.GetUserCredentialsAsync(It.IsAny<string>()))
                 .ReturnsAsync((string email) => _accounts.FirstOrDefault((a) => a.Email == email));
