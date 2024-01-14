@@ -259,6 +259,28 @@ namespace MVC.SkillsForce.Controllers
             IEnumerable<EnrollmentViewModel> rejectedEnrollments = await _enrollmentService.GetAllDeclinedEnrollmentsByUserIDAsync(id);
             return Json(rejectedEnrollments, JsonRequestBehavior.AllowGet);
         }
+
+        [AuthorizePermission(Permissions.ViewTraining)]
+        public ActionResult ViewPendingEnrollments()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AuthorizePermission(Permissions.ViewTraining)]
+        public async Task<JsonResult> ViewPendingEnrollmentsData(int id)
+        {
+            IEnumerable<EnrollmentViewModel> rejectedEnrollments = await _enrollmentService.GetAllPendingEnrollmentsAsync(id);
+            return Json(rejectedEnrollments, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AuthorizePermission(Permissions.ViewTraining)]
+        public async Task<ActionResult> UnEnroll(int EnrollmentId)
+        {
+            await _enrollmentService.UnEnrollAsync(EnrollmentId);
+            return Json(new { success = true, message = "Unenrollment successful!" });
+
+        }
     }
 }
 

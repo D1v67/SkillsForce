@@ -23,5 +23,9 @@ namespace DataAccessLayer.SkillsForce.Interface
 
         Task<IEnumerable<EnrollmentViewModel>> GetAllDeclinedEnrollmentsByUserIDAsync(int userId);
         Task<int> ReEnrollAddAsync(EnrollmentViewModel enrollment);
+
+        Task<IEnumerable<EnrollmentViewModel>> GetAllPendingEnrollmentsAsync(int userId);
+
+        Task DeleteEnrollmentAsync(int enrollmentId);
     }
 }
