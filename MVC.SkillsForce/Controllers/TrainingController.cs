@@ -174,5 +174,18 @@ namespace MVC.SkillsForce.Controllers
             return ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
         }
 
+        public  ActionResult GetAllTrainingByTrainerId()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GetAllTrainingByTrainerIdData(int trainerId)
+        {
+            IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingByTrainerIDAsync(trainerId);
+            return Json(trainings, JsonRequestBehavior.AllowGet);
+
+        }
     }
 }

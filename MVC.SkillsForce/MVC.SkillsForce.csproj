@@ -460,6 +460,7 @@
     <Content Include="Views\Enrollment\ViewEnrollmentsByUser.cshtml" />
     <Content Include="Views\Enrollment\ViewRejectedEnrollments.cshtml" />
     <Content Include="Views\Enrollment\ViewPendingEnrollments.cshtml" />
+    <Content Include="Views\Training\GetAllTrainingByTrainerId.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\ExcelExports\" />

@@ -553,6 +553,38 @@ ORDER BY T.TrainingName";
 
         }
 
+
+        public async Task<IEnumerable<TrainingModel>> GetAllTrainingByTrainerIDAsync(int id)
+        {
+            const string GET_ENROLLED_TRAININGS_QUERY = @"
+            SELECT *
+            FROM Training
+            WHERE TrainerID = @TrainerID";
+
+            List<TrainingModel> trainings = new List<TrainingModel>();
+            var parameters = new List<SqlParameter> { new SqlParameter("@TrainerID", id) };
+
+            using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_ENROLLED_TRAININGS_QUERY, parameters))
+            {
+                while (await reader.ReadAsync())
+                {
+                    TrainingModel training = new TrainingModel
+                    {
+                        TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+                        TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+                        TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
+                        RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
+                        StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                        Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+                    };
+
+                    trainings.Add(training);
+                }
+            }
+
+            return trainings.Count > 0 ? trainings : null;
+        }
+
     }
 }
 

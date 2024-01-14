@@ -213,6 +213,11 @@ namespace BusinessLayer.SkillsForce.Services
             return await _trainingDAL.IsTrainingHaveEnrollment(trainingId);   
         }
 
+        public async Task<IEnumerable<TrainingModel>> GetAllTrainingByTrainerIDAsync(int id)
+        {
+            return await _trainingDAL.GetAllTrainingByTrainerIDAsync(id);
+        }
+
         public enum ValidationType
         {
             FixedLength,

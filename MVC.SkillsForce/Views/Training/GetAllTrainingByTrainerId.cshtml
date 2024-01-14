@@ -1,0 +1,129 @@
+﻿
+@model IEnumerable<Common.SkillsForce.Entity.TrainingModel>
+
+
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="text/javascript" src="
+    https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+@*
+    https://codeseven.github.io/toastr/*@
+<script type="text/javascript" src="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link rel="stylesheet" href="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+<style>
+    .card {
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        transition: transform 0.2s;
+    }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+    .card-title {
+        color: #007bff;
+    }
+
+    .enroll-btn {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .enroll-btn:hover {
+            background-color: #218838;
+        }
+
+    .closed-enrollment {
+        color: red;
+    }
+</style>
+
+<h2 class="text-center">My Trainings</h2>
+
+<div class="container" id="trainingCardContainer">
+    <!-- Card container will be populated dynamically via AJAX -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+        $(document).ready(function () {
+            var userId = parseInt("@HttpContext.Current.Session["UserID"]");
+
+            // Call the controller method using AJAX
+            $.ajax({
+                type: "POST",
+                url: "/Training/GetAllTrainingByTrainerIdData",
+                data: { trainerId: userId /* provide the trainerId here */ },
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+
+                    // Populate the card deck with the received data
+                    var cardContainer = $("#trainingCardContainer");
+                    cardContainer.empty(); // Clear existing cards
+
+                    $.each(data, function (index, training) {
+                        var card = $("<div class='card'>");
+                        card.append("<div class='card-body'><h5 class='card-title'>" + training.TrainingName + "</h5></div>");
+
+                        // Additional card content based on your TrainingViewModel properties
+                        card.append("<div class='card-body'><p class='card-text'>" + training.TrainingDescription + "</p></div>");
+     
+                        
+                        card.append("<div class='card-body'><button class='export-btn btn btn-primary' data-training-id='" + training.TrainingID + "' data-training-name='" + training.TrainingName + "'>Export Selected Employees</button></div>");
+          
+                        cardContainer.append(card);
+                    });
+
+                    // Add a click event handler for the export buttons
+                    $(".export-btn").click(function () {
+                        var trainingId = $(this).data("training-id");
+                        var trainingName = $(this).data("training-name");
+
+                        // Use the fetch method for exporting
+                        fetch(`/ExportData/ExportSelectedEmployeeByTrainingCSV?trainingId=${trainingId}&trainingName=${trainingName}`, {
+                            method: 'POST'
+                        })
+                            .then(response => {
+                                var fileName = response.headers.get('content-disposition').split('filename=')[1];
+
+                                return response.blob().then(blob => {
+                                    const downloadLink = document.createElement('a');
+                                    downloadLink.href = URL.createObjectURL(blob);
+
+                                    downloadLink.download = fileName || 'ExportedUsers';
+
+                                    document.body.appendChild(downloadLink);
+                                    downloadLink.click();
+                                    document.body.removeChild(downloadLink);
+                                });
+
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                            });
+                    });
+
+
+                },
+                error: function (error) {
+                    console.error("Error fetching data: " + error);
+                }
+            });
+        });
+
+
+</script>

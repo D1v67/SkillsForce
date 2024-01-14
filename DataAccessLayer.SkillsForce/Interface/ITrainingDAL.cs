@@ -28,6 +28,7 @@ namespace DataAccessLayer.SkillsForce.Interface
 
         Task<bool> IsTrainingHaveEnrollment(int trainingId);
 
+        Task<IEnumerable<TrainingModel>> GetAllTrainingByTrainerIDAsync(int id);
 
     }
 }
