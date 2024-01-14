@@ -457,6 +457,8 @@
     <Content Include="Views\Common\UnauthorizedAccessAttempt.cshtml" />
     <Content Include="Views\Enrollment\ViewConfirmedEnrollments.cshtml" />
     <Content Include="Views\ExportData\ExportSelectedEmployeeByTrainingCSV.cshtml" />
+    <Content Include="Views\Enrollment\ViewEnrollmentsByUser.cshtml" />
+    <Content Include="Views\Enrollment\ViewRejectedEnrollments.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\ExcelExports\" />

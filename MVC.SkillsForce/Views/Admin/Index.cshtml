@@ -4,21 +4,61 @@
 }
 
 <style>
+    /* Custom Colors */
+    .manage-training {
+        background-color: #396d7c; /* Blue */
+    }
+
+    .manage-user {
+        background-color: #a2d2df; /* Green */
+    }
+
+    .approved-enrollments {
+        background-color: #5588ff; /* Orange */
+    }
+
+    .enrollments {
+        background-color: #3366ff; /* Red */
+    }
+
     .action-card {
-        height: 200px;
+        height: 250px;
         display: flex;
         align-items: center;
         justify-content: center;
+        border-radius: 10px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+
+        .action-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+    .card-body {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .dashboard-title {
+        text-align: center;
+        margin-bottom: 20px;
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
     }
 </style>
-<h2>Dashboard</h2>
 
+<div class="dashboard-title">
+    Dashboard
+</div>
 
 <div class="container mt-5">
     <div class="row">
 
-        <div class="col-md-4">
-            <div class="card action-card bg-info text-white">
+        <div class="col-md-3">
+            <div class="card action-card manage-training text-white">
                 <div class="card-body">
                     <h5 class="card-title">Manage Training</h5>
                     <p class="card-text">Click here to manage trainings</p>
@@ -27,22 +67,32 @@
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card action-card bg-success text-white">
+        <div class="col-md-3">
+            <div class="card action-card manage-user text-white">
                 <div class="card-body">
-                    <h5 class="card-title">Add User</h5>
-                    <p class="card-text">Click here to add a new user.</p>
-                    <a href="#" class="btn btn-light">Go</a>
+                    <h5 class="card-title">Manage User</h5>
+                    <p class="card-text">Click here to manage user.</p>
+                    <a href="@Url.Action("Index", "User")" class="btn btn-light">Go</a>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card action-card bg-warning text-white">
+        <div class="col-md-3">
+            <div class="card action-card approved-enrollments text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Approved Enrollments</h5>
+                    <p class="card-text">Click here to view</p>
+                    <a href="@Url.Action("GetAllApprovedEnrollments", "Enrollment")" class="btn btn-light">Approved Enrollments</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card action-card enrollments text-white">
                 <div class="card-body">
                     <h5 class="card-title">Enrollments</h5>
                     <p class="card-text">Click here to view</p>
-                    <a href="@Url.Action("GetAllApprovedEnrollments", "Enrollment")" class="btn btn-light">Approved Enrollments</a>
+                    <a href="@Url.Action("Enrollments", "Admin")" class="btn btn-light">Enrollments</a>
                 </div>
             </div>
         </div>
@@ -50,45 +100,44 @@
     </div>
 </div>
 
-
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<script>
-    $(document).ready(function () {
-        // Get the user ID from the session or wherever it's stored
-        var userId = parseInt("@HttpContext.Current.Session["UserID"]");
+@*<script>
+        $(document).ready(function () {
+            // Get the user ID from the session or wherever it's stored
+            var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
-        // List of permissions to check
-        var permissionsToCheck = ['EditTraining', 'ViewTraining', 'DeleteTraining', 'DeleteEnrollment'];
+            // List of permissions to check
+            var permissionsToCheck = ['EditTraining', 'ViewTraining', 'DeleteTraining', 'DeleteEnrollment'];
 
-        // Hide all buttons by default
-        $("button").hide();
+            // Hide all buttons by default
+            $("button").hide();
 
-        // Make an AJAX call to check the permissions
-        $.ajax({
-            url: "/UserAuthorization/CheckPermissions",
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ userId: userId, permissions: permissionsToCheck }),
-            success: function (result) {
-                // Iterate through the result and show buttons accordingly
-                $.each(result, function (permission, hasPermission) {
-                    if (hasPermission) {
-                        // Show the buttons since the user has the permission
-                        $("#" + permission + "Button").show();
-                    }
-                });
-            },
-            error: function (error) {
-                // Handle the error if the AJAX call fails
-                console.error(error.responseText);
-            }
+            // Make an AJAX call to check the permissions
+            $.ajax({
+                url: "/UserAuthorization/CheckPermissions",
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ userId: userId, permissions: permissionsToCheck }),
+                success: function (result) {
+                    // Iterate through the result and show buttons accordingly
+                    $.each(result, function (permission, hasPermission) {
+                        if (hasPermission) {
+                            // Show the buttons since the user has the permission
+                            $("#" + permission + "Button").show();
+                        }
+                    });
+                },
+                error: function (error) {
+                    // Handle the error if the AJAX call fails
+                    console.error(error.responseText);
+                }
+            });
         });
-    });
-</script>
+    </script>*@
 
 <!-- Your buttons with corresponding IDs -->
-<button id="EditTrainingButton">Edit Training</button>
+<!--<button id="EditTrainingButton">Edit Training</button>
 <button id="ViewTrainingButton">View Training</button>
 <button id="DeleteTrainingButton">Delete Training</button>
-<button id="DeleteEnrollmentButton">Delete Enrollment</button>
+<button id="DeleteEnrollmentButton">Delete Enrollment</button>-->

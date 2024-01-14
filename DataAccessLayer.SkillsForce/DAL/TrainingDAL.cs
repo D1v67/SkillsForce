@@ -421,7 +421,7 @@ namespace DataAccessLayer.SkillsForce.DAL
 SELECT T.*, E.EnrollmentID
 FROM Training T
 INNER JOIN Enrollment E ON T.TrainingID = E.TrainingID
-WHERE E.UserID = @UserID
+WHERE E.UserID = @UserID AND E.IsActive = 1
 ORDER BY T.TrainingName";
 
             List<TrainingEnrollmentViewModel> trainings = new List<TrainingEnrollmentViewModel>();
@@ -460,7 +460,8 @@ ORDER BY T.TrainingName";
                  SELECT 1
                  FROM Enrollment E
                  WHERE E.TrainingID = T.TrainingID
-                   AND E.UserID = @UserID
+                   AND E.UserID = @UserID AND E.IsActive = 1
+                 
              )
              ORDER BY T.TrainingName";
 

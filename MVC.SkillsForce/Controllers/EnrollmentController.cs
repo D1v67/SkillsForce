@@ -143,6 +143,23 @@ namespace MVC.SkillsForce.Controllers
             }
         }
 
+        [HttpPost]
+        [AuthorizePermission(Permissions.ViewTraining)]
+        public async Task<ActionResult> ReEnrollSaveEnrollment(EnrollmentViewModel model)
+        {
+            try
+            {
+                int generatedEnrollmentId = await _enrollmentService.ReEnrollAddAsync(model);
+                EnrollmentNotificationViewModel enrollment = await _enrollmentService.GetEnrollmentNotificationDetailsByIDAsync(generatedEnrollmentId);
+                await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Enrollment);
+                return Json(new { success = true, message = "Enrollment successful!", EnrollmentID = generatedEnrollmentId });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
         [AuthorizePermission(Permissions.ViewTraining)]
         public async Task<JsonResult> GetPrerequisiteByTrainingID(int TrainigID)
         {
@@ -211,6 +228,12 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [AuthorizePermission(Permissions.ViewTraining)]
+        public ActionResult ViewEnrollmentsByUser()
+        {
+            return View();
+        }
+
+        [AuthorizePermission(Permissions.ViewTraining)]
         public ActionResult ViewConfirmedEnrollments()
         {
             return View();
@@ -222,6 +245,19 @@ namespace MVC.SkillsForce.Controllers
         {
             IEnumerable<EnrollmentViewModel> confirmedEnrollments = await _enrollmentService.GetAllConfirmedEnrollmentsAsync(id);
             return Json(confirmedEnrollments, JsonRequestBehavior.AllowGet);
+        }
+
+        [AuthorizePermission(Permissions.ViewTraining)]
+        public ActionResult ViewRejectedEnrollments()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AuthorizePermission(Permissions.ViewTraining)]
+        public async Task<JsonResult> ViewRejectedEnrollmentsData(int id)
+        {
+            IEnumerable<EnrollmentViewModel> rejectedEnrollments = await _enrollmentService.GetAllDeclinedEnrollmentsByUserIDAsync(id);
+            return Json(rejectedEnrollments, JsonRequestBehavior.AllowGet);
         }
     }
 }

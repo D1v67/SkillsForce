@@ -122,6 +122,16 @@ namespace BusinessLayer.SkillsForce.Services
         {
             return await _enrollmentDAL.GetAllConfirmedEnrollmentsWithDetailsAsync();
         }
+
+        public async Task<IEnumerable<EnrollmentViewModel>> GetAllDeclinedEnrollmentsByUserIDAsync(int userId)
+        {
+            return await _enrollmentDAL.GetAllDeclinedEnrollmentsByUserIDAsync(userId);
+        }
+
+        public async Task<int> ReEnrollAddAsync(EnrollmentViewModel enrollment)
+        {
+            return await _enrollmentDAL.ReEnrollAddAsync(enrollment);
+        }
     }
 }
 

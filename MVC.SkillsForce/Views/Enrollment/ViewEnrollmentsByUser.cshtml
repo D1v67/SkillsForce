@@ -1,0 +1,107 @@
+﻿
+@model IEnumerable<Common.SkillsForce.Entity.TrainingModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="text/javascript" src="
+    https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+@*
+    https://codeseven.github.io/toastr/*@
+<script type="text/javascript" src="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link rel="stylesheet" href="
+    https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+
+<style>
+    /* Custom Colors */
+    .confirmed-enrollments {
+        background-color: #27ae60; /* Green */
+    }
+
+    .rejected-enrollments {
+        background-color: #e74c3c; /* Red */
+    }
+
+    .pending-enrollments {
+        background-color: #f39c12; /* Orange */
+    }
+
+    .action-card {
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+
+        .action-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+    .card-body {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .dashboard-title {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+</style>
+
+<body>
+
+    <div class="dashboard-title">
+        Dashboard
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="card action-card confirmed-enrollments text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Confirmed Enrollments</h5>
+                        <p class="card-text">Click here to view</p>
+                        <a href="@Url.Action("ViewConfirmedEnrollments", "Enrollment")" class="btn btn-light">Confirmed Enrollments</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card action-card rejected-enrollments text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Rejected Enrollments</h5>
+                        <p class="card-text">Click here to view</p>
+                        <a href="@Url.Action("ViewRejectedEnrollments", "Enrollment")" class="btn btn-light">Rejected Enrollments</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card action-card pending-enrollments text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Enrollments</h5>
+                        <p class="card-text">Click here to view</p>
+                        <a href="@Url.Action("PendingEnrollments", "Enrollment")" class="btn btn-light">Pending Enrollments</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
