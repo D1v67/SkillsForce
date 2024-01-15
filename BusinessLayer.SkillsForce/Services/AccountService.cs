@@ -13,12 +13,13 @@ namespace BusinessLayer.SkillsForce.Services
     public class AccountService : IAccountService
     {
         private readonly IAccountDAL _accountDAL;
-        private readonly IUserService _userService;
+        //private readonly IUserService _userService;
+        private readonly IUserDAL _userDAL;
 
-        public AccountService(IAccountDAL accountDAL, IUserService userService)
+        public AccountService(IAccountDAL accountDAL, IUserDAL userDAL)
         {
             _accountDAL = accountDAL;
-            _userService = userService;
+            _userDAL = userDAL;
         }
 
         public async Task<bool> IsUserAuthenticatedAsync(AccountModel model)
@@ -46,7 +47,7 @@ namespace BusinessLayer.SkillsForce.Services
             {
                 validationErrors.Add("Email is required and must be in a valid format.");
             }
-            else if (await _userService.IsEmailAlreadyExistsAsync(model.Email))
+            else if (await _userDAL.IsEmailAlreadyExistsAsync(model.Email))
             {
                 validationErrors.Add("Email is already in use.");
             }
@@ -56,7 +57,7 @@ namespace BusinessLayer.SkillsForce.Services
             {
                 validationErrors.Add("NIC is required and must be a valid format.");
             }
-            else if (await _userService.IsNICExistsAsync(model.NIC))
+            else if (await _userDAL.IsNICExistsAsync(model.NIC))
             {
                 validationErrors.Add("NIC is already in use.");
             }
@@ -66,7 +67,7 @@ namespace BusinessLayer.SkillsForce.Services
             {
                 validationErrors.Add("Mobile Number is required and must be in a valid format.");
             }
-            else if (await _userService.IsMobileNumberExistsAsync(model.MobileNumber))
+            else if (await _userDAL.IsMobileNumberExistsAsync(model.MobileNumber))
             {
                 validationErrors.Add("Mobile Number is already in use.");
             }
@@ -74,7 +75,7 @@ namespace BusinessLayer.SkillsForce.Services
             // Validate  fields for required, min, and max length
             ValidateField(model.FirstName, "First Name", validationErrors, minLength: 2, maxLength: 50);
             ValidateField(model.LastName, "Last Name", validationErrors, minLength: 2, maxLength: 50 );
-            ValidateField(model.Email, "Last Name", validationErrors, minLength: 2, maxLength: 255);
+            ValidateField(model.Email, "Email", validationErrors, minLength: 2, maxLength: 30);
             ValidateField(model.NIC, "NIC", validationErrors, fixedLength: 14 );
             ValidateField(model.MobileNumber, "Mobile Number", validationErrors, fixedLength: 8);
 
@@ -84,8 +85,8 @@ namespace BusinessLayer.SkillsForce.Services
                 model.HashedPassword = hashedPassword.Item1;
                 model.SaltValue = hashedPassword.Item2;
 
-                await _accountDAL.RegisterAsync(model);
-                return new ValidationResult { IsSuccessful = true };
+                bool isSuccess = await _accountDAL.RegisterAsync(model);
+                return new ValidationResult { IsSuccessful = isSuccess };
             }
             return new ValidationResult { IsSuccessful = false, Errors = validationErrors };
         }

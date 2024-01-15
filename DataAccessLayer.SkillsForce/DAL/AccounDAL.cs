@@ -87,7 +87,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             return user;
         }
 
-        public async Task RegisterAsync(RegisterViewModel registerViewModel)
+        public async Task<bool> RegisterAsync(RegisterViewModel registerViewModel)
         {
             const string INSERT_INTO_USER_AND_ACCOUNT_REGISTER_QUERY = @"
                                                        BEGIN TRANSACTION
@@ -112,7 +112,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             parameters.Add(new SqlParameter("@HashedPassword", registerViewModel.HashedPassword)); // Item1 is the hashed password
             parameters.Add(new SqlParameter("@SaltValue", registerViewModel.SaltValue)); // Item2 is the salt value
 
-            await _dbCommand.InsertUpdateDataAsync(INSERT_INTO_USER_AND_ACCOUNT_REGISTER_QUERY, parameters);
+           return  await _dbCommand.InsertUpdateDataAsync(INSERT_INTO_USER_AND_ACCOUNT_REGISTER_QUERY, parameters)>0;
         }
     }
 }
