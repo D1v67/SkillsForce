@@ -1,4 +1,6 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
+using Common.SkillsForce.AppLogger;
+using Common.SkillsForce.BackgoundJobLogger;
 using Common.SkillsForce.Enums;
 using Common.SkillsForce.Helpers;
 using Common.SkillsForce.ViewModel;
@@ -16,12 +18,14 @@ namespace BusinessLayer.SkillsForce.Services
         private readonly IEnrollmentDAL _enrollmentDAL;
         private readonly ITrainingService _trainingService;
         private readonly INotificationHandler _notificationHandler;
+        private readonly CustomLogger _logger;
 
         public EnrollmentService(IEnrollmentDAL enrollmentDAL, ITrainingService trainingService, INotificationHandler notificationHandler)
         {
             _enrollmentDAL = enrollmentDAL;
             _trainingService = trainingService;
             _notificationHandler = notificationHandler;
+            _logger = new CustomLogger();
         }
         public async Task<int> AddAsync(EnrollmentViewModel enrollment)
         {
@@ -71,6 +75,9 @@ namespace BusinessLayer.SkillsForce.Services
 
         public async Task<ExecutionResult> RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob)
         {
+            DateTime executionStartTime = DateTime.Now;
+            _logger.Log($"Executing Automatic Selection at {executionStartTime}...");
+
             var Errors = new List<string>();
             var SuccessMessages = new List<string>();
 
@@ -80,6 +87,9 @@ namespace BusinessLayer.SkillsForce.Services
             if (trainings == null || !trainings.Any())
             {
                 Errors.Add("No trainings available for selection until today.");
+
+                _logger.Log("No trainings available for selection until today.");
+
                 return new ExecutionResult { IsSuccessful = false, Errors = Errors, SuccessMessages = SuccessMessages };
             }
 
@@ -90,6 +100,8 @@ namespace BusinessLayer.SkillsForce.Services
                 if (enrollmentIds != null && enrollmentIds.Any())
                 {
                     SuccessMessages.Add($"Selection done for training: {training.TrainingName}");
+                    _logger.Log($"Selection done for training: {training.TrainingName}");
+
                     foreach (var enrollmentId in enrollmentIds)
                     {
                         EnrollmentNotificationViewModel enrollment = await GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
@@ -97,7 +109,10 @@ namespace BusinessLayer.SkillsForce.Services
                         await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Confirmation);                      
                     }
                 }
-            }        
+            }
+
+            //_logger.Log(SuccessMessages.ToString());
+            _logger.Log($"RunAutomaticSelectionOfApprovedEnrollmentsAsync executed successfully at {DateTime.Now}.{Environment.NewLine}");
             return new ExecutionResult { IsSuccessful = true, Errors = Errors, SuccessMessages = SuccessMessages };
         }
 

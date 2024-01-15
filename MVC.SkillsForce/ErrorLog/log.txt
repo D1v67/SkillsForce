@@ -2747,3 +2747,7 @@ Stack Trace:    at System.Web.Mvc.ActionDescriptor.ExtractParameterFromDictionar
    at System.Web.Mvc.Async.AsyncControllerActionInvoker.BeginInvokeActionMethodWithFilters(ControllerContext controllerContext, IList`1 filters, ActionDescriptor actionDescriptor, IDictionary`2 parameters, AsyncCallback callback, Object state)
    at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__0(AsyncCallback asyncCallback, Object asyncState)
 "---------------------------------------------------------";
+Executing Automatic Selection...
+System.Collections.Generic.List`1[System.String]
+Executing Automatic Selection...
+System.Collections.Generic.List`1[System.String]

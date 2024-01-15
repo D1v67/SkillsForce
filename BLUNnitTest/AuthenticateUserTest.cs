@@ -1,7 +1,5 @@
-using BusinessLayer.SkillsForce.Helpers;
 using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
-using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
 using Moq;
 

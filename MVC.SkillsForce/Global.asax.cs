@@ -51,22 +51,8 @@ namespace MVC.SkillsForce
             // Let's also Schedule a sample background job
              BackgroundJob.Enqueue(() => Debug.WriteLine("Hello world from Hangfire!"));
 
-            //BackgroundJob.Schedule<IEnrollmentService>(x => x.RunAutomaticSelectionOfApprovedEnrollmentsAsync(true), TimeSpan.FromMinutes(1));
+            BackgroundJob.Schedule<IEnrollmentService>(x => x.RunAutomaticSelectionOfApprovedEnrollmentsAsync(true), TimeSpan.FromMinutes(1));
         }
-
-
-        //protected void Session_Start(object sender, EventArgs e)
-        //{
-        //    // Session started
-        //}
-
-        //protected void Session_End(object sender, EventArgs e)
-        //{
-        //    // Session ended (either due to timeout or explicitly calling Session.Abandon())
-        //    // Redirect to the login page
-        //    HttpContext.Current.Response.Redirect("~/Account/Index");
-        //}
-
 
     }
 }

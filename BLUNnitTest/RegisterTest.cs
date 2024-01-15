@@ -1,15 +1,8 @@
 ﻿using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.Entity;
 using Common.SkillsForce.ViewModel;
-using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLayerNUnitTest
 {

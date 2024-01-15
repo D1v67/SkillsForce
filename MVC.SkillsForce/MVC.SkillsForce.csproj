@@ -316,6 +316,7 @@
     <Compile Include="Controllers\AppNotificationController.cs" />
     <Compile Include="Controllers\ExportDataController.cs" />
     <Compile Include="Controllers\UserAuthorizationController.cs" />
+    <Compile Include="Custom\BackgroundJobLoggerAttribute.cs" />
     <Compile Include="Custom\GlobalExceptionHandler.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
@@ -368,6 +369,7 @@
     <Content Include="Content\jquery-ui.css" />
     <Content Include="Content\jquery-ui.structure.css" />
     <Content Include="Content\jquery-ui.theme.css" />
+    <Content Include="JobLog\log.txt" />
     <Content Include="MyCSS\Login.css" />
     <Content Include="MyCSS\Register.css" />
     <Content Include="MyScripts\Register.js" />

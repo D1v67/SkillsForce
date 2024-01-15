@@ -1,0 +1,7 @@
+Executing Automatic Selection at 1/15/2024 11:01:48 PM...
+Selection done for training: Agile Scrum Workshop
+Selection done for training: Introduction to Machine Learning
+RunAutomaticSelectionOfApprovedEnrollmentsAsync executed successfully at 1/15/2024 11:01:48 PM.
+
+Executing Automatic Selection at 1/15/2024 11:02:12 PM...
+No trainings available for selection until today.
