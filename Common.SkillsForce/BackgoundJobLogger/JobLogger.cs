@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Common.SkillsForce.BackgoundJobLogger
 {
-    public class CustomLogger : ICustomLogger
+    public class JobLogger : IJobLogger
     {
         private readonly string _loggerFilePath;
         private const string LOGGER_FILE_PATH = "JobLog\\log.txt";
 
-        public CustomLogger()
+        public JobLogger()
         {
             string rootDirectory = AppDomain.CurrentDomain.BaseDirectory;
             _loggerFilePath = Path.Combine(rootDirectory, LOGGER_FILE_PATH);
@@ -39,17 +39,5 @@ namespace Common.SkillsForce.BackgoundJobLogger
                 Debug.WriteLine($"Error writing to log file: {ex.Message}");
             }
         }
-
-        //public void LogError(Exception exception)
-        //{
-        //    string fullMessage = "---------------------------------------------------------";
-        //    fullMessage += Environment.NewLine + $"Timestamp: {DateTime.Now}";
-        //    fullMessage += Environment.NewLine + $"Exception Type: {this.GetType().FullName}";
-        //    fullMessage += Environment.NewLine + $"Message: {exception.Message}";
-        //    fullMessage += Environment.NewLine + $"Inner Exception: {exception.InnerException}";
-        //    fullMessage += Environment.NewLine + $"Stack Trace: {exception.StackTrace}";
-        //    fullMessage += Environment.NewLine + "\"---------------------------------------------------------\";";
-        //    Log(fullMessage);
-        //}
     }
 }

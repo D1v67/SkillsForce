@@ -18,14 +18,14 @@ namespace BusinessLayer.SkillsForce.Services
         private readonly IEnrollmentDAL _enrollmentDAL;
         private readonly ITrainingService _trainingService;
         private readonly INotificationHandler _notificationHandler;
-        private readonly CustomLogger _logger;
+        private readonly IJobLogger _logger;
 
-        public EnrollmentService(IEnrollmentDAL enrollmentDAL, ITrainingService trainingService, INotificationHandler notificationHandler)
+        public EnrollmentService(IEnrollmentDAL enrollmentDAL, ITrainingService trainingService, INotificationHandler notificationHandler, IJobLogger logger)
         {
             _enrollmentDAL = enrollmentDAL;
             _trainingService = trainingService;
             _notificationHandler = notificationHandler;
-            _logger = new CustomLogger();
+            _logger = logger;
         }
         public async Task<int> AddAsync(EnrollmentViewModel enrollment)
         {
@@ -81,14 +81,14 @@ namespace BusinessLayer.SkillsForce.Services
             var Errors = new List<string>();
             var SuccessMessages = new List<string>();
 
-            DateTime registrationDeadline = new DateTime(2024, 03, 01);
+            DateTime registrationDeadline = new DateTime(2024, 03, 02);
             var trainings = await _trainingService.GetAllTrainingsByRegistrationDeadlineAsync(registrationDeadline, isCronjob);
 
             if (trainings == null || !trainings.Any())
             {
                 Errors.Add("No trainings available for selection until today.");
 
-                _logger.Log("No trainings available for selection until today.");
+                _logger.Log($"No trainings available for selection until today at {DateTime.Now}.{Environment.NewLine}");
 
                 return new ExecutionResult { IsSuccessful = false, Errors = Errors, SuccessMessages = SuccessMessages };
             }
@@ -99,8 +99,8 @@ namespace BusinessLayer.SkillsForce.Services
 
                 if (enrollmentIds != null && enrollmentIds.Any())
                 {
-                    SuccessMessages.Add($"Selection done for training: {training.TrainingName}");
-                    _logger.Log($"Selection done for training: {training.TrainingName}");
+                    SuccessMessages.Add($"Selection done for training: {training.TrainingName} at {DateTime.Now}.");
+                    _logger.Log($"Selection done for training: {training.TrainingName} at {DateTime.Now}.");
 
                     foreach (var enrollmentId in enrollmentIds)
                     {
@@ -111,8 +111,7 @@ namespace BusinessLayer.SkillsForce.Services
                 }
             }
 
-            //_logger.Log(SuccessMessages.ToString());
-            _logger.Log($"RunAutomaticSelectionOfApprovedEnrollmentsAsync executed successfully at {DateTime.Now}.{Environment.NewLine}");
+            _logger.Log($"Automatic Selection executed successfully at {DateTime.Now}.{Environment.NewLine}");
             return new ExecutionResult { IsSuccessful = true, Errors = Errors, SuccessMessages = SuccessMessages };
         }
 

@@ -44,8 +44,8 @@
   <ItemGroup>
     <Compile Include="AppLogger\ILogger.cs" />
     <Compile Include="AppLogger\Logger.cs" />
-    <Compile Include="BackgoundJobLogger\CustomLogger.cs" />
-    <Compile Include="BackgoundJobLogger\ICustomLogger.cs" />
+    <Compile Include="BackgoundJobLogger\JobLogger.cs" />
+    <Compile Include="BackgoundJobLogger\IJobLogger.cs" />
     <Compile Include="EmailSender\EmailSender.cs" />
     <Compile Include="Entity\AccountModel.cs" />
     <Compile Include="Entity\AppNotificationModel.cs" />

@@ -1,6 +1,6 @@
 ﻿namespace Common.SkillsForce.BackgoundJobLogger
 {
-    public interface ICustomLogger
+    public interface IJobLogger
     {
         void Log(string message);
     }

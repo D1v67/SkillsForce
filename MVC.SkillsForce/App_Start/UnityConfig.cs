@@ -1,6 +1,7 @@
 using BusinessLayer.SkillsForce.Interface;
 using BusinessLayer.SkillsForce.Services;
 using Common.SkillsForce.AppLogger;
+using Common.SkillsForce.BackgoundJobLogger;
 using DataAccessLayer.SkillsForce.DAL;
 using DataAccessLayer.SkillsForce.Interface;
 using System.ComponentModel;
@@ -25,7 +26,9 @@ namespace MVC.SkillsForce
             Container.RegisterType<ISessionService, SessionService>();
 
             Container.RegisterType<IFileExtensionValidation, FileExtensionValidation>();
-          
+
+
+            Container.RegisterType<IJobLogger, JobLogger>();
 
             Container.RegisterType<IExportSelectedEmployeeService, ExportSelectedEmployeeService>();
             Container.RegisterType<IExportSelectedEmployeeDAL, ExportSelectedEmployeeDAL>();
