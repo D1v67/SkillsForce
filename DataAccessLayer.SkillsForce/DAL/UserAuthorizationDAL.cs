@@ -23,9 +23,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                                                     JOIN RolePermission RP ON R.RoleID = RP.RoleID
                                                     JOIN Permission P ON RP.PermissionID = P.PermissionID
                                                     WHERE U.UserID = @UserID AND P.PermissionName = @PermissionName";
-
-            try
-            {
                 List<SqlParameter> parameters = new List<SqlParameter>
                 {
                     new SqlParameter("@UserID", userID), 
@@ -36,12 +33,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                 {
                     return reader.HasRows;
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message}");
-                return false;
-            }
         }
     }
 }

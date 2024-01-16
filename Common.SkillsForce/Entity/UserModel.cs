@@ -20,7 +20,7 @@ namespace Common.SkillsForce.Entity
 
         public int RoleID { get; set; }
 
-        public int ManagerID { get; set; }
+        public int? ManagerID { get; set; }
 
         public int DepartmentID { get; set; }
 

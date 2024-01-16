@@ -14,9 +14,28 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand = dbCommand;
         }
 
+        #region Add
+        public async Task AddAsync(AttachmentModel attachment)
+        {
+            const string INSERT_EVIDENCE_QUERY = @"INSERT INTO Attachment (EnrollmentID, PrerequisiteID, FileName, FileData)
+            VALUES (@EnrollmentID, @PrerequisiteID, @FileName, @FileData)";
+
+            List<SqlParameter> parameters = new List<SqlParameter>
+        {
+            new SqlParameter("@EnrollmentID", attachment.EnrollmentID),
+            new SqlParameter("@PrerequisiteID", attachment.PrerequisiteID),
+            new SqlParameter("@FileData", attachment.FileData),
+            new SqlParameter("@FileName", attachment.FileName),
+        };
+            await _dbCommand.InsertUpdateDataAsync(INSERT_EVIDENCE_QUERY, parameters);
+        }
+
+        #endregion
+
+        #region Get
         public async Task<IEnumerable<AttachmentModel>> GetAllAsync()
         {
-            const string GET_ALL_ATTACHMENTS_QUERY = @"SELECT * FROM [dbo].[Attachment]";
+            const string GET_ALL_ATTACHMENTS_QUERY = @"SELECT [AttachmentID],[EnrollmentID],[PrerequisiteID],[FileData],[FileName] FROM [dbo].[Attachment]";
             List<AttachmentModel> attachments = new List<AttachmentModel>();
 
             using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_ALL_ATTACHMENTS_QUERY))
@@ -65,7 +84,7 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<AttachmentModel> GetByAttachmentIDAsync(int id)
         {
-            const string GET_BY_ATTACHMENTID_QUERY = @"SELECT * FROM Attachment A WHERE A.AttachmentID = @AttachmentID";
+            const string GET_BY_ATTACHMENTID_QUERY = @"SELECT [AttachmentID],[EnrollmentID],[PrerequisiteID],[FileData],[FileName] FROM Attachment A WHERE A.AttachmentID = @AttachmentID";
             var parameters = new List<SqlParameter> { new SqlParameter("@AttachmentID", id) };
 
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_BY_ATTACHMENTID_QUERY, parameters))
@@ -86,24 +105,11 @@ namespace DataAccessLayer.SkillsForce.DAL
             return null;
         }
 
-        public async Task AddAsync(AttachmentModel attachment)
-        {
-            const string INSERT_EVIDENCE_QUERY = @"INSERT INTO Attachment (EnrollmentID, PrerequisiteID, FileName, FileData)
-            VALUES (@EnrollmentID, @PrerequisiteID, @FileName, @FileData)";
-
-            List<SqlParameter> parameters = new List<SqlParameter>
-        {
-            new SqlParameter("@EnrollmentID", attachment.EnrollmentID),
-            new SqlParameter("@PrerequisiteID", attachment.PrerequisiteID),
-            new SqlParameter("@FileData", attachment.FileData),
-            new SqlParameter("@FileName", attachment.FileName),
-        };
-            await _dbCommand.InsertUpdateDataAsync(INSERT_EVIDENCE_QUERY, parameters);
-        }
-
         public Task<AttachmentModel> GetByIDAsync(int id)
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

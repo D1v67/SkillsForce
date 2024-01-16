@@ -17,6 +17,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand = dbCommand;
         }
 
+        #region Add
         public async Task<int> AddNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
             int relevantUserId = GetRelevantUserId(enrollment, notificationType);
@@ -55,6 +56,9 @@ namespace DataAccessLayer.SkillsForce.DAL
             return await _dbCommand.InsertUpdateDataAsync(INSERT_NOTIFICATION_QUERY, parameters);
         }
 
+        #endregion
+
+        #region Get
         public async Task<IEnumerable<AppNotificationModel>> GetAllAsync()
         {
             const string GET_ALL_NOTIFICATIONS_QUERY = @"SELECT [AppNotificationID], [UserID], [EnrollmentID], [NotificationSubject],  [NotificationMessage], [Status], [HasRead], [NotificationSender] 
@@ -114,16 +118,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             return notifications;
         }
 
-        public async Task<int> MarkNotificationAsReadAsync(int notificationId)
-        {
-            const string UPDATE_NOTIFICATION_QUERY = @"UPDATE [dbo].[AppNotification] SET [HasRead] = 1 WHERE [AppNotificationID] = @AppNotificationID";
-            List<SqlParameter> parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@AppNotificationID", notificationId),
-            };
-            return await _dbCommand.InsertUpdateDataAsync(UPDATE_NOTIFICATION_QUERY, parameters);
-        }
-
         public async Task<int> GetUnreadNotificationCountAsync(int userId)
         {
             const string GET_UNREAD_NOTIFICATION_COUNT_QUERY = @"SELECT COUNT(*) As UnreadNotifications FROM [dbo].[AppNotification] WHERE UserID = @UserID AND HasRead = 0";
@@ -138,6 +132,19 @@ namespace DataAccessLayer.SkillsForce.DAL
             return -1;
         }
 
+        public async Task<int> MarkNotificationAsReadAsync(int notificationId)
+        {
+            const string UPDATE_NOTIFICATION_QUERY = @"UPDATE [dbo].[AppNotification] SET [HasRead] = 1 WHERE [AppNotificationID] = @AppNotificationID";
+            List<SqlParameter> parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@AppNotificationID", notificationId),
+            };
+            return await _dbCommand.InsertUpdateDataAsync(UPDATE_NOTIFICATION_QUERY, parameters);
+        }
+
+        #endregion
+
+        #region Helper methods for Constructing Email
         // Helper method to get relevant user ID based on notification type
         private int GetRelevantUserId(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
@@ -221,6 +228,6 @@ namespace DataAccessLayer.SkillsForce.DAL
                     return "New notification received.";
             }
         }
-
+        #endregion
     }
 }

@@ -66,7 +66,6 @@ namespace DataAccessLayer.SkillsForce.DAL
             return prerequisites;
         }
 
-
         public IEnumerable<PrerequisiteModel> GetPrerequisiteByTrainingID(int TrainingID)
         {
             const string GET_PREREQUISITE_BY_TRAINING_ID_QUERY = @"SELECT P.PrerequisiteID, P.PrerequisiteName

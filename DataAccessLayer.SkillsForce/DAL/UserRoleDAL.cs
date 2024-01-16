@@ -47,6 +47,4 @@ namespace DataAccessLayer.SkillsForce.DAL
             throw new NotImplementedException();
         }
     }
-
-
 }

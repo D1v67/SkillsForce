@@ -51,12 +51,10 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<AccountModel> GetUserDetailsWithRolesAsync(AccountModel account)
         {
-            const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.UserID, u.FirstName, u.LastName, u.Email, u.NIC, u.MobileNumber, u.DepartmentID, d.DepartmentName, u.ManagerID, r.RoleName, r.RoleID
-                                                                FROM [User] u
-                                                                LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID
-                                                                LEFT JOIN UserRole ur ON u.UserID = ur.UserID
-                                                                LEFT JOIN Role r ON ur.RoleID = r.RoleID
-                                                                WHERE u.Email = @Email";
+            const string GET_USER_DETAILS_WITH_ROLE_QUERY = @"SELECT u.UserID, u.FirstName, u.LastName, u.Email, r.RoleName, r.RoleID
+            FROM [User] u LEFT JOIN Department d ON u.DepartmentID = d.DepartmentID LEFT JOIN UserRole ur ON u.UserID = ur.UserID LEFT JOIN Role r ON ur.RoleID = r.RoleID
+            WHERE u.Email = @Email";
+
             AccountModel user = null;
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@Email", account.Email));
@@ -90,16 +88,16 @@ namespace DataAccessLayer.SkillsForce.DAL
         public async Task<bool> RegisterAsync(RegisterViewModel registerViewModel)
         {
             const string INSERT_INTO_USER_AND_ACCOUNT_REGISTER_QUERY = @"
-                                                       BEGIN TRANSACTION
-                                                       DECLARE @key INT
-                                                       INSERT INTO [dbo].[User] ([FirstName], [LastName], [Email], [NIC], [MobileNumber], [ManagerID], [DepartmentID])
-                                                       VALUES (@FirstName, @LastName, @Email, @NIC, @MobileNumber, @ManagerID, @DepartmentID)
-                                                       SELECT @key = @@IDENTITY
-                                                       INSERT INTO [dbo].[Account] ([UserID], [HashedPassword], [SaltValue]) 
-                                                       VALUES (@key, @HashedPassword, @SaltValue)
-                                                       INSERT INTO [dbo].[UserRole] ([UserID])
-                                                       VALUES (@key)
-                                                       COMMIT";
+            BEGIN TRANSACTION
+            DECLARE @key INT
+            INSERT INTO [dbo].[User] ([FirstName], [LastName], [Email], [NIC], [MobileNumber], [ManagerID], [DepartmentID])
+            VALUES (@FirstName, @LastName, @Email, @NIC, @MobileNumber, @ManagerID, @DepartmentID)
+            SELECT @key = @@IDENTITY
+            INSERT INTO [dbo].[Account] ([UserID], [HashedPassword], [SaltValue]) 
+            VALUES (@key, @HashedPassword, @SaltValue)
+            INSERT INTO [dbo].[UserRole] ([UserID])
+            VALUES (@key)
+            COMMIT";
 
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@FirstName", registerViewModel.FirstName));
@@ -116,34 +114,3 @@ namespace DataAccessLayer.SkillsForce.DAL
         }
     }
 }
-
-
-
-
-
-//public async Task<bool> IsUserAuthenticatedAsync(AccountModel account)
-//{
-//    const string AUTHENTICATE_USER_QUERY = @"SELECT a.HashedPassword, a.SaltValue FROM [User] u INNER JOIN Account a ON u.UserID = a.UserID WHERE u.Email = @Email";
-
-//    if (string.IsNullOrEmpty(account.Email) || string.IsNullOrEmpty(account.Password))
-//    {
-//        throw new ArgumentNullException("Email and Password cannot be null or empty.");
-//    }
-
-//    List<SqlParameter> parameters = new List<SqlParameter>
-//            {
-//                new SqlParameter("@Email", account.Email)
-//            };
-
-//    using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(AUTHENTICATE_USER_QUERY, parameters))
-//    {
-//        if (await reader.ReadAsync())
-//        {
-//            byte[] storedHash = (byte[])reader["HashedPassword"];
-//            byte[] storedSalt = (byte[])reader["SaltValue"];
-
-//            return PasswordHasher.VerifyPassword(account.Password, storedHash, storedSalt);
-//        }
-//    }
-//    return false;
-//}

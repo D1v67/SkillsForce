@@ -52,6 +52,14 @@ namespace DataAccessLayer.SkillsForce.DAL
             return await _dbCommand.InsertUpdateDataAsync(INSERT_USER_ACTIVITY_QUERY, parameters)>0;
         }
 
+
+        /// <summary>
+        /// Adds a user login/logout activity to the SessionHistory table asynchronously.
+        /// </summary>
+        /// <param name="userActivity">The UserActivityModel containing details of the user login/logout activity.</param>
+        /// <returns>
+        /// Returns true if the user login/logout activity is successfully added to the SessionHistory table; otherwise, false.
+        /// </returns>
         public async Task<bool> AddUserLoginActivity(UserActivityModel userActivity)
         {
             const string INSERT_LOGIN_HISTORY_QUERY = @"

@@ -16,6 +16,14 @@ namespace DataAccessLayer.SkillsForce.DAL
             _dbCommand = dbCommand;
         }
 
+        #region Add
+        public Task AddAsync(DepartmentModel department)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region Get
         public async Task<IEnumerable<DepartmentModel>> GetAllAsync()
         {
             const string GET_ALL_DEPARTMENT_QUERY = @"SELECT [DepartmentID], [DepartmentName] FROM [dbo].[Department]";
@@ -35,13 +43,9 @@ namespace DataAccessLayer.SkillsForce.DAL
             }
             return departments;
         }
+        #endregion
 
         public Task<DepartmentModel> GetByIDAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task AddAsync(DepartmentModel department)
         {
             throw new NotImplementedException();
         }
