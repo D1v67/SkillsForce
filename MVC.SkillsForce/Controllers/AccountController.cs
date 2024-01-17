@@ -77,18 +77,6 @@ namespace MVC.SkillsForce.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<JsonResult> GetDepartments()
-        {
-            IEnumerable<DepartmentModel> departments = await _departmentService.GetAllAsync();
-            return Json(departments, JsonRequestBehavior.AllowGet);
-        }
-
-        public async Task<JsonResult> GetManagers()
-        {
-            IEnumerable<UserModel> managers = await _userService.GetAllManagerAsync();
-            return Json(managers, JsonRequestBehavior.AllowGet);
-        }
-
         [AuthorizePermission(Permissions.RoleSelection)]
         public ActionResult RoleSelection()
         {
@@ -110,6 +98,17 @@ namespace MVC.SkillsForce.Controllers
             return Json(userRoles, JsonRequestBehavior.AllowGet);
         }
 
+        public async Task<JsonResult> GetDepartments()
+        {
+            IEnumerable<DepartmentModel> departments = await _departmentService.GetAllAsync();
+            return Json(departments, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<JsonResult> GetManagers()
+        {
+            IEnumerable<UserModel> managers = await _userService.GetAllManagerAsync();
+            return Json(managers, JsonRequestBehavior.AllowGet);
+        }
         private (string redirectController, string redirectAction) GetRedirectInfo(List<UserRoleModel> userRoles)
         {
             var redirectController = userRoles.Count == 1 ? "Home" : "Account";

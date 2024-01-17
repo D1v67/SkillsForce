@@ -81,7 +81,8 @@ namespace DataAccessLayer.SkillsForce.DAL
                     JOIN
                         Department UD ON U.DepartmentID = UD.DepartmentID -- User's department
                     JOIN
-                        Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department";
+                        Department TD ON T.DepartmentID = TD.DepartmentID -- Training's department
+                    AND E.IsActive = 1";
 
             List<EnrollmentViewModel> enrollments = new List<EnrollmentViewModel>();
             using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_ALL_ENROLLMENT_WITH_DETAILS_QUERY))
@@ -110,10 +111,10 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<IEnumerable<EnrollmentViewModel>> GetAllEnrollmentsWithDetailsByManagerAsync(int managerId)
         {
-            const string GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY =@"
+            const string GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY = @"
             SELECT E.EnrollmentID, U.UserID, U.FirstName, U.LastName, T.TrainingID, T.TrainingName, D.DepartmentName, E.EnrollmentDate, E.EnrollmentStatus
             FROM Enrollment E JOIN [User] U ON E.UserID = U.UserID JOIN Training T ON E.TrainingID = T.TrainingID JOIN Department D ON T.DepartmentID = D.DepartmentID
-            WHERE U.ManagerID = @ManagerID";
+            WHERE U.ManagerID = @ManagerID AND E.IsActive = 1";
 
             var parameters = new List<SqlParameter> { new SqlParameter("@ManagerID", managerId) };
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(GET_ALL_ENROLLMENT_WITH_DETAILS_BY_MANAGER_QUERY, parameters))
