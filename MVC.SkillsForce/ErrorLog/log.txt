@@ -2751,3 +2751,29 @@ Executing Automatic Selection...
 System.Collections.Generic.List`1[System.String]
 Executing Automatic Selection...
 System.Collections.Generic.List`1[System.String]
+---------------------------------------------------------
+Timestamp: 1/17/2024 11:36:00 AM
+Exception Type: Common.SkillsForce.AppLogger.Logger
+Message: Object reference not set to an instance of an object.
+Inner Exception: 
+Stack Trace:    at MVC.SkillsForce.Custom.SessionManager.SetSessionValue(String key, Object value) in C:\SkillsForce\MVC.SkillsForce\Custom\SessionManager.cs:line 42
+   at MVC.SkillsForce.Custom.SessionManager.SetUserId(Int32 userId) in C:\SkillsForce\MVC.SkillsForce\Custom\SessionManager.cs:line 23
+   at MVC.SkillsForce.Custom.SessionManager.<SetSessionVariables>d__19.MoveNext() in C:\SkillsForce\MVC.SkillsForce\Custom\SessionManager.cs:line 56
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   at MVC.SkillsForce.Controllers.AccountController.<Authenticate>d__7.MoveNext() in C:\SkillsForce\MVC.SkillsForce\Controllers\AccountController.cs:line 47
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Web.Mvc.Async.TaskAsyncActionDescriptor.EndExecute(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass8_0.<BeginInvokeAsynchronousActionMethod>b__1(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_0.<InvokeActionMethodFilterAsynchronouslyRecursive>b__0()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_2.<InvokeActionMethodFilterAsynchronouslyRecursive>b__2()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass11_2.<InvokeActionMethodFilterAsynchronouslyRecursive>b__2()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_6.<BeginInvokeAction>b__4()
+   at System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass3_1.<BeginInvokeAction>b__1(IAsyncResult asyncResult)
+"---------------------------------------------------------";

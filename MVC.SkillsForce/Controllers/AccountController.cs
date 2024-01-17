@@ -18,6 +18,7 @@ namespace MVC.SkillsForce.Controllers
         private readonly IAccountService _accountService;
         private readonly IDepartmentService _departmentService;
         private readonly IAppNotificationService _appNotificationService;
+        private readonly SessionManager _sessionManager;
 
         public AccountController(IUserService userService, IAccountService accountService, IDepartmentService departmentService, IAppNotificationService appNotificationService)
         {
@@ -25,8 +26,8 @@ namespace MVC.SkillsForce.Controllers
             _accountService = accountService;
             _departmentService = departmentService;    
             _appNotificationService = appNotificationService;
+            _sessionManager = new SessionManager( _appNotificationService);
         }
-
 
         public ActionResult Index()
         {
@@ -41,8 +42,9 @@ namespace MVC.SkillsForce.Controllers
                 if (isUserValid)
                 {
                     var userDetailsWithRoles = await _accountService.GetUserDetailsWithRolesAsync(account);
-                    await SetSessionVariables(userDetailsWithRoles);
-                    SetUserRolesInSession(userDetailsWithRoles.listOfRoles);
+                    await _sessionManager.SetSessionVariables(userDetailsWithRoles);
+                    _sessionManager.SetUserRolesInSession(userDetailsWithRoles.listOfRoles);
+                    await _sessionManager.SetSessionVariables(userDetailsWithRoles);
                     var (redirectController, redirectAction) = GetRedirectInfo(userDetailsWithRoles.listOfRoles);
                     return Json(new { result = isUserValid, url = Url.Action(redirectAction, redirectController) });
                 }
@@ -90,34 +92,22 @@ namespace MVC.SkillsForce.Controllers
         [AuthorizePermission(Permissions.RoleSelection)]
         public ActionResult RoleSelection()
         {
-            List<string> userRoles = (List<string>)Session["UserRoles"];
+            List<string> userRoles = _sessionManager.GetUserRoles();
             return View(userRoles);
         }
 
         [HttpPost]
         public ActionResult SetRole(string selectedRole)
         {
-            Session["CurrentRole"] = selectedRole;
+            _sessionManager.SetCurrentRole(selectedRole);
             return RedirectToAction("Index", "Home");
         }
 
-        private async  Task SetSessionVariables(AccountModel userDetailsWithRoles)
+        [HttpGet]
+        public JsonResult GetRoles()
         {
-            //HttpContext.Response.Cache.AppendCacheExtension("no-cache=\"Set-Cookie\"");
-            Session["UserID"] = userDetailsWithRoles.UserID;
-            Session["Email"] = userDetailsWithRoles.Email;
-            Session["FirstName"] = userDetailsWithRoles.FirstName;
-            Session["LastName"] = userDetailsWithRoles.LastName;
-            Session["CurrentRole"] = userDetailsWithRoles.listOfRoles.Count == 1 ? userDetailsWithRoles.listOfRoles[0].RoleName : null;
-
-            int userId = userDetailsWithRoles.UserID;
-            int unreadNotificationCount = await _appNotificationService.GetUnreadNotificationCountAsync(userId);
-            Session["UnreadNotificationCount"] = unreadNotificationCount;
-        }
-
-        private void SetUserRolesInSession(List<UserRoleModel> userRoles)
-        {
-            Session["UserRoles"] = userRoles.Select(r => r.RoleName).ToList();
+            List<string> userRoles = _sessionManager.GetUserRoles();
+            return Json(userRoles, JsonRequestBehavior.AllowGet);
         }
 
         private (string redirectController, string redirectAction) GetRedirectInfo(List<UserRoleModel> userRoles)
@@ -140,11 +130,5 @@ namespace MVC.SkillsForce.Controllers
             return ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
         }
 
-        [HttpGet]
-        public JsonResult GetRoles()
-        {
-            List<string> userRoles = (List<string>)Session["UserRoles"];
-            return Json(userRoles, JsonRequestBehavior.AllowGet);
-        }
     }
 }

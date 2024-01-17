@@ -335,6 +335,7 @@
     <Compile Include="Custom\AuthorizePermissionAttribute.cs" />
     <Compile Include="Custom\LoginActivityFilter.cs" />
     <Compile Include="Custom\LogoutActivityFilter.cs" />
+    <Compile Include="Custom\SessionManager.cs" />
     <Compile Include="Custom\SessionTimeoutAttribute.cs" />
     <Compile Include="Custom\UserActivityFilter.cs" />
     <Compile Include="Custom\UserSessionAttribute.cs" />
