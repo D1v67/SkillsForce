@@ -246,9 +246,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             enrollmentsMessage.style.display = 'block';
 
             data.forEach(function (item) {
-                //let currentDate = new Date().toJSON().slice(0, 10);
-                //var registrationDeadlineDate = new Date(parseInt(item.TrainingRegistrationDeadline.substr(6)));
-                //var isEnrollmentOpen = registrationDeadlineDate >= new Date();
+
 
                 var col = document.createElement('div');
                 col.className = 'col-md-4 mb-3';
@@ -296,19 +294,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
             return months[monthNumber - 1];
         }
-        //// format date in 'YYYY-MM-DD'
-        //function formatDate(date) {
-        //    var year = date.getFullYear();
-        //    var month = ('0' + (date.getMonth() + 1)).slice(-2);
-        //    var day = ('0' + date.getDate()).slice(-2);
-        //    return year + '-' + month + '-' + day;
-        //}//// format date in 'YYYY-MM-DD'
-        //function formatDate(date) {
-        //    var year = date.getFullYear();
-        //    var month = ('0' + (date.getMonth() + 1)).slice(-2);
-        //    var day = ('0' + date.getDate()).slice(-2);
-        //    return year + '-' + month + '-' + day;
-        //}
 
     });
 </script>

@@ -92,13 +92,7 @@
             </table>
         </div>
     </div>
-
-
-
 </div>
-
-
-
 
 
 
@@ -123,17 +117,8 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
 
-
-
     $(document).ready(function () {
 
-        //toastr.options = {
-        //    "positionClass": "toast-top-right",
-        //    "hideMethod": false, // Prevent fading out
-        //    "timeOut": 2000 // Set the duration for how long the toastr stays visible
-        //    // Add other options as needed
-
-        //};
          var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
         $('#automaticSelectionBtn').click(function () {
@@ -145,7 +130,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                     if (data.success) {
                         toastr.success('Automatic processing successful');
 
-
                         if (data.messages && data.messages.length > 0) {
                             data.messages.forEach(message => {
                                 toastr.success(message);
@@ -156,9 +140,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                             window.location = data.url;
                         }, 2000)
 
-                        //window.location = data.url;
                     } else {
-                        // toastr.error('Automatic processing failed');
 
                         if (data.errors && data.errors.length > 0) {
                             data.errors.forEach(error => {
@@ -184,7 +166,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         // Initially hide the export button
         var isFilterButtonClicked = false;
 
-
         $('.export-btn').hide();
 
         var selectedTrainingName;
@@ -204,8 +185,8 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
         $('#enrollmentTable').DataTable({
             "ajax": {
-                "url": "/Enrollment/GetAllEnrollmentsData", // Update this URL to match your controller's action
-                "type": "POST",  // Corrected to POST
+                "url": "/Enrollment/GetAllEnrollmentsData", 
+                "type": "POST",  
                 "datatype": "json",
                 "dataSrc": function (data) {
                     console.log('Data retrieved successfully:', data);
@@ -229,10 +210,10 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                 { "data": "UserID" },
                 { "data": "FirstName" },
                 { "data": "LastName" },
-                { "data": "TrainingID" },  // Added column for Training ID
+                { "data": "TrainingID" },  
                 { "data": "TrainingName" },
                 { "data": "DepartmentName" },
-                { "data": "TrainingDepartmentName" },  // Added column for Training Department
+                { "data": "TrainingDepartmentName" },  
                 {
                     "data": "EnrollmentDate",
                     "render": function (data) {
@@ -262,7 +243,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         function formatDateTime(timestamp) {
 
             if (!timestamp) {
-                return '';  // Return an empty string or handle accordingly
+                return '';  
             }
             // Extracting only unix timestamp
             var match = timestamp.match(/\d+/);
@@ -278,7 +259,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
         function populateStatusDropdown() {
             $.ajax({
-                url: '/Enrollment/GetEnrollmentStatusOptions', // Update the URL with your actual controller method
+                url: '/Enrollment/GetEnrollmentStatusOptions', 
                 type: 'GET',
                 success: function (data) {
                     var dropdown = $('#statusDropdown');
@@ -288,7 +269,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                     });
                 },
                 error: function (error) {
-                    //toastr.error('Failed to load departments. Please try again.');
                     console.log('Error in Status dropdown')
                 }
             });
@@ -315,11 +295,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                             .attr("value", department.TrainingID)
                             .text(department.TrainingName);
 
-                        // Set "selected" for the first option
-                        //if (index === 0) {
-                        //    option.attr("selected", "selected");
-                        //}
-
                         departmentDropdown.append(option);
                     });
                 },
@@ -327,7 +302,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                     //toastr.error('Failed to load departments. Please try again.');
                 }
             });
-
         }
 
         // Function to validate if a department is selected
@@ -349,25 +323,11 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         }
 
 
-
-
-
-
-        //$('#statusDropdown').on('change', function () {
-        //    var selectedStatus = $(this).val();
-        //    if (selectedStatus === 'Selected') {
-        //        $('.export-btn').show();
-        //    } else {
-        //        $('.export-btn').hide();
-        //    }
-        //});
-
-
         // Function to perform filter based on selected options
         function filterEnrollments() {
 
             if (!isDepartmentSelected()) {
-                return; // Stop further execution if the department is not selected
+                return; 
 
             }
             var selectedTraining = $('#training').val();
@@ -375,10 +335,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
             console.log(selectedTraining)
             console.log(selectedStatus)
-
-            //if (selectedStatus == 'Selected') {
-            //    $('.export-btn').show();
-            //}
 
             var selectedStatus = $('#statusDropdown').val();
 
@@ -389,7 +345,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             }
 
 
-
             $('#enrollmentTable').attr('data-selected-training', selectedTraining);
 
             selectedTrainingName = $('#training option:selected').text();
@@ -397,14 +352,13 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             console.log('training name  ' + selectedTrainingName)
 
             $.ajax({
-                url: '/Enrollment/FilterEnrollments', // Update the URL with your actual controller method
+                url: '/Enrollment/FilterEnrollments', 
                 type: 'POST',
                 data: { trainingId: selectedTraining, status: selectedStatus },
                 success: function (data) {
 
                     console.log(data)
                     updateDataTable(data);
-                    // Save selected training ID as a data attribute
 
 
                     console.log('in filter succes ' + selectedTraining)
@@ -412,12 +366,9 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                 error: function (xhr, textStatus, errorThrown) {
                     console.error('Filter error:', textStatus, errorThrown);
 
-                    // Handle the error here, you can display a message or perform any other action
                     if (xhr.status === 400) {
-                        // Bad Request - Handle validation errors
                         console.log('Validation errors:', xhr.responseJSON);
                     } else {
-                        // Handle other errors
                         console.log('Unexpected error. Please try again later.');
                     }
                 }
@@ -440,16 +391,11 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                 success: function (data) {
                     console.log('All enrollments:', data);
 
-                    // Update the DataTable with all enrollments
                     updateDataTable(data);
-
-                    //$('.export-btn').prop('disabled', false);
+;
                 },
                 error: function (error) {
-                    // Handle errors if necessary
                     console.error('Error:', error.responseText);
-
-                    //$('.export-btn').prop('disabled', false);
                 }
             });
         }
@@ -459,9 +405,8 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
             var selectedTraining = $('#enrollmentTable').attr('data-selected-training');
 
             console.log('in expor tfunc ' + selectedTraining)
-            // Check if the selectedTraining is -1 (set when "View All" is selected)
+
             if (selectedTraining === null) {
-                // Handle the case where "View All" is selected
                 console.log('View All is selected. Do appropriate handling.');
                 return;
             }
@@ -474,10 +419,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                 return;
             }
 
-
-            //var currentUrl = window.location.href
-            //var url = new URL(currentUrl)
-            // var trainingId = url.searchParams.get("trainingId")
             fetch(`/ExportData/ExportSelectedEmployeeByTrainingCSV?trainingId=${selectedTraining}&trainingName=${selectedTrainingName}`, {
                 method: 'POST'
             })
@@ -500,87 +441,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                     console.error(error)
                 })
 
-
-            // Disable the export button to prevent multiple clicks
-            //$('.export-btn').prop('disabled', true);
-
-            //$.ajax({
-            //    url: '/ExportData/ExportSelectedEmployeeByTrainingCSV', // Update the URL with your actual controller method
-            //    type: 'POST',
-            //    data: { trainingId: selectedTraining },
-            //    success: function () {
-            //        console.log('Export successful.');
-            //        // You can handle success actions here if needed
-
-            //        //$('.export-btn').prop('disabled', false);
-            //    },
-            //    error: function (xhr, textStatus, errorThrown) {
-            //        console.error('Export error:', textStatus, errorThrown);
-
-            //        // Handle the error here, you can display a message or perform any other action
-            //        if (xhr.status === 400) {
-            //            // Bad Request - Handle validation errors
-            //            console.log('Validation errors:', xhr.responseJSON);
-            //        } else {
-            //            // Handle other errors
-            //            console.log('Unexpected error. Please try again later.');
-            //        }
-
-            //        //$('.export-btn').prop('disabled', false);
-            //    }
-            //});
-
-
-            //function downloadExcelFile() {
-            //    var currentUrl = window.location.href
-            //    var url = new URL(currentUrl)
-            //    var trainingId = url.searchParams.get("trainingId")
-            //    fetch(`/ExportData/DownloadSelectedUsers?ExportSelectedEmployeeByTrainingCSV=${trainingId}`, {
-            //        method: 'POST'
-            //    })
-            //        .then(response => {
-            //            var fileName = response.headers.get('content-disposition').split('filename=')[1]
-
-            //            return response.blob().then(blob => {
-            //                //const downloadLink = document.createElement('a')
-            //                //downloadLink.href = URL.createObjectURL(blob)
-
-            //                //downloadLink.download = fileName || 'ExportedUsers'
-
-            //                //document.body.appendChild(downloadLink)
-            //                //downloadLink.click()
-            //                //document.body.removeChild(downloadLink)
-            //            })
-            //        })
-            //        .catch((error) => {
-            //            console.error(error)
-            //        })
-            //}
-
-
-            //downloadExcelFile()
         }
 
     });
-</script>
-<script>
-        // Function to populate training dropdown
-
-        // Function to populate status dropdown
-
-        // Document ready function
-        //$(document).ready(function () {
-
-        //    //populateStatusDropdown();
-
-        //    loadTrainings();
-
-        //    $('#filterButton').on('click', function () {
-        //        filterEnrollments();
-        //    });
-
-        //    $('#viewAllButton').on('click', function () {
-        //        viewAllEnrollments();
-        //    });
-        //});
 </script>

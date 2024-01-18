@@ -10,17 +10,17 @@
     }
 
     .unread-notification {
-        background-color: #e6f7ff; /* Light blue for unread notifications */
+        background-color: #e6f7ff; 
     }
 
     .read-notification {
-        background-color: #f2f2f2; /* Light gray for read notifications */
+        background-color: #f2f2f2; 
 
     }
 
     .notification:hover {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        background-color: #ffd583; /* Hover effect color */
+        background-color: #ffd583; 
     }
 
     .notification h5 {
@@ -49,18 +49,18 @@
 
     .sender-text {
         font-weight: bold;
-        font-size: 16px; /* Adjust the size as needed */
+        font-size: 16px; 
     }
 
     .subject-text {
         margin-left: 60px;
         font-weight: bold;
-        font-size: 14px; /* Adjust the size as needed */
+        font-size: 14px; 
     }
 
     .received-text {
         float: right;
-        font-size: 12px; /* Adjust the size as needed */
+        font-size: 12px; 
 
 
     }
@@ -95,18 +95,16 @@
     </div>
 
 
-
-
     <div class="container mt-5">
         <h2>Notifications</h2>
 
         <div id="notificationList">
-            <!-- Notifications will be dynamically added here -->
+            <!-- Notifications will be dynamically added -->
         </div>
     </div>
 
 
-    <!-- Bootstrap Modal for displaying full notification message -->
+    <!-- Bootstrap notification message -->
     <div class="modal fade " id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -216,7 +214,6 @@
                 }
             });
         }
-
 
         // Function to truncate text to a specified length
         function truncateText(text, maxLength) {

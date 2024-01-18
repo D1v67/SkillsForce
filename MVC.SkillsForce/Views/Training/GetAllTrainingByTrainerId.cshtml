@@ -62,16 +62,13 @@
         $(document).ready(function () {
             var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
-            // Call the controller method using AJAX
             $.ajax({
                 type: "POST",
                 url: "/Training/GetAllTrainingByTrainerIdData",
-                data: { trainerId: userId /* provide the trainerId here */ },
+                data: { trainerId: userId  },
                 dataType: "json",
                 success: function (data) {
                     console.log(data);
-
-                    // Populate the card deck with the received data
                     var cardContainer = $("#trainingCardContainer");
                     cardContainer.empty(); // Clear existing cards
 
@@ -79,7 +76,6 @@
                         var card = $("<div class='card'>");
                         card.append("<div class='card-body'><h5 class='card-title'>" + training.TrainingName + "</h5></div>");
 
-                        // Additional card content based on your TrainingViewModel properties
                         card.append("<div class='card-body'><p class='card-text'>" + training.TrainingDescription + "</p></div>");
 
                         console.log('over' + training.IsSelectionOver)
@@ -93,7 +89,6 @@
                         cardContainer.append(card);
                     });
 
-                    // Add a click event handler for the export buttons
                     $(".export-btn").click(function () {
                         var trainingId = $(this).data("training-id");
                         var trainingName = $(this).data("training-name");

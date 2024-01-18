@@ -332,19 +332,6 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
             return months[monthNumber - 1];
         }
-        //// format date in 'YYYY-MM-DD'
-        //function formatDate(date) {
-        //    var year = date.getFullYear();
-        //    var month = ('0' + (date.getMonth() + 1)).slice(-2);
-        //    var day = ('0' + date.getDate()).slice(-2);
-        //    return year + '-' + month + '-' + day;
-        //}//// format date in 'YYYY-MM-DD'
-        //function formatDate(date) {
-        //    var year = date.getFullYear();
-        //    var month = ('0' + (date.getMonth() + 1)).slice(-2);
-        //    var day = ('0' + date.getDate()).slice(-2);
-        //    return year + '-' + month + '-' + day;
-        //}
 
     });
 </script>
@@ -453,8 +440,7 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
                var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
                console.log(userId)
-              // $("#trainingInfo").text("Enroll in Training: " + trainingId);
-               //$("#userIdInfo").text("User : " + userId);
+
 
                    // Set the current enrollment ID in the hidden input field
                 $("#currentEnrollmentId").val(enrollmentId);
