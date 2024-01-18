@@ -67,16 +67,18 @@ namespace BusinessLayer.SkillsForce.Services
             await _enrollmentDAL.RejectEnrollmentAsync(enrollmentId, rejectionReason, declinedByUserId);
         }
 
-        public async Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int trainingID)
+        public async Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int? userId, int trainingID)
         {
-            return await _enrollmentDAL.ConfirmEnrollmentsByTrainingIDAsync(trainingID);
+            return await _enrollmentDAL.ConfirmEnrollmentsByTrainingIDAsync(userId, trainingID);
         }
 
 
-        public async Task<ExecutionResult> RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob)
+        public async Task<ExecutionResult> RunAutomaticSelectionOfApprovedEnrollmentsAsync(int? userId, bool isCronjob)
         {
             DateTime executionStartTime = DateTime.Now;
-            _logger.Log($"Executing Automatic Selection at {executionStartTime}...");
+            string userLogInfo = userId.HasValue ? $" by user ID {userId}" : "";
+
+            _logger.Log($"Executing Automatic Selection{userLogInfo} at {executionStartTime}...");
 
             var Errors = new List<string>();
             var SuccessMessages = new List<string>();
@@ -95,7 +97,7 @@ namespace BusinessLayer.SkillsForce.Services
 
             foreach (var training in trainings)
             {
-                var enrollmentIds = await _enrollmentDAL.ConfirmEnrollmentsByTrainingIDAsync(training.TrainingID);
+                var enrollmentIds = await _enrollmentDAL.ConfirmEnrollmentsByTrainingIDAsync(userId, training.TrainingID);
 
                 if (enrollmentIds != null && enrollmentIds.Any())
                 {

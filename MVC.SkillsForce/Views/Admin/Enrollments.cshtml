@@ -134,12 +134,13 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
         //    // Add other options as needed
 
         //};
-
+         var userId = parseInt("@HttpContext.Current.Session["UserID"]");
 
         $('#automaticSelectionBtn').click(function () {
             $.ajax({
                 url: '/Enrollment/RunAutomaticSelectionOfApprovedEnrollments',
                 type: 'POST',
+                data: { userId: userId },
                 success: function (data) {
                     if (data.success) {
                         toastr.success('Automatic processing successful');

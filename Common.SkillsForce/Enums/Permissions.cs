@@ -14,6 +14,10 @@ namespace Common.SkillsForce.Enums
         GetTraining,
         ViewTraining,
 
+        ViewTrainingDetails,
+
+        ViewConfirmedEnrollments,
+
         GetEnrollment,
         ApproveEnrollment,
         RejectEnrollment,
@@ -49,11 +53,12 @@ namespace Common.SkillsForce.Enums
         ViewAttachment,
         FileManagement,
 
-        ViewConfirmedEnrollments,
+
 
         ViewNotification,
         GetAllNotification,
 
-        ViewTrainingDetails
+        ViewSelectedEmployees,
+
     }
 }

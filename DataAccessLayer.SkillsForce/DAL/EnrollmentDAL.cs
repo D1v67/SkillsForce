@@ -812,7 +812,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             };
             await _dbCommand.InsertUpdateDataAsync(UPDATE_STATUS_REJECTED_QUERY, parameters);
         }
-        public async Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int trainingID)
+        public async Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int? userId, int trainingID)
         {
             const string CONFIRM_ENROLLMENTS_BY_TRAINING_ID_QUERY = @"
             BEGIN TRANSACTION;
@@ -830,6 +830,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                        U.LastName,
                        E.IsSelected,
                        E.SelectedTimestamp,
+                       E.SelectedByUserID,
                        ROW_NUMBER() OVER (ORDER BY IIF(U.DepartmentID = (SELECT T.DepartmentID FROM Training T WHERE T.TrainingID = E.TrainingID), 0, 1), E.EnrollmentDate) AS RowNum
                    FROM
                        Enrollment E
@@ -844,6 +845,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                    OrderedEnrollments
                SET
                    IsSelected = 1,
+                   SelectedByUserID = ISNULL(@UserID, NULL),
                    SelectedTimestamp = GETDATE()
                OUTPUT
                    INSERTED.EnrollmentID
@@ -857,6 +859,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                     Training
                 SET
                     IsSelectionOver = 1,
+                    SelectedByUserID = ISNULL(@UserID, NULL),
                     LastSelectionTimeStamp = GETDATE()
                 WHERE
                     TrainingID = @TrainingID;
@@ -868,6 +871,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             List<SqlParameter> parameters = new List<SqlParameter>
             {
                 new SqlParameter("@TrainingID", trainingID),
+                new SqlParameter("@UserID", userId.HasValue ? userId : (object)DBNull.Value),
             };
 
             string outputColumnName = "EnrollmentID";

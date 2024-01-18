@@ -43,14 +43,14 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments()
+        public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments(int userId)
         {
-            var result = await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(false);
+            var result = await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(userId, false);
 
             return Json(new
             {
                 success = result.IsSuccessful,
-                url = result.IsSuccessful ? Url.Action("GetAllApprovedEnrollments", "Enrollment") : null,
+                url = result.IsSuccessful ? Url.Action("Enrollments", "Admin") : null,
                 messages = result.IsSuccessful ? result.SuccessMessages : null,
                 errors = result.IsSuccessful ? null : result.Errors
             });
