@@ -518,8 +518,11 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<bool> IsTrainingNameAlreadyExistsAsync(string trainingName)
         {
-            const string IS_TRAINING_NAME_ALREADY_EXIST_QUERY = "SELECT 1 FROM [Training] WHERE TrainingName = @TrainingName";
+            const string IS_TRAINING_NAME_ALREADY_EXIST_QUERY = @"SELECT 1 FROM [Training]
+            WHERE UPPER(REPLACE(TRIM(TrainingName), ' ', '')) = UPPER(REPLACE(TRIM(@TrainingName), ' ', ''))";
+
             var parameters = new List<SqlParameter> { new SqlParameter("@TrainingName", trainingName) };
+
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(IS_TRAINING_NAME_ALREADY_EXIST_QUERY, parameters))
             {
                 return await reader.ReadAsync();
@@ -528,8 +531,11 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<bool> IsTrainingNameAlreadyExistsOnUpdateAsync(int trainingId, string newTrainingName)
         {
-            const string IS_TRAINING_NAME_ALREADY_EXIST_QUERY = " SELECT 1 FROM [dbo].[Training] WHERE [TrainingName] = @TrainingName AND [TrainingID] != @TrainingID";
+            const string IS_TRAINING_NAME_ALREADY_EXIST_QUERY = @" SELECT 1 FROM [dbo].[Training]
+            WHERE UPPER(REPLACE(TRIM([TrainingName]), ' ', '')) = UPPER(REPLACE(TRIM(@TrainingName), ' ', '')) AND [TrainingID] != @TrainingID";
+
             var parameters = new List<SqlParameter> { new SqlParameter("@TrainingName", newTrainingName), new SqlParameter("@TrainingID", trainingId) };
+
             using (SqlDataReader reader = await _dbCommand.GetDataWithConditionsReaderAsync(IS_TRAINING_NAME_ALREADY_EXIST_QUERY, parameters))
             {
                 return await reader.ReadAsync();

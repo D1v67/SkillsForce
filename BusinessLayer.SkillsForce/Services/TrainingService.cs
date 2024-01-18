@@ -5,6 +5,7 @@ using Common.SkillsForce.ViewModel;
 using DataAccessLayer.SkillsForce.Interface;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace BusinessLayer.SkillsForce.Services
             var validationErrors = new List<string>();
 
             // Validate Training Name
-            if (string.IsNullOrWhiteSpace(model.TrainingName) || !Regex.IsMatch(model.TrainingName, @"^[A-Z][a-z]*( [A-Z][a-z]*)*$"))
+            if (string.IsNullOrWhiteSpace(model.TrainingName) || !Regex.IsMatch(model.TrainingName, @"^[a-zA-Z0-9\s\-,.&()]+$"))
             {
                 validationErrors.Add("Training Name is required and must be in a valid format.");
             }
@@ -38,11 +39,11 @@ namespace BusinessLayer.SkillsForce.Services
                 validationErrors.Add("Training Name is already in use.");
             }
 
-            // Validate Start Date and Registration Deadline
-            if (!IsValidDateRange(model.StartDate, model.RegistrationDeadline))
-            {
-                validationErrors.Add("Start date must be greater than Registration Deadline.");
-            }
+            //// Validate Start Date and Registration Deadline
+            //if (!IsValidDateRange(model.StartDate, model.RegistrationDeadline))
+            //{
+            //    validationErrors.Add("Start date must be greater than Registration Deadline.");
+            //}
 
             // Validate Capacity
             if (!Regex.IsMatch(model.Capacity.ToString(), @"^[1-9]\d*$"))
@@ -154,11 +155,11 @@ namespace BusinessLayer.SkillsForce.Services
                 validationErrors.Add("Training Name is already in use.");
             }
 
-            // Validate Start Date and Registration Deadline
-            if (!IsValidDateRange(model.StartDate, model.RegistrationDeadline))
-            {
-                validationErrors.Add("Start date must be greater than Registration Deadline.");
-            }
+            //// Validate Start Date and Registration Deadline
+            //if (!IsValidDateRange(model.StartDate, model.RegistrationDeadline))
+            //{
+            //    validationErrors.Add("Start date must be greater than Registration Deadline.");
+            //}
 
             // Validate Capacity
             if (!Regex.IsMatch(model.Capacity.ToString(), @"^[1-9]\d*$"))
@@ -198,14 +199,24 @@ namespace BusinessLayer.SkillsForce.Services
             }
         }
 
-        // Helper method to validate date range
+        // Helper method to validate date range with string representations
         private bool IsValidDateRange(string startDate, string registrationDeadline)
         {
-            if (DateTime.TryParse(startDate, out var start) && DateTime.TryParse(registrationDeadline, out var deadline))
+            if (TryParseDate(startDate, out var start) && TryParseDate(registrationDeadline, out var deadline))
             {
                 return start > deadline && start > DateTime.Now && deadline > DateTime.Now;
             }
             return false;
+        }
+
+        // Helper method to try parse date and handle the parsing logic
+        private bool TryParseDate(string dateStr, out DateTime date)
+        {
+            // Specify the date format used in your strings
+            CultureInfo provider = CultureInfo.InvariantCulture;
+            string format = "MM/dd/yy";
+
+            return DateTime.TryParseExact(dateStr, format, provider, DateTimeStyles.None, out date);
         }
 
         public async Task<bool> IsTrainingHaveEnrollment(int trainingId)

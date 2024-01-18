@@ -209,7 +209,7 @@
 
         // Validate Training Name on blur
         $('#TrainingName').blur(function () {
-            validateFieldOnBlur($(this), /^[A-Z][a-z]*( [A-Z][a-z]*)*$/);
+            validateFieldOnBlur($(this), /^[a-zA-Z0-9\s\-,.&()]+$/);
         });
 
         // Validate Capacity on blur
