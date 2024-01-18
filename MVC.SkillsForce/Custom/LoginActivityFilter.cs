@@ -1,13 +1,8 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
 using Common.SkillsForce.Entity;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -34,9 +29,9 @@ namespace MVC.SkillsForce.Custom
 
                 if (match.Success)
                 {
-                    // Extracted value from the 'result' part
+ 
                     var resultValue = match.Groups[1].Value;
-                    // Check if it's equal to "True" (case-insensitive)
+                    // Check if it's equal to "True" 
                     if (bool.TryParse(resultValue, out var isLoginSuccessful) && isLoginSuccessful)
                     {
                         Debug.WriteLine("Login Successu");

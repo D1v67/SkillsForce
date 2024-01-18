@@ -11,7 +11,6 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Custom
 {
-    //[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class UserActivityFilter : ActionFilterAttribute
     {
         private IUserActivityService _userActivityService = DependencyResolver.Current.GetService<IUserActivityService>();

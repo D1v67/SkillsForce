@@ -144,7 +144,7 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         #endregion
 
-        #region Helper methods for Constructing Email
+        #region Helper methods for Constructing Notification message
         // Helper method to get relevant user ID based on notification type
         private int GetRelevantUserId(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {

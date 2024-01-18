@@ -408,8 +408,8 @@ namespace DataAccessLayer.SkillsForce.DAL
 
         public async Task<IEnumerable<TrainingModel>> GetAllTrainingByTrainerIDAsync(int id)
         {
-            const string GET_ENROLLED_TRAININGS_QUERY = @"SELECT T.TrainingID, T.TrainingName, T.TrainingDescription, T.RegistrationDeadline, T.StartDate, T.Capacity
-            FROM Training T WHERE TrainerID = @TrainerID";
+            const string GET_ENROLLED_TRAININGS_QUERY = @"SELECT T.TrainingID, T.TrainingName, T.TrainingDescription, T.RegistrationDeadline, T.StartDate, T.Capacity, T.IsSelectionOver
+            FROM Training T WHERE TrainerID = @TrainerID AND IsActive = 1";
 
             List<TrainingModel> trainings = new List<TrainingModel>();
             var parameters = new List<SqlParameter> { new SqlParameter("@TrainerID", id) };
@@ -426,6 +426,7 @@ namespace DataAccessLayer.SkillsForce.DAL
                         RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
                         StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
                         Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+                        IsSelectionOver = reader.GetBoolean(reader.GetOrdinal("IsSelectionOver")),
                     };
 
                     trainings.Add(training);

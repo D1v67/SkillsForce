@@ -22,13 +22,8 @@ namespace DataAccessLayer.SkillsForce.Interface
         Task<bool> IsTrainingNameAlreadyExistsAsync(string trainingName);
         Task<TrainingViewModel> GetTrainingWithPrerequisitesAsync(int trainingId);
         Task<bool> IsTrainingNameAlreadyExistsOnUpdateAsync(int trainingId, string newTrainingName);
-
-
         bool Delete(int trainingId);
-
         Task<bool> IsTrainingHaveEnrollment(int trainingId);
-
         Task<IEnumerable<TrainingModel>> GetAllTrainingByTrainerIDAsync(int id);
-
     }
 }

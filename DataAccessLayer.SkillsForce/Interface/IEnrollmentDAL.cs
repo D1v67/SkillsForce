@@ -18,14 +18,10 @@ namespace DataAccessLayer.SkillsForce.Interface
         Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredEnrollmentsWithDetailsAsync(int trainingId, string statusFilter);
         Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredConfirmedEnrollmentsWithDetailsAsync(int trainingId);
         Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsAsync(int userId);
-
         Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsWithDetailsAsync();
-
         Task<IEnumerable<EnrollmentViewModel>> GetAllDeclinedEnrollmentsByUserIDAsync(int userId);
         Task<int> ReEnrollAddAsync(EnrollmentViewModel enrollment);
-
         Task<IEnumerable<EnrollmentViewModel>> GetAllPendingEnrollmentsAsync(int userId);
-
         Task DeleteEnrollmentAsync(int enrollmentId);
     }
 }

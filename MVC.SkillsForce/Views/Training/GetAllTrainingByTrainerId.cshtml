@@ -81,9 +81,14 @@
 
                         // Additional card content based on your TrainingViewModel properties
                         card.append("<div class='card-body'><p class='card-text'>" + training.TrainingDescription + "</p></div>");
-     
-                        
-                        card.append("<div class='card-body'><button class='export-btn btn btn-primary' data-training-id='" + training.TrainingID + "' data-training-name='" + training.TrainingName + "'>Export Selected Employees</button></div>");
+
+                        console.log('over' + training.IsSelectionOver)
+                        // Check if IsSelectionOver is 0, and disable the export button accordingly
+                        if (training.IsSelectionOver == false) {
+                            card.append("<div class='card-body'><button class='export-btn btn btn-primary' data-training-id='" + training.TrainingID + "' data-training-name='" + training.TrainingName + "' disabled >Export Selected Employees : Selection Not over</button></div>");
+                        } else {
+                            card.append("<div class='card-body'><button class='export-btn btn btn-primary' data-training-id='" + training.TrainingID + "' data-training-name='" + training.TrainingName + "'>Export Selected Employees</button></div>");
+                        }
           
                         cardContainer.append(card);
                     });
