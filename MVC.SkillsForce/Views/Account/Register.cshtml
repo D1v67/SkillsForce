@@ -159,7 +159,6 @@
 
             loadDepartments();
 
-            //console.log('here1');
 
             loadManagers();
 
@@ -184,7 +183,7 @@
                 }
             }
 
-            //console.log('heremanagers');
+
 
             $("#registrationForm").on("submit", function (event) {
 
@@ -205,33 +204,12 @@
                     $('#registrationForm .is-invalid').each(function () {
                         var fieldName = $(this).siblings('label').text().trim();
                         //toastr.error("Invalid input for " + fieldName + ". Please check again.");
-
-                        //$(this).siblings('.help-block').show();
-                        
+                        //$(this).siblings('.help-block').show();            
                     });
                     return;
                 }
 
 
-                    //$('#Password, #ConfirmPassword').removeClass('is-valid is-invalid');
-
-                    //if (password === '') {
-                    //    $('#Password').addClass('is-invalid');
-                    //}
-
-                    //if (confirmPassword === '') {
-                    //    $('#ConfirmPassword').addClass('is-invalid');
-                    //}
-
-                    //if (password !== confirmPassword) {
-                    //    $('#passwordMismatchError').text('Passwords do not match.');
-                    //    $('#Password, #ConfirmPassword').addClass('is-invalid');
-                    //    toastr.error("Passwords do not match.");
-                    //    return;
-                    //} else {
-                    //    $('#passwordMismatchError').text('');
-                    //    $('#Password, #ConfirmPassword').removeClass('is-valid');
-                    //}
 
                     var selectedDepartmentID = $(this).val();
                     var formData = {
@@ -279,12 +257,6 @@
                         error: function (error) {
                             console.log('in error');
                             console.error("Error submitting form:", error);
-
-                            //if (error.responseJSON && error.responseJSON.errors) {
-                            //    //var errors = error.responseJSON.errors;
-                            //    //handleValidationErrors(errors);
-                            //    console.log('errors found');
-                            //}
                         }
                     });
                 //}

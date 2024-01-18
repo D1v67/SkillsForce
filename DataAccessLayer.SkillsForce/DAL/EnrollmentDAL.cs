@@ -904,6 +904,7 @@ namespace DataAccessLayer.SkillsForce.DAL
             int generatedEnrollmentId = await _dbCommand.InsertDataAndReturnIdentityAsync(RE_ENROLL_ENROLLMENT_QUERY, parameters);
             return generatedEnrollmentId;
         }
+
         /// <summary>
         /// Soft Delete is performed by setting IsActive to 0. 
         /// </summary>

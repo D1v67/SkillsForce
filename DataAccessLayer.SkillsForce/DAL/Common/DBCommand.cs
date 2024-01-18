@@ -39,6 +39,12 @@ namespace DataAccessLayer.SkillsForce.DAL
             return await cmd.ExecuteReaderAsync(CommandBehavior.CloseConnection);
         }
 
+        /// <summary>
+        /// Executes an asynchronous non-query (e.g., INSERT, UPDATE) and returns the affected row count.
+        /// </summary>
+        /// <param name="query">SQL query to execute.</param>
+        /// <param name="parameters">List of SqlParameter objects.</param>
+        /// <returns>Asynchronously obtained integer representing affected rows.</returns>
         public async Task<int> InsertUpdateDataAsync(string query, List<SqlParameter> parameters)
         {
             int affectedRows = 0;
@@ -63,6 +69,13 @@ namespace DataAccessLayer.SkillsForce.DAL
             return affectedRows;
         }
 
+        /// <summary>
+        /// Executes an asynchronous query and returns a list of integers from a specified output column.
+        /// </summary>
+        /// <param name="query">SQL query to execute.</param>
+        /// <param name="parameters">List of SqlParameter objects.</param>
+        /// <param name="outputColumnName">Name of the output column.</param>
+        /// <returns>Asynchronously obtained list of integers.</returns>
         public async Task<List<int>> ExecuteQueryWithOutputAsync(string query, List<SqlParameter> parameters, string outputColumnName)
         {
             List<int> affectedIds = new List<int>();
@@ -91,6 +104,12 @@ namespace DataAccessLayer.SkillsForce.DAL
             return affectedIds;
         }
 
+        /// <summary>
+        /// Executes an asynchronous query to insert data and returns the generated identity value.
+        /// </summary>
+        /// <param name="query">SQL query to execute (including SELECT SCOPE_IDENTITY()).</param>
+        /// <param name="parameters">List of SqlParameter objects.</param>
+        /// <returns>Asynchronously obtained integer representing the generated identity value.</returns>
         public async Task<int> InsertDataAndReturnIdentityAsync(string query, List<SqlParameter> parameters)
         {
             int generatedIdentity = 0;

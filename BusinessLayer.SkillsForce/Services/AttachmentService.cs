@@ -14,26 +14,15 @@ namespace BusinessLayer.SkillsForce.Services
         private readonly IAttachmentDAL _attachmentDAL;
         private readonly IFileExtensionValidation _fileExtensionValidation;
 
-        public AttachmentService(IAttachmentDAL attachmentDAL, IFileExtensionValidation fileExtensionValidation)
-        {
-            _attachmentDAL = attachmentDAL;
-            _fileExtensionValidation = fileExtensionValidation;
-        }
+        public AttachmentService(IAttachmentDAL attachmentDAL, IFileExtensionValidation fileExtensionValidation) =>
+            (_attachmentDAL, _fileExtensionValidation) = (attachmentDAL, fileExtensionValidation);
 
-        public async Task<IEnumerable<AttachmentModel>> GetAllAsync()
-        {
-            return await _attachmentDAL.GetAllAsync();
-        }
+        public async Task<IEnumerable<AttachmentModel>> GetAllAsync() => await _attachmentDAL.GetAllAsync();
 
-        public async Task<AttachmentModel> GetByAttachmentIDAsync(int id)
-        {
-            return await _attachmentDAL.GetByAttachmentIDAsync(id);
-        }
+        public async Task<AttachmentModel> GetByAttachmentIDAsync(int id) => await _attachmentDAL.GetByAttachmentIDAsync(id);
 
-        public async Task<IEnumerable<AttachmentModel>> GetAllByEnrollmentIDAsync(int id)
-        {
-            return await _attachmentDAL.GetAllByEnrollmentIDAsync(id);
-        }
+        public async Task<IEnumerable<AttachmentModel>> GetAllByEnrollmentIDAsync(int id) =>
+            await _attachmentDAL.GetAllByEnrollmentIDAsync(id);
 
         public async Task<ValidationResult> UploadFileAsync(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
         {

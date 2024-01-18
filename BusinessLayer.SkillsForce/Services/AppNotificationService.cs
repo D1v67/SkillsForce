@@ -13,41 +13,22 @@ namespace BusinessLayer.SkillsForce.Services
     {
         private readonly IAppNotificationDAL _appNotificationDAL;
 
-        public AppNotificationService(IAppNotificationDAL notificationDAL)
-        {
-            _appNotificationDAL = notificationDAL;
-        }
-        public async Task<int> AddAsync(AppNotificationModel model)
-        {
-            return await _appNotificationDAL.AddAsync(model);
-        }
+        public AppNotificationService(IAppNotificationDAL notificationDAL) => _appNotificationDAL = notificationDAL;
 
-        public async Task<int> AddNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
-        {
-            return await _appNotificationDAL.AddNotificationAsync(enrollment, notificationType);
-        }
+        public async Task<int> AddAsync(AppNotificationModel model) => await _appNotificationDAL.AddAsync(model);
 
-        public async Task<IEnumerable<AppNotificationModel>> GetAllAsync()
-        {
-            return await _appNotificationDAL.GetAllAsync();
-        }
+        public async Task<int> AddNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType) =>
+            await _appNotificationDAL.AddNotificationAsync(enrollment, notificationType);
 
-        public async Task<IEnumerable<AppNotificationModel>> GetByUserIdAsync(int id)
-        {
-           return await _appNotificationDAL.GetByUserIdAsync(id);
-        }
+        public async Task<IEnumerable<AppNotificationModel>> GetAllAsync() => await _appNotificationDAL.GetAllAsync();
 
-        public async Task<int> GetUnreadNotificationCountAsync(int userId)
-        {
-            return await _appNotificationDAL.GetUnreadNotificationCountAsync(userId);
-        }
+        public async Task<IEnumerable<AppNotificationModel>> GetByUserIdAsync(int id) => await _appNotificationDAL.GetByUserIdAsync(id);
 
-        public Task<int> MarkNotificationAsReadAsync(int notificationId)
-        {
-            return _appNotificationDAL.MarkNotificationAsReadAsync(notificationId);
-        }
+        public async Task<int> GetUnreadNotificationCountAsync(int userId) => await _appNotificationDAL.GetUnreadNotificationCountAsync(userId);
 
-        public async  Task<string> SendNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
+        public Task<int> MarkNotificationAsReadAsync(int notificationId) => _appNotificationDAL.MarkNotificationAsReadAsync(notificationId);
+
+        public async Task<string> SendNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
             int affectedRows = await _appNotificationDAL.AddNotificationAsync(enrollment, notificationType);
             return $"Notification added successfully. Affected rows: {affectedRows}";
