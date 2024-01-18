@@ -9,7 +9,6 @@ namespace BusinessLayer.SkillsForce.Interface
 {
     public interface ITrainingService
     {
-
         Task<IEnumerable<TrainingModel>> GetAllAsync();
         Task<TrainingModel> GetByIDAsync(int id);
         Task<ValidationResult> AddAsync(TrainingViewModel training);
@@ -24,10 +23,7 @@ namespace BusinessLayer.SkillsForce.Interface
         Task<bool> IsTrainingNameAlreadyExistsAsync(string trainingName);
         Task<TrainingViewModel> GetTrainingWithPrerequisitesAsync(int trainingId);
         Task<bool> IsTrainingNameAlreadyExistsOnUpdateAsync(int trainingId, string newTrainingName);
-
-
         bool Delete(int id);
-
         Task<bool> IsTrainingHaveEnrollment(int trainingId);
         Task<IEnumerable<TrainingModel>> GetAllTrainingByTrainerIDAsync(int id);
     }

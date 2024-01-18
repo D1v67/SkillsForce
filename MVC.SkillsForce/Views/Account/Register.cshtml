@@ -50,6 +50,20 @@
         <script type="text/javascript">
         $(document).ready(function () {
 
+            // Toggle password visibility
+            $('#showPassword').change(function () {
+                var passwordField = $('#Password');
+                var confirmPasswordField = $('#ConfirmPassword');
+
+                if ($(this).is(':checked')) {
+                    passwordField.attr('type', 'text');
+                    confirmPasswordField.attr('type', 'text');
+                } else {
+                    passwordField.attr('type', 'password');
+                    confirmPasswordField.attr('type', 'password');
+                }
+            });
+
             $('#emailHelpBlock').show();
             
 
@@ -149,16 +163,39 @@
 
             loadManagers();
 
+            // Event listener for ConfirmPassword field
+            $('#ConfirmPassword').on('input', function () {
+                validateConfirmPassword();
+            });
+
+            // Function to validate ConfirmPassword field
+            function validateConfirmPassword() {
+                var password = $('#Password').val().trim();
+                var confirmPassword = $('#ConfirmPassword').val().trim();
+                var confirmPasswordField = $('#ConfirmPassword');
+                var passwordMismatchError = $('#passwordMismatchError');
+
+                if (password !== confirmPassword) {
+                    confirmPasswordField.addClass('is-invalid');
+                    passwordMismatchError.text('Passwords do not match.');
+                } else {
+                    confirmPasswordField.removeClass('is-invalid');
+                    passwordMismatchError.text('');
+                }
+            }
 
             //console.log('heremanagers');
 
-            $("#registrationForm").submit(function (event) {
+            $("#registrationForm").on("submit", function (event) {
 
                 event.preventDefault();
 
 
                 var password = $('#Password').val();
-                var confirmPassword = $('#ConfirmPassword').val();
+                var confirmPassword = $('#ConfirmPassword').val().trim();
+
+                // Validate ConfirmPassword before submitting the form
+                validateConfirmPassword();
 
                 if (!validateForm()) {
                     return;
@@ -176,24 +213,26 @@
                 }
 
 
-                    $('#Password, #ConfirmPassword').removeClass('is-valid is-invalid');
+                    //$('#Password, #ConfirmPassword').removeClass('is-valid is-invalid');
 
-                    if (password === '') {
-                        $('#Password').addClass('is-invalid');
-                    }
+                    //if (password === '') {
+                    //    $('#Password').addClass('is-invalid');
+                    //}
 
-                    if (confirmPassword === '') {
-                        $('#ConfirmPassword').addClass('is-invalid');
-                    }
+                    //if (confirmPassword === '') {
+                    //    $('#ConfirmPassword').addClass('is-invalid');
+                    //}
 
-                    if (password !== confirmPassword) {
-                        $('#passwordMismatchError').text('Passwords do not match.');
-                        $('#Password, #ConfirmPassword').addClass('is-invalid');
-                        toastr.error("Passwords do not match.");
-                        return;
-                    } else {
-                        $('#passwordMismatchError').text('');
-                    }
+                    //if (password !== confirmPassword) {
+                    //    $('#passwordMismatchError').text('Passwords do not match.');
+                    //    $('#Password, #ConfirmPassword').addClass('is-invalid');
+                    //    toastr.error("Passwords do not match.");
+                    //    return;
+                    //} else {
+                    //    $('#passwordMismatchError').text('');
+                    //    $('#Password, #ConfirmPassword').removeClass('is-valid');
+                    //}
+
                     var selectedDepartmentID = $(this).val();
                     var formData = {
                         FirstName: $('#FirstName').val(),
@@ -354,7 +393,7 @@
                                 <label for="department">Select your Department:</label>
                                 <select class="form-control form-select" id="department" name="department" required>
                                     <option value="" selected disabled>Select Department</option>
-                               
+
                                 </select>
                                 <div class="invalid-feedback">
                                     Please select your Department
@@ -365,7 +404,7 @@
                                 <label for="manager">Select your Manager:</label>
                                 <select class="form-control form-select" id="manager" name="manager" required>
                                     <option value="" selected disabled>Select Manager</option>
-                          
+
                                 </select>
                                 <div class="invalid-feedback">
                                     Please select your Manager
@@ -390,6 +429,11 @@
                                     Please confirm password
                                 </div>
                                 <div id="passwordMismatchError" class="text-danger"></div>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="showPassword">
+                                <label class="form-check-label" for="showPassword">Show Password</label>
                             </div>
 
 

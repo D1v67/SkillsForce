@@ -1,5 +1,4 @@
-﻿ 
-using Common.SkillsForce.Entity;
+﻿using Common.SkillsForce.Entity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

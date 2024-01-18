@@ -129,3 +129,11 @@ No trainings available for selection until today at 1/18/2024 9:30:04 PM.
 Executing Automatic Selection at 1/18/2024 10:59:04 PM...
 No trainings available for selection until today at 1/18/2024 10:59:05 PM.
 
+Executing Automatic Selection by user ID 3 at 1/18/2024 11:55:10 PM...
+Selection done for training: Agile Scrum Workshop at 1/18/2024 11:55:10 PM.
+Selection done for training: Introduction to Machine Learning at 1/18/2024 11:55:10 PM.
+Automatic Selection executed successfully at 1/18/2024 11:55:10 PM.
+
+Executing Automatic Selection by user ID 3 at 1/18/2024 11:55:44 PM...
+No trainings available for selection until today at 1/18/2024 11:55:44 PM.
+

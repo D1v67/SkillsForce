@@ -16,18 +16,13 @@ namespace BusinessLayer.SkillsForce.Interface
         Task<EnrollmentNotificationViewModel> GetEnrollmentNotificationDetailsByIDAsync(int id);
         Task<IEnumerable<EnrollmentViewModel>> GetAllApprovedEnrollmentsAsync();
         Task<List<int>> ConfirmEnrollmentsByTrainingIDAsync(int? userId, int trainingID);
-        //Task RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob);
         Task<ExecutionResult> RunAutomaticSelectionOfApprovedEnrollmentsAsync(int? userId, bool isCronjob);
         Task<IEnumerable<EnrollmentViewModel>> GetAllFilteredEnrollmentsWithDetailsAsync(int trainingId, string statusFilter);
         Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsAsync(int userId);
         Task<IEnumerable<EnrollmentViewModel>> GetAllConfirmedEnrollmentsWithDetailsAsync();
-
         Task<IEnumerable<EnrollmentViewModel>> GetAllDeclinedEnrollmentsByUserIDAsync(int userId);
-
         Task<int> ReEnrollAddAsync(EnrollmentViewModel enrollment);
-
         Task<IEnumerable<EnrollmentViewModel>> GetAllPendingEnrollmentsAsync(int userId);
-
         Task UnEnrollAsync(int enrollmentId);
     }
 }
