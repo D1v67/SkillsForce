@@ -39,11 +39,28 @@ namespace BusinessLayer.SkillsForce.Services
                 validationErrors.Add("Training Name is already in use.");
             }
 
+            // Validate Prerequisites for duplicates
+            if (model.Prerequisites?.Count > 1)
+            {
+                var distinctPrerequisites = model.Prerequisites.Distinct(new PrerequisiteEqualityComparer());
+                if (distinctPrerequisites.Count() < model.Prerequisites.Count)
+                {
+                    validationErrors.Add("Prerequisites cannot have duplicates.");
+                }
+            }
+
             //// Validate Start Date and Registration Deadline
             //if (!IsValidDateRange(model.StartDate, model.RegistrationDeadline))
             //{
             //    validationErrors.Add("Start date must be greater than Registration Deadline.");
             //}
+
+
+            // Validate Training Description
+            if (string.IsNullOrWhiteSpace(model.TrainingDescription))
+            {
+                validationErrors.Add("Training Description is required.");
+            }
 
             // Validate Capacity
             if (!Regex.IsMatch(model.Capacity.ToString(), @"^[1-9]\d*$"))
@@ -227,6 +244,20 @@ namespace BusinessLayer.SkillsForce.Services
         public async Task<IEnumerable<TrainingModel>> GetAllTrainingByTrainerIDAsync(int id)
         {
             return await _trainingDAL.GetAllTrainingByTrainerIDAsync(id);
+        }
+
+        // Equality comparer for PrerequisiteModel
+        public class PrerequisiteEqualityComparer : IEqualityComparer<PrerequisiteModel>
+        {
+            public bool Equals(PrerequisiteModel x, PrerequisiteModel y)
+            {
+                return x.PrerequisiteID == y.PrerequisiteID;
+            }
+
+            public int GetHashCode(PrerequisiteModel obj)
+            {
+                return obj.PrerequisiteID.GetHashCode();
+            }
         }
 
         public enum ValidationType
