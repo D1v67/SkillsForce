@@ -130,6 +130,10 @@
 
 
     <div id="trainingCardContainer" class="card-deck mt-5"></div>
+    <div id="NoEnrollmentsMessage" class="alert alert-warning mt-3" style="display: none;">
+        No Confirmed enrollments.
+    </div>
+
 </div>
 
 
@@ -226,7 +230,20 @@ https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
         function updateTable(data) {
             var cardContainer = document.querySelector('#trainingCardContainer');
+            var noEnrollmentsMessage = document.querySelector('#NoEnrollmentsMessage');
+            var enrollmentsMessage = document.querySelector('#EnrollmentsMessage');
+
             cardContainer.innerHTML = '';
+            enrollmentsMessage.style.display = 'none';
+            noEnrollmentsMessage.style.display = 'none';
+
+            if (data.length === 0) {
+                // If there are no pending enrollments, display a message
+                noEnrollmentsMessage.style.display = 'block';
+                return;
+            }
+
+            enrollmentsMessage.style.display = 'block';
 
             data.forEach(function (item) {
                 //let currentDate = new Date().toJSON().slice(0, 10);
