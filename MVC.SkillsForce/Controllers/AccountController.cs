@@ -3,9 +3,7 @@ using Common.SkillsForce.Entity;
 using Common.SkillsForce.Enums;
 using Common.SkillsForce.ViewModel;
 using MVC.SkillsForce.Custom;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -109,6 +107,7 @@ namespace MVC.SkillsForce.Controllers
             IEnumerable<UserModel> managers = await _userService.GetAllManagerAsync();
             return Json(managers, JsonRequestBehavior.AllowGet);
         }
+
         private (string redirectController, string redirectAction) GetRedirectInfo(List<UserRoleModel> userRoles)
         {
             var redirectController = userRoles.Count == 1 ? "Home" : "Account";

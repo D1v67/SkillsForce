@@ -20,17 +20,15 @@ namespace MVC.SkillsForce.Controllers
         private readonly IEnrollmentService _enrollmentService;
         private readonly ITrainingService _trainingService;
         private readonly IPrerequisiteService _prerequisiteService;
-        private readonly INotificationService _notificationService;
         private readonly IAttachmentService _attachmentService;
 
         private readonly INotificationHandler _notificationHandler;
 
-        public EnrollmentController(IEnrollmentService enrollmentService, ITrainingService trainingService, IPrerequisiteService prerequisiteService, INotificationService notificationService, IAttachmentService attachmentService, INotificationHandler notificationHandler)
+        public EnrollmentController(IEnrollmentService enrollmentService, ITrainingService trainingService, IPrerequisiteService prerequisiteService, IAttachmentService attachmentService, INotificationHandler notificationHandler)
         {
             _enrollmentService = enrollmentService;
             _trainingService = trainingService;
             _prerequisiteService = prerequisiteService;
-            _notificationService = notificationService;
             _attachmentService = attachmentService;
             _notificationHandler = notificationHandler;
         }
@@ -43,6 +41,7 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
+        [AuthorizePermission(Permissions.AutomaticSelection)]
         public async Task<ActionResult> RunAutomaticSelectionOfApprovedEnrollments(int userId)
         {
             var result = await _enrollmentService.RunAutomaticSelectionOfApprovedEnrollmentsAsync(userId, false);
@@ -57,20 +56,9 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [AuthorizePermission(Permissions.GetEnrollmentByManager)]
-        public async Task<ActionResult> GetEnrollments()
+        public  ActionResult GetEnrollments()
         {
-            if (Session == null || Session["UserID"] == null || Session["CurrentRole"] == null)
-            {
-                return RedirectToAction("/Index");
-            }
-            var userId = Convert.ToInt32(Session["UserID"]);
-            var currentRole = Session["CurrentRole"].ToString();
-
-            IEnumerable<EnrollmentViewModel> enrollments = currentRole == "Manager"
-                ? await _enrollmentService.GetAllEnrollmentsWithDetailsByManagerAsync(userId)
-                : await _enrollmentService.GetAllEnrollmentsWithDetailsAsync();
-
-            return View(enrollments);
+            return View();
         }
 
         [AuthorizePermission(Permissions.GetEnrollmentByManager)]
@@ -188,6 +176,7 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpPost]
+        [AuthorizePermission(Permissions.ViewTraining)]
         public async Task<ActionResult> UploadFiles(List<HttpPostedFileBase> files, int EnrollmentID, string PrerequisiteIDs)
         {
             var result = await _attachmentService.UploadFileAsync(files, EnrollmentID, PrerequisiteIDs);
@@ -279,7 +268,6 @@ namespace MVC.SkillsForce.Controllers
         {
             await _enrollmentService.UnEnrollAsync(EnrollmentId);
             return Json(new { success = true, message = "Unenrollment successful!" });
-
         }
     }
 }

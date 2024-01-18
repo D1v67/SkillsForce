@@ -60,5 +60,7 @@ namespace Common.SkillsForce.Enums
 
         ViewSelectedEmployees,
 
+        ViewEmployeeAttachment,
+
     }
 }

@@ -28,12 +28,14 @@ namespace MVC.SkillsForce.Controllers
         }
 
         [HttpGet]
+        [AuthorizePermission(Permissions.ViewEmployeeAttachment)]
         public async Task<JsonResult> GetAllAttachmentByEnrollmentID(int enrollmentID)
         {
             IEnumerable<AttachmentModel> attachments = await _attachmentService.GetAllByEnrollmentIDAsync(enrollmentID);
             return Json(new { result = attachments }, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthorizePermission(Permissions.ViewEmployeeAttachment)]
         public async Task<ActionResult> DownloadAttachmentByAttachmentID(int id)
         {
             var result = await _attachmentService.GetByAttachmentIDAsync(id);
@@ -45,6 +47,7 @@ namespace MVC.SkillsForce.Controllers
             return File(binaryData, contentType, filename);
         }
 
+        [AuthorizePermission(Permissions.ViewEmployeeAttachment)]
         public async Task<ActionResult> ViewAttachmentByAttachmentID(int id)
         {
             var result = await _attachmentService.GetByAttachmentIDAsync(id);

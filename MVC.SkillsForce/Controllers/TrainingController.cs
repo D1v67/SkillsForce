@@ -12,16 +12,15 @@ using System.Web.Mvc;
 
 namespace MVC.SkillsForce.Controllers
 {
-    //[UserSession]
-    //[UserActivityFilter]
+    [UserSession]
+    [UserActivityFilter]
     public class TrainingController : Controller
     {
         private readonly ITrainingService _trainingService;
-        private readonly IPrerequisiteService _prerequisiteService;
-        public TrainingController(ITrainingService trainingService, IPrerequisiteService prerequisiteService)
+
+        public TrainingController(ITrainingService trainingService)
         {
             _trainingService = trainingService;
-            _prerequisiteService = prerequisiteService;
         }
 
         [AuthorizePermission(Permissions.GetTraining)]
@@ -104,23 +103,15 @@ namespace MVC.SkillsForce.Controllers
             {
                 TempData["ErrorMessage"] = $"Cannot edit the training because it has enrolled users: ";
                 return RedirectToAction("Index");
-
             }
             else
             {
                 var training = await _trainingService.GetTrainingWithPrerequisitesAsync(id);
                 return View(training);
             }
-
    ;
         }
 
-        //[AuthorizePermission(Permissions.EditTraining)]
-        //public async Task<ActionResult> Edit(int id)
-        //{
-        //    var training = await _trainingService.GetTrainingWithPrerequisitesAsync(id);
-        //    return View(training);
-        //}
 
         [AuthorizePermission(Permissions.GetTraining)]
         public async Task<JsonResult> GetTrainingDetails(int id)
@@ -141,14 +132,12 @@ namespace MVC.SkillsForce.Controllers
             AddErrorsToModelState(result.Errors);
             var errors = GetModelStateErrors();
             return Json(new { errorMessage = errors });
-
-
         }
 
         [AuthorizePermission(Permissions.DeleteTraining)]
         public ActionResult Delete(int id)
         {
-                bool isDeletionSuccessful = _trainingService.Delete(id);
+             bool isDeletionSuccessful = _trainingService.Delete(id);
 
             if (isDeletionSuccessful)
             {
@@ -158,7 +147,20 @@ namespace MVC.SkillsForce.Controllers
             {
                 return Json(new { success = false, message = "Cannot delete the training because it has enrolled users." }, JsonRequestBehavior.AllowGet);
             }
+        }
 
+        [AuthorizePermission(Permissions.ViewTraining)]
+        public  ActionResult GetAllTrainingByTrainerId()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AuthorizePermission(Permissions.ViewTraining)]
+        public async Task<ActionResult> GetAllTrainingByTrainerIdData(int trainerId)
+        {
+            IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingByTrainerIDAsync(trainerId);
+            return Json(trainings, JsonRequestBehavior.AllowGet);
         }
 
         private void AddErrorsToModelState(List<string> errors)
@@ -172,20 +174,6 @@ namespace MVC.SkillsForce.Controllers
         private List<string> GetModelStateErrors()
         {
             return ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-        }
-
-        public  ActionResult GetAllTrainingByTrainerId()
-        {
-
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> GetAllTrainingByTrainerIdData(int trainerId)
-        {
-            IEnumerable<TrainingModel> trainings = await _trainingService.GetAllTrainingByTrainerIDAsync(trainerId);
-            return Json(trainings, JsonRequestBehavior.AllowGet);
-
         }
     }
 }

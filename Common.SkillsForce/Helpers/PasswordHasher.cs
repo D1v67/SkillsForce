@@ -9,6 +9,7 @@ namespace BusinessLayer.SkillsForce.Helpers
     {
         /// <summary>
         /// Generates a hashed password and a unique salt based on the provided password using the SHA-256 hashing algorithm.
+        /// https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.sha256?view=net-8.0
         /// </summary>
         /// <param name="password">The password to be hashed.</param>
         /// <returns>

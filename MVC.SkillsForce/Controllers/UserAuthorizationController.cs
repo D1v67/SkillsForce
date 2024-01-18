@@ -24,7 +24,6 @@ namespace MVC.SkillsForce.Controllers
         {
             try
             {
-                // Call your DAL method to check permissions
                 Dictionary<string, bool> permissionsResult = new Dictionary<string, bool>();
 
                 foreach (var permission in permissions)
@@ -37,7 +36,6 @@ namespace MVC.SkillsForce.Controllers
             }
             catch (Exception ex)
             {
-                // Log or handle the exception
                 return Json(new { error = ex.Message });
             }
         }
