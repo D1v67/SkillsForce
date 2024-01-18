@@ -7,6 +7,12 @@ using System.Web;
 
 namespace MVC.SkillsForce.Custom
 {
+    /// <summary>
+    /// Utility class for managing user-related information in session variables within an ASP.NET application.
+    /// Provides methods to set and retrieve session values such as user ID, email, name, roles, and unread notification count.
+    /// Utilizes generic methods for flexibility in handling session values of different types.
+    /// Interacts with an external service (IAppNotificationService) to update notification session data asynchronously.
+    /// </summary>
     public class SessionManager
     {
 

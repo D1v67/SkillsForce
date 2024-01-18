@@ -5,6 +5,10 @@ using System.Xml.Linq;
 
 namespace Common.SkillsForce.EmailSender
 {
+    /// <summary>
+    /// Utility class for sending emails asynchronously using SmtpClient. The use of Task.Run is to fire and forget the email sending operation.
+    /// It allows the method to return immediately without waiting for the email to be sent.
+    /// </summary>
     public static class EmailSender
     {
         private const string SENDER_MAIL = "SkillsForceAdmin@ceridian.com";

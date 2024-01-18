@@ -49,11 +49,8 @@ namespace BusinessLayer.SkillsForce.Services
                 }
             }
 
+            //TODO
             //// Validate Start Date and Registration Deadline
-            //if (!IsValidDateRange(model.StartDate, model.RegistrationDeadline))
-            //{
-            //    validationErrors.Add("Start date must be greater than Registration Deadline.");
-            //}
 
 
             // Validate Training Description
@@ -172,11 +169,8 @@ namespace BusinessLayer.SkillsForce.Services
                 validationErrors.Add("Training Name is already in use.");
             }
 
+            // TODO 
             //// Validate Start Date and Registration Deadline
-            //if (!IsValidDateRange(model.StartDate, model.RegistrationDeadline))
-            //{
-            //    validationErrors.Add("Start date must be greater than Registration Deadline.");
-            //}
 
             // Validate Capacity
             if (!Regex.IsMatch(model.Capacity.ToString(), @"^[1-9]\d*$"))
@@ -216,6 +210,17 @@ namespace BusinessLayer.SkillsForce.Services
             }
         }
 
+
+        public async Task<bool> IsTrainingHaveEnrollment(int trainingId)
+        {
+            return await _trainingDAL.IsTrainingHaveEnrollment(trainingId);   
+        }
+
+        public async Task<IEnumerable<TrainingModel>> GetAllTrainingByTrainerIDAsync(int id)
+        {
+            return await _trainingDAL.GetAllTrainingByTrainerIDAsync(id);
+        }
+
         // Helper method to validate date range with string representations
         private bool IsValidDateRange(string startDate, string registrationDeadline)
         {
@@ -234,16 +239,6 @@ namespace BusinessLayer.SkillsForce.Services
             string format = "MM/dd/yy";
 
             return DateTime.TryParseExact(dateStr, format, provider, DateTimeStyles.None, out date);
-        }
-
-        public async Task<bool> IsTrainingHaveEnrollment(int trainingId)
-        {
-            return await _trainingDAL.IsTrainingHaveEnrollment(trainingId);   
-        }
-
-        public async Task<IEnumerable<TrainingModel>> GetAllTrainingByTrainerIDAsync(int id)
-        {
-            return await _trainingDAL.GetAllTrainingByTrainerIDAsync(id);
         }
 
         // Equality comparer for PrerequisiteModel

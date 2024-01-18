@@ -57,7 +57,7 @@ namespace BusinessLayer.SkillsForce.Services
                 byte rowIndex = 4;
                 foreach (var employee in exportSelectedEmployees)
                 {
-                    // Alternate row colors for better readability
+                    // Alternate row colors
                     if (rowIndex % 2 == 0)
                     {
                         var range = worksheet.Cells[rowIndex, 1, rowIndex, 4];
@@ -65,19 +65,16 @@ namespace BusinessLayer.SkillsForce.Services
                         range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightYellow);
                     }
 
-                    // Concatenate employee's first and last names into one column
+  
                     worksheet.Cells[rowIndex, 1].Value = $"{employee.FirstName} {employee.LastName}";
-
                     worksheet.Cells[rowIndex, 2].Value = employee.MobileNumber;
-                    worksheet.Cells[rowIndex, 3].Value = employee.Email;
-
-                    // Concatenate manager's first and last names into one column
+                    worksheet.Cells[rowIndex, 3].Value = employee.Email;  
                     worksheet.Cells[rowIndex, 4].Value = $"{employee.ManagerFirstName} {employee.ManagerLastName}";
 
                     rowIndex++;
                 }
 
-                // Apply styling to the entire table (including headers)
+
                 var tableRange = worksheet.Cells[3, 1, rowIndex - 1, 4];
                 tableRange.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
                 tableRange.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;

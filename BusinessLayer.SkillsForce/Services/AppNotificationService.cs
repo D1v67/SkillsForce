@@ -49,9 +49,7 @@ namespace BusinessLayer.SkillsForce.Services
 
         public async  Task<string> SendNotificationAsync(EnrollmentNotificationViewModel enrollment, NotificationType notificationType)
         {
-            Debug.WriteLine("hello my name in app");
             int affectedRows = await _appNotificationDAL.AddNotificationAsync(enrollment, notificationType);
-            Debug.WriteLine("hello my name in app");
             return $"Notification added successfully. Affected rows: {affectedRows}";
         }
     }

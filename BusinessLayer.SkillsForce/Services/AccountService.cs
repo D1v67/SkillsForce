@@ -13,7 +13,6 @@ namespace BusinessLayer.SkillsForce.Services
     public class AccountService : IAccountService
     {
         private readonly IAccountDAL _accountDAL;
-        //private readonly IUserService _userService;
         private readonly IUserDAL _userDAL;
 
         public AccountService(IAccountDAL accountDAL, IUserDAL userDAL)

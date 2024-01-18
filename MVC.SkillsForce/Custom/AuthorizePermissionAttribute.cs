@@ -14,6 +14,12 @@ using System.Web.Routing;
 
 namespace MVC.SkillsForce.Custom
 {
+    /// <summary>
+    /// Custom attribute for declarative authorization based on user permissions.
+    /// Applied to controllers or controller actions, this attribute checks if the user has the specified permission
+    /// before allowing the execution of the associated action method. If authorization fails, it redirects the user
+    /// to a "Not Found" or "Access Denied" page.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class AuthorizePermissionAttribute:  ActionFilterAttribute
     {

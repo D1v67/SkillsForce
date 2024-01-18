@@ -1,5 +1,4 @@
 ﻿using BusinessLayer.SkillsForce.Interface;
-using Common.SkillsForce.AppLogger;
 using Common.SkillsForce.BackgoundJobLogger;
 using Common.SkillsForce.Enums;
 using Common.SkillsForce.Helpers;
@@ -160,26 +159,3 @@ namespace BusinessLayer.SkillsForce.Services
         }
     }
 }
-
-
-//public async Task RunAutomaticSelectionOfApprovedEnrollmentsAsync(bool isCronjob)
-//{
-//    DateTime registrationDeadline = new DateTime(2024, 03, 01);
-//    var trainings = await _trainingService.GetAllTrainingsByRegistrationDeadlineAsync(registrationDeadline, isCronjob);
-
-//    foreach (var training in trainings)
-//    {
-//        var enrollmentIds = await _enrollmentDAL.ConfirmEnrollmentsByTrainingIDAsync(training.TrainingID);
-
-//        if (enrollmentIds != null && enrollmentIds.Any())
-//        {
-//            foreach (var enrollmentId in enrollmentIds)
-//            {
-//                EnrollmentNotificationViewModel enrollment = await GetEnrollmentNotificationDetailsByIDAsync(enrollmentId);
-
-//                await _notificationHandler.NotifyHandlersAsync(enrollment, NotificationType.Confirmation);
-
-//            }
-//        }
-//    }
-//}
