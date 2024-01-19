@@ -63,35 +63,19 @@ namespace DataAccessLayer.SkillsForce.DAL
         #region Get
         public async Task<IEnumerable<TrainingModel>> GetAllAsync()
         {
-            const string GET_ALL_TRAINING_QUERY = @"SELECT * FROM [dbo].[Training]";
+            const string GET_ALL_TRAINING_QUERY = @"SELECT [TrainingID],[TrainingName],[TrainingDescription],[RegistrationDeadline],[Capacity],[DepartmentID],[StartDate],[IsSelectionOver]
+            FROM [dbo].[Training] WHERE IsActive = 1";
             List<TrainingModel> trainings = new List<TrainingModel>();
 
-            try
-            {
+ 
                 using (SqlDataReader reader = await _dbCommand.GetDataReaderAsync(GET_ALL_TRAINING_QUERY))
                 {
                     while (await reader.ReadAsync())
                     {
-                        //TrainingModel training = new TrainingModel
-                        //{
-                        //    TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
-                        //    TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
-                        //    TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
-                        //    RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
-                        //    Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
-                        //    DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
-                        //};
                         TrainingModel training = DataReaderMapper.MapToObject<TrainingModel>(reader);
                         trainings.Add(training);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                // Log or handle the exception appropriately
-                Console.WriteLine($"Exception: {ex.Message}");
-            }
-
             return trainings;
         }
 
@@ -594,3 +578,15 @@ namespace DataAccessLayer.SkillsForce.DAL
     }
 }
 
+
+
+
+// Log or handle the exception appropriately                        //TrainingModel training = new TrainingModel
+//{
+//    TrainingID = reader.GetByte(reader.GetOrdinal("TrainingID")),
+//    TrainingName = reader.GetString(reader.GetOrdinal("TrainingName")),
+//    TrainingDescription = reader.GetString(reader.GetOrdinal("TrainingDescription")),
+//    RegistrationDeadline = reader.GetDateTime(reader.GetOrdinal("RegistrationDeadline")),
+//    Capacity = reader.GetByte(reader.GetOrdinal("Capacity")),
+//    DepartmentID = reader.GetByte(reader.GetOrdinal("DepartmentID"))
+//};

@@ -74,12 +74,11 @@ namespace BusinessLayerNUnitTest
                         new UserRoleModel { RoleID = 2, RoleName = "User" }
                     }
                 }
-        };
+            };
 
 
             _stubUserDAL = new Mock<IUserDAL>();
             _stubAccountDAL = new Mock<IAccountDAL>();
-
 
             _stubAccountDAL.Setup(accountDAL => accountDAL.GetUserCredentialsAsync(It.IsAny<string>()))
                 .ReturnsAsync((string email) => _accountsRepository.FirstOrDefault((a) => a.Email == email));
@@ -109,18 +108,16 @@ namespace BusinessLayerNUnitTest
                            });
 
 
-            // Set up the GetUserByEmailAsync method to return a user if it exists in the list
             _stubUserDAL.Setup(userDAL => userDAL.IsEmailAlreadyExistsAsync(It.IsAny<string>()))
                         .ReturnsAsync((string email) => _usersRepository.Any(u => u.Email == email));
 
-            // Set up the GetUserByNICAsync method to return a user if it exists in the list
+
             _stubUserDAL.Setup(userDAL => userDAL.IsNICExistsAsync(It.IsAny<string>()))
                         .ReturnsAsync((string nic) => _usersRepository.Any(u => u.NIC == nic));
 
-            // Set up the GetUserByMobileNumberAsync method to return a user if it exists in the list
+
             _stubUserDAL.Setup(userDAL => userDAL.IsMobileNumberExistsAsync(It.IsAny<string>()))
                         .ReturnsAsync((string mobileNumber) => _usersRepository.Any(u => u.MobileNumber == mobileNumber));
-
 
 
             _stubAccountDAL.Setup(accountDAL => accountDAL.GetUserDetailsWithRolesAsync(It.IsAny<AccountModel>()))
@@ -129,10 +126,6 @@ namespace BusinessLayerNUnitTest
 
             _accountService = new AccountService(_stubAccountDAL.Object, _stubUserDAL.Object);
         }
-
-
- 
-
 
         [Test]
         [TestCase("Peter", "Parker", "N051100150456B", "59749958", "admin@gmail.com", 1, 1, "employee")]
@@ -161,6 +154,88 @@ namespace BusinessLayerNUnitTest
             Assert.IsNull(result.Errors);
         }
 
+
+        [Test]
+        [TestCase("Peter", "Parker", "", "59749958", "admin@gmail.com", 1, 1, "employee")]
+        public async Task TestUserRegistration_MissingNICInput_ResultIsRegistrationSuccessfulAndNoErrors(string firstName, string lastName, string NIC, string mobile, string Email, int ManagerID, int DepartmentID, string password)
+        {
+            //Arrange
+            var user = new RegisterViewModel()
+            {
+
+                FirstName = firstName,
+                LastName = lastName,
+                NIC = NIC,
+                MobileNumber = mobile,
+                Email = Email,
+                ManagerID = ManagerID,
+                DepartmentID = DepartmentID,
+                Password = password
+            };
+
+            //Act
+            var result = await _accountService.RegisterUserAsync(user);
+
+            //Assert
+            Assert.IsFalse(result.IsSuccessful);
+            Assert.IsNotNull(result.Errors);
+            Assert.IsTrue(result.Errors.Contains("NIC is required."));
+        }
+
+
+        [Test]
+        [TestCase("Peter", "Parker", "N051100150456B", "", "admin@gmail.com", 1, 1, "employee")]
+        public async Task TestUserRegistration_MissingMobileNumberInput_ResultIsRegistrationSuccessfulAndNoErrors(string firstName, string lastName, string NIC, string mobile, string Email, int ManagerID, int DepartmentID, string password)
+        {
+            //Arrange
+            var user = new RegisterViewModel()
+            {
+
+                FirstName = firstName,
+                LastName = lastName,
+                NIC = NIC,
+                MobileNumber = mobile,
+                Email = Email,
+                ManagerID = ManagerID,
+                DepartmentID = DepartmentID,
+                Password = password
+            };
+
+            //Act
+            var result = await _accountService.RegisterUserAsync(user);
+
+            //Assert
+            Assert.IsFalse(result.IsSuccessful);
+            Assert.IsNotNull(result.Errors);
+            Assert.IsTrue(result.Errors.Contains("Mobile Number is required."));
+        }
+
+        [Test]
+        [TestCase("Peter", "Parker", "", "59749958", "", 1, 1, "employee")]
+        public async Task TestUserRegistration_MissingEmailInput_ResultIsRegistrationSuccessfulAndNoErrors(string firstName, string lastName, string NIC, string mobile, string Email, int ManagerID, int DepartmentID, string password)
+        {
+            //Arrange
+            var user = new RegisterViewModel()
+            {
+
+                FirstName = firstName,
+                LastName = lastName,
+                NIC = NIC,
+                MobileNumber = mobile,
+                Email = Email,
+                ManagerID = ManagerID,
+                DepartmentID = DepartmentID,
+                Password = password
+            };
+
+            //Act
+            var result = await _accountService.RegisterUserAsync(user);
+
+            //Assert
+            Assert.IsFalse(result.IsSuccessful);
+            Assert.IsNotNull(result.Errors);
+            Assert.IsTrue(result.Errors.Contains("Email is required."));
+        }
 
         [Test]
         [TestCase("John", "Doe", "N0511001504500", "58389912", "divesh@gmail.com", 1, 1, "employee")]
@@ -241,7 +316,6 @@ namespace BusinessLayerNUnitTest
         }
 
 
-
         [Test]
         [TestCase("Peter", "Parker", "N051900150456Z", "58387712", "ValidEmail@gmail.com", 1, 1, "employee")]
         [TestCase("Peter", "Parker", "N059100150456Z", "58387712", "john.jones@gmail.com", 1, 1, "employee")]
@@ -266,15 +340,15 @@ namespace BusinessLayerNUnitTest
 
             // Assert
             Assert.IsTrue(result.IsSuccessful);
-            Assert.IsNull(result.Errors);
-            
+            Assert.IsNull(result.Errors);       
         }
-
 
 
         [Test]
         [TestCase("Peter", "Parker", "N051900150456Z", "58387712", "Valid##Email@gmail.com", 1, 1, "employee")]
         [TestCase("Peter", "Parker", "N059100150456Z", "58387712", "john.jones@ceridian.com", 1, 1, "employee")]
+        [TestCase("Peter", "Parker", "N059100150456Z", "58387712", "john.jones@ceridian.umail.uom.ac", 1, 1, "employee")]
+        [TestCase("Peter", "Parker", "N059100150456Z", "58387712", "john..jones@gmail.com", 1, 1, "employee")]
 
         public async Task TestUserRegistration_InValidEmailRegexPatterns_ResultIsRegistrationSuccessfulAndNoErrors(string firstName, string lastName, string NIC, string mobile, string email, int ManagerID, int DepartmentID, string password)
         {
@@ -300,6 +374,64 @@ namespace BusinessLayerNUnitTest
             Assert.IsTrue(result.Errors.Contains("Email is required and must be in a valid format."));
         }
 
+
+
+        [Test]
+        [TestCase("Peter", "Parker", "N051@015045%Z", "58387712", "ValidEmail@gmail.com", 1, 1, "employee")]
+        [TestCase("Peter", "Parker", "N05.9100-0456Z", "58387712", "john.jones@gmail.com", 1, 1, "employee")]
+        [TestCase("Peter", "Parker", "N059100 4x0456Z", "58387712", "john.jones@gmail.com", 1, 1, "employee")]
+        public async Task TestUserRegistration_InValidNICRegexPatterns_ResultIsRegistrationSuccessfulAndNoErrors(string firstName, string lastName, string NIC, string mobile, string email, int ManagerID, int DepartmentID, string password)
+        {
+            // Arrange
+            var user = new RegisterViewModel
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                NIC = NIC,
+                MobileNumber = mobile,
+                Email = email,
+                ManagerID = ManagerID,
+                DepartmentID = DepartmentID,
+                Password = password
+            };
+
+            // Act
+            var result = await _accountService.RegisterUserAsync(user);
+
+            // Assert
+            Assert.IsFalse(result.IsSuccessful);
+            Assert.IsNotNull(result.Errors);
+            Assert.IsTrue(result.Errors.Contains("NIC is required and must be a valid format."));
+        }
+
+
+        [Test]
+        [TestCase("Peter", "Parker", "N051900150456Z", "+2307712", "ValidEmail@gmail.com", 1, 1, "employee")]
+        [TestCase("Peter", "Parker", "N059100150456Z", "98387712", "john.jones@gmail.com", 1, 1, "employee")]
+        [TestCase("Peter", "Parker", "N059100150456Z", "983 877 12", "john.jones@gmail.com", 1, 1, "employee")]
+        public async Task TestUserRegistration_InValidMobileNumberRegexPatterns_ResultIsRegistrationSuccessfulAndNoErrors(string firstName, string lastName, string NIC, string mobile, string email, int ManagerID, int DepartmentID, string password)
+        {
+            // Arrange
+            var user = new RegisterViewModel
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                NIC = NIC,
+                MobileNumber = mobile,
+                Email = email,
+                ManagerID = ManagerID,
+                DepartmentID = DepartmentID,
+                Password = password
+            };
+
+            // Act
+            var result = await _accountService.RegisterUserAsync(user);
+
+            // Assert
+            Assert.IsFalse(result.IsSuccessful);
+            Assert.IsNotNull(result.Errors);
+            Assert.IsTrue(result.Errors.Contains("Mobile Number is required and must be in a valid format."));
+        }
 
         [Test]
         [TestCase("J", "Doe", "N051100150459B", "52345678", "Doe@gmail.com", 1, 1, "employee")]
@@ -329,6 +461,114 @@ namespace BusinessLayerNUnitTest
         }
 
 
+        [Test]
+        [TestCase("JojoRabbit", "D", "N051100150459B", "52345678", "Doe@gmail.com", 1, 1, "employee")]
+        [TestCase("John", "Isthisthereallifeisthisjustfantasycaughtinalandslidenoescpaefromrealityopenyoureyeslookuptotheskiesandseeimjustapoorboyineednosympathy", "N051100150459B", "52345678", "ValidEmail@gmail.com", 1, 1, "employee")]
+        public async Task TestUserRegistration_InvalidLastNameLength_ResultIsRegistrationUnsuccessfulAndErrors(string firstName, string lastName, string NIC, string mobile, string email, int ManagerID, int DepartmentID, string password)
+        {
+            // Arrange
+            var user = new RegisterViewModel
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                NIC = NIC,
+                MobileNumber = mobile,
+                Email = email,
+                ManagerID = ManagerID,
+                DepartmentID = DepartmentID,
+                Password = password
+            };
+
+            // Act
+            var result = await _accountService.RegisterUserAsync(user);
+
+            // Assert
+            Assert.IsFalse(result.IsSuccessful);
+            Assert.IsNotNull(result.Errors);
+            Assert.IsTrue(result.Errors.Contains("Last Name must be between 2 and 50 characters."));
+        }
+
+        [Test]
+        [TestCase("J", "Doe", "N051100150459B", "52345678", "thisIsAEmailThatIsLOngerThan30chaarterslongithinkIhaverecahed30rihthhhhhhh@gmail.com", 1, 1, "employee")]
+        [TestCase("JonDow", "Doe", "N051100150459B", "52345678", "2", 1, 1, "employee")]
+        public async Task TestUserRegistration_InvalidEmailLength_ResultIsRegistrationUnsuccessfulAndErrors(string firstName, string lastName, string NIC, string mobile, string email, int ManagerID, int DepartmentID, string password)
+        {
+            // Arrange
+            var user = new RegisterViewModel
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                NIC = NIC,
+                MobileNumber = mobile,
+                Email = email,
+                ManagerID = ManagerID,
+                DepartmentID = DepartmentID,
+                Password = password
+            };
+
+            // Act
+            var result = await _accountService.RegisterUserAsync(user);
+
+            // Assert
+            Assert.IsFalse(result.IsSuccessful);
+            Assert.IsNotNull(result.Errors);
+            Assert.IsTrue(result.Errors.Contains("Email must be between 2 and 30 characters."));
+        }
+
+
+        [Test]
+        [TestCase("Peter", "Parker", "N051100150456B12212121", "59749958", "admin@gmail.com", 1, 1, "employee")]
+        [TestCase("Bruce", "Bannner", "N0511D", "58386119", "bruce@gmail.com", 1, 2, "employee")]
+        public async Task TestUserRegistration_InvalidNICLength_ResultIsRegistrationUnsuccessfulAndErrors(string firstName, string lastName, string NIC, string mobile, string email, int ManagerID, int DepartmentID, string password)
+        {
+            // Arrange
+            var user = new RegisterViewModel
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                NIC = NIC,
+                MobileNumber = mobile,
+                Email = email,
+                ManagerID = ManagerID,
+                DepartmentID = DepartmentID,
+                Password = password
+            };
+
+            // Act
+            var result = await _accountService.RegisterUserAsync(user);
+
+            // Assert
+            Assert.IsFalse(result.IsSuccessful);
+            Assert.IsNotNull(result.Errors);
+            Assert.IsTrue(result.Errors.Contains("NIC must be exactly 14 characters."));
+        }
+
+        [Test]
+        [TestCase("Peter", "Parker", "N051100150456A", "222", "admin@gmail.com", 1, 1, "employee")]
+        [TestCase("Bruce", "Bannner", "N051100150456A", "583861333319", "bruce@gmail.com", 1, 2, "employee")]
+        public async Task TestUserRegistration_InvalidMobileNumberLength_ResultIsRegistrationUnsuccessfulAndErrors(string firstName, string lastName, string NIC, string mobile, string email, int ManagerID, int DepartmentID, string password)
+        {
+            // Arrange
+            var user = new RegisterViewModel
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                NIC = NIC,
+                MobileNumber = mobile,
+                Email = email,
+                ManagerID = ManagerID,
+                DepartmentID = DepartmentID,
+                Password = password
+            };
+
+            // Act
+            var result = await _accountService.RegisterUserAsync(user);
+
+            // Assert
+            Assert.IsFalse(result.IsSuccessful);
+            Assert.IsNotNull(result.Errors);
+            Assert.IsTrue(result.Errors.Contains("Mobile Number must be exactly 8 characters."));
+        }
 
         //[Test]
         //public async Task TestGetUserDetailsWithRolesAsync_UserExists_ReturnsUserWithRoles()

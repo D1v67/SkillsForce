@@ -3,7 +3,7 @@ using Common.SkillsForce.Entity;
 using DataAccessLayer.SkillsForce.Interface;
 using Moq;
 
-namespace BLUNnitTest
+namespace BusinessLayerNUnitTest
 {
     [TestFixture]
     public class Tests
@@ -29,6 +29,7 @@ namespace BLUNnitTest
                     HashedPassword = HexStringToByteArray("A394723EBCF1BE4F32E1A9BE7F396CB19C26924913EAB2FB47CD1219B1A59E5D"),
                     SaltValue = HexStringToByteArray("645C8A074930444D00A159A7022A70A2")
                 }
+ 
             };
  
 
@@ -59,13 +60,15 @@ namespace BLUNnitTest
         }
 
         [Test]
-        public async Task TestUserLogin_InvalidPassword_ResultIsLoginUnsuccessful()
+        [TestCase("divesh@gmail.com", "admidddn")]
+
+        public async Task TestUserLogin_InvalidPassword_ResultIsLoginUnsuccessful(string email, string password)
         {
             // Arrange
             AccountModel account = new AccountModel()
             {
-                Email = "divesh@gmail.com",
-                Password = "invalid_password"
+                Email = email,
+                Password = password
             };
 
             // Act
@@ -74,6 +77,8 @@ namespace BLUNnitTest
             // Assert
             Assert.IsFalse(isExist);
         }
+
+
 
         [Test]
         public async Task TestUserLogin_InvalidEmail_ResultIsLoginUnsuccessful()

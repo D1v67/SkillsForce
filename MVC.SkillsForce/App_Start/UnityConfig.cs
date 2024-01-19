@@ -27,7 +27,6 @@ namespace MVC.SkillsForce
 
             Container.RegisterType<IFileExtensionValidation, FileExtensionValidation>();
 
-
             Container.RegisterType<IJobLogger, JobLogger>();
 
             Container.RegisterType<IExportSelectedEmployeeService, ExportSelectedEmployeeService>();
@@ -68,10 +67,6 @@ namespace MVC.SkillsForce
 
             Container.RegisterInstance<INotificationService>( "Email Notification", new NotificationService());
             Container.RegisterInstance<INotificationService>("In App Notification", new AppNotificationService(Container.Resolve<IAppNotificationDAL>()));
-            //Container.RegisterType(typeof(INotificationHandler), typeof(NotificationHandler),
-            //    new InjectionConstructor(new ResolveArray)
-
-            //    );
 
             Container.RegisterType(typeof(INotificationHandler), typeof(NotificationHandler),
             new InjectionConstructor(new ResolvedArrayParameter<INotificationService>(
